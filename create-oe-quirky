@@ -4,6 +4,7 @@
 #170531 added meta-raspberrypi.
 #170606 tweaks.
 #170621 snapshots now tarballs.
+#170623 chmod 755 setterm
 
 if [ -d ../oe-quirky ];then
  echo "Error, 'oe-quirky' already exists."
@@ -52,7 +53,10 @@ cp -a -f readme.htm ../oe-quirky/
 sed -i '/getuid/d' ../oe-quirky/meta/classes/sanity.bbclass
 sed -i '/Do not use Bitbake as root/d' ../oe-quirky/meta/classes/sanity.bbclass
 #'setterm' is out of util-linux pkg...
-[ ! -e /usr/bin/setterm ] && cp -a -f setterm /usr/bin/
+if [ ! -e /usr/bin/setterm ];then
+ cp -a -f setterm /usr/bin/
+ chmod 755 /usr/bin/setterm
+fi
 [ ! -e /usr/bin/python2 ] && [ -e /usr/bin/python2.7 ] && ln -s python2.7 /usr/bin/python2
 FNDPY3="$(find /usr/bin -maxdepth 1 -type f -name 'python3.[0-9]' | head -n 1)"
 if [ ! "$FNDPY3" ];then
