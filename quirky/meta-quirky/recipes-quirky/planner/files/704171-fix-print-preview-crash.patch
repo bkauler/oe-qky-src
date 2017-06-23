@@ -1,0 +1,42 @@
+Last-Update: 2013-04-09
+Forwarded: not-needed
+Origin: upstream, https://git.gnome.org/browse/planner/commit/?id=0cc65e2f420af45f78d190ac2af64810a148bb31
+Bug-Planner: https://bugzilla.gnome.org/show_bug.cgi?id=581282
+Bug-Debian: http://bugs.debian.org/704171
+Author: Dmitry Smirnov <onlyjob@member.fsf.org>
+Description: fix crash on print preview of empty document
+
+--- a/src/planner-print-job.c
++++ b/src/planner-print-job.c
+@@ -236,19 +236,9 @@
+ 	priv = job->priv;
+ 
+ 	l = priv->views;
+ 
+-	/* Abort if there is nothing to print.
+-	 *
+-	 * A better solution would be to set the number of pages to print to 0
+-	 * in print_job_begin_print, but 0 is not a valid value for
+-	 * gtk_print_operation_set_n_pages.
+-	 */
+-	if(!l) {
+-		return;
+-	}
+-
+-	while (!page_found) {
++	while (! page_found && l != NULL) {
+ 		v = PLANNER_VIEW (l->data);
+ 
+ 		pages_in_view = planner_view_print_get_n_pages (v);
+ 
+@@ -257,10 +247,8 @@
+ 			page_found = TRUE;
+ 		} else {
+ 			page_nr -= pages_in_view;
+ 			l = l->next;
+-
+-			g_assert (l != NULL);
+ 		}
+ 	}
+ }
+ 

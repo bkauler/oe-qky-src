@@ -1,0 +1,33 @@
+170501
+I had 'defconfig' in alongside linux-quirky_4.10.bb, however when ran "bitbake linux-quirky"
+got this error:
+
+WARNING: linux-quirky-4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d-r0 do_fetch: Failed to fetch URL file://defconfig, attempting MIRRORS if available
+ERROR: linux-quirky-4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d-r0 do_fetch: Fetcher failure: Unable to find file file://defconfig anywhere. The paths that were searched were:
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/linux-quirky-4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d/nodistro
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/linux-quirky/nodistro
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/files/nodistro
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/linux-quirky-4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d/pcx86-64
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/linux-quirky/pcx86-64
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/files/pcx86-64
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/linux-quirky-4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d/x86-64
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/linux-quirky/x86-64
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/files/x86-64
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/linux-quirky-4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d/
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/linux-quirky/
+    /mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/files/
+    /mnt/sda1/projects/oe/downloads
+ERROR: linux-quirky-4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d-r0 do_fetch: Fetcher failure for URL: 'file://defconfig'. Unable to fetch URL from any source.
+ERROR: linux-quirky-4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d-r0 do_fetch: Function failed: base_do_fetch
+ERROR: Logfile of failure stored in: /mnt/sda1/projects/oe/oe-quirky/buildQ/tmp-glibc/work/pcx86_64-oe-linux/linux-quirky/4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d-r0/temp/log.do_fetch.27060
+ERROR: Task (/mnt/sda1/projects/oe/oe-quirky/meta-quirky/recipes-kernel/linux/linux-quirky_4.10.bb:do_fetch) failed with exit code '1'
+NOTE: Tasks Summary: Attempted 208 tasks of which 207 didn't need to be rerun and 1 failed.
+
+...that is interesting, can put 'defconfig' into a target-arch specific folder, so
+have put it into meta-quirky/recipes-kernel/linux/files/pcx86-64
+
+# bitbake linux-quirky
+applies my defconfig, and creates:
+/mnt/sda1/projects/oe/oe-quirky/buildQ/tmp-glibc/work/pcx86_64-oe-linux/linux-quirky/4.10.9+gitAUTOINC+ad2e885015_fe0fb8da3d-r0/linux-pcx86_64-standard-build/.config
+...which I have copied here, as DOTconfigFINAL ...for comparison, interesting changes
+from my defconfig.

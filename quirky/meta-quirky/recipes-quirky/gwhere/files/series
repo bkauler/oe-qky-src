@@ -1,0 +1,9 @@
+01_man.diff
+02_destdir.diff
+03_upstream_debian.diff
+04_plugins_dir.diff
+05_gtk20.diff
+06_backslash.diff
+07_desktop.diff
+08_link_gmodule.diff
+09_desktop_file_spelling.diff

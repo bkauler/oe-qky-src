@@ -1,0 +1,205 @@
+diff -ur planner-0.14.5/configure planner-0.14.5-T/configure
+--- planner-0.14.5/configure	2011-07-05 01:16:37.000000000 +0800
++++ planner-0.14.5-T/configure	2011-11-13 21:55:23.397335992 +0800
+@@ -3737,13 +3737,13 @@
+   CFLAGS=$ac_save_CFLAGS
+ elif test $ac_cv_prog_cc_g = yes; then
+   if test "$GCC" = yes; then
+-    CFLAGS="-g -O2"
++    CFLAGS="-g -Os"
+   else
+     CFLAGS="-g"
+   fi
+ else
+   if test "$GCC" = yes; then
+-    CFLAGS="-O2"
++    CFLAGS="-Os"
+   else
+     CFLAGS=
+   fi
+@@ -4461,13 +4461,13 @@
+   CFLAGS=$ac_save_CFLAGS
+ elif test $ac_cv_prog_cc_g = yes; then
+   if test "$GCC" = yes; then
+-    CFLAGS="-g -O2"
++    CFLAGS="-g -Os"
+   else
+     CFLAGS="-g"
+   fi
+ else
+   if test "$GCC" = yes; then
+-    CFLAGS="-O2"
++    CFLAGS="-Os"
+   else
+     CFLAGS=
+   fi
+Only in planner-0.14.5/data: planner.desktop.in
+Only in planner-0.14.5/libplanner: mrp-marshal.c
+Only in planner-0.14.5/libplanner: mrp-marshal.h
+Only in planner-0.14.5: libplanner-1.pc
+diff -ur planner-0.14.5/src/planner-conf-gconf.c planner-0.14.5-T/src/planner-conf-gconf.c
+--- planner-0.14.5/src/planner-conf-gconf.c	2011-07-04 23:17:30.000000000 +0800
++++ planner-0.14.5-T/src/planner-conf-gconf.c	2011-11-12 04:00:36.689337499 +0800
+@@ -19,29 +19,23 @@
+  */
+ 
+ #include <config.h>
+-#include <gconf/gconf-client.h>
++#include <glib.h>
++//#include <gconf/gconf-client.h>
+ 
+-#include "planner-conf.h"
++//#include "planner-conf.h"
+ 
+ #define GCONF_PREFIX "/apps/planner"
+ 
+-static GConfClient *  conf_get_gconf_client (void);
+-static gchar *        conf_get_key          (const gchar *key);
++//static GConfClient *  conf_get_gconf_client (void);
++static gchar *conf_get_key(const gchar *key);
+ 
+-static GConfClient *
+-conf_get_gconf_client (void)
+-{
+-	static GConfClient *client = NULL;
+-
+-	if (!client) {
+-		client = gconf_client_get_default ();
+-	}
+-
+-	return client;
+-}
++//static GConfClient *
++//conf_get_gconf_client (void)
++//{
++//	return 0;
++//}
+ 
+-static gchar *
+-conf_get_key (const gchar *key)
++static gchar *conf_get_key(const gchar *key)
+ {
+ 	return g_strconcat (GCONF_PREFIX, key, NULL);
+ }
+@@ -49,112 +43,42 @@
+ gboolean
+ planner_conf_dir_exists (const gchar *dir, GError **error)
+ {
+-	GConfClient *client;
+-	gchar       *full_dir;
+-	gboolean     ret_val;
+-
+-	client = conf_get_gconf_client ();
+-
+-	full_dir = conf_get_key (dir);
+-	ret_val = gconf_client_dir_exists (client, full_dir, error);
+-	g_free (full_dir);
+-
+-	return ret_val;
++	return 0;
+ }
+ 
+ gboolean
+ planner_conf_get_bool (const gchar *key, GError **error)
+ {
+-	GConfClient *client;
+-	gchar       *full_key;
+-	gboolean     ret_val;
+-
+-	client = conf_get_gconf_client ();
+-
+-	full_key = conf_get_key (key);
+-	ret_val = gconf_client_get_bool (client, full_key, error);
+-	g_free (full_key);
+-
+-	return ret_val;
++	return 0;
+ }
+ 
+ gchar *
+ planner_conf_get_string (const gchar *key, GError **error)
+ {
+-	GConfClient *client;
+-	gchar       *full_key;
+-	gchar       *ret_val;
+-
+-	client = conf_get_gconf_client ();
+-
+-	full_key = conf_get_key (key);
+-	ret_val = gconf_client_get_string (client, full_key, error);
+-	g_free (full_key);
+-
+-	return ret_val;
++	return 0;
+ }
+ 
+ gint
+ planner_conf_get_int (const gchar *key, GError **error)
+ {
+-	GConfClient *client;
+-	gchar       *full_key;
+-	gint         ret_val;
+-
+-	client = conf_get_gconf_client ();
+-
+-	full_key = conf_get_key (key);
+-	ret_val = gconf_client_get_int (client, full_key, error);
+-	g_free (full_key);
+-
+-	return ret_val;
++	return 0;
+ }
+ 
+ gboolean
+ planner_conf_set_bool (const gchar *key, gboolean value, GError **error)
+ {
+-	GConfClient *client;
+-	gchar       *full_key;
+-	gboolean     ret_val;
+-
+-	client = conf_get_gconf_client ();
+-
+-	full_key = conf_get_key (key);
+-	ret_val = gconf_client_set_bool (client, full_key, value, error);
+-	g_free (full_key);
+-
+-	return ret_val;
++	return 0;
+ }
+ 
+ gboolean
+ planner_conf_set_string (const gchar *key, const gchar *value, GError **error)
+ {
+-	GConfClient *client;
+-	gchar       *full_key;
+-	gboolean     ret_val;
+-
+-	client = conf_get_gconf_client ();
+-
+-	full_key = conf_get_key (key);
+-	ret_val = gconf_client_set_string (client, full_key, value, error);
+-	g_free (full_key);
+-
+-	return ret_val;
++	return 0;
+ }
+ 
+ gboolean
+ planner_conf_set_int (const gchar *key, gint value, GError **error)
+ {
+-	GConfClient *client;
+-	gchar       *full_key;
+-	gboolean     ret_val;
+-
+-	client = conf_get_gconf_client ();
+-
+-	full_key = conf_get_key (key);
+-	ret_val = gconf_client_set_int (client, full_key, value, error);
+-	g_free (full_key);
+-
+-	return ret_val;
++	return 0;
+ }
+ 
+Only in planner-0.14.5/src: planner-marshal.c
+Only in planner-0.14.5/src: planner-marshal.h

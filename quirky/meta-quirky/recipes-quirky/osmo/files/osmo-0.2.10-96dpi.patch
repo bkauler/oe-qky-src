@@ -1,0 +1,74 @@
+diff -ru osmo-0.2.10.orig/src/gui.h osmo-0.2.10/src/gui.h
+--- osmo-0.2.10.orig/src/gui.h	2010-04-01 07:47:34.000000000 +1000
++++ osmo-0.2.10/src/gui.h	2013-07-11 13:14:24.419447306 +1000
+@@ -62,7 +62,7 @@
+ 
+ #define     VERSION_MAJOR           0
+ #define     VERSION_MINOR           2
+-#define     VERSION_MICRO           8
++#define     VERSION_MICRO           10
+ 
+ #define     MAX_MONTHS              12
+ #define     MAX_WEEKS               6
+diff -ru osmo-0.2.10.orig/src/options_prefs.c osmo-0.2.10/src/options_prefs.c
+--- osmo-0.2.10.orig/src/options_prefs.c	2010-04-01 07:47:34.000000000 +1000
++++ osmo-0.2.10/src/options_prefs.c	2013-07-11 13:32:04.652833066 +1000
+@@ -91,7 +91,7 @@
+     config.window_x = 0;
+     config.window_y = 0;
+     config.window_size_x = 540;
+-    config.window_size_y = 690;
++    config.window_size_y = 600;
+     config.enable_tooltips = TRUE;
+     config.latest_tab = 0;      /* calendar */
+     config.tabs_position = GTK_POS_TOP;
+@@ -168,13 +168,13 @@
+ 	g_strlcpy (config.birthday_mark_color, "#FFA500", MAXCOLORNAME);
+     config.mark_current_day_alpha = 32768;
+     config.selector_alpha = 32768;
+-	g_strlcpy (config.day_name_font, "Sans Bold 20", MAXFONTNAME);
+-	g_strlcpy (config.calendar_font, "Sans 18", MAXFONTNAME);
+-	g_strlcpy (config.notes_font, "Sans 11", MAXFONTNAME);
+-	g_strlcpy (config.cal_print_month_name_font, "Sans Bold 40", MAXFONTNAME);
+-	g_strlcpy (config.cal_print_day_name_font, "Sans Bold 10", MAXFONTNAME);
+-	g_strlcpy (config.cal_print_day_num_font, "Sans Bold 16", MAXFONTNAME);
+-	g_strlcpy (config.cal_print_event_font, "Sans 7", MAXFONTNAME);
++	g_strlcpy (config.day_name_font, "Sans Bold 18", MAXFONTNAME);
++	g_strlcpy (config.calendar_font, "Sans 16", MAXFONTNAME);
++	g_strlcpy (config.notes_font, "Sans 10", MAXFONTNAME);
++	g_strlcpy (config.cal_print_month_name_font, "Sans Bold 36", MAXFONTNAME);
++	g_strlcpy (config.cal_print_day_name_font, "Sans Bold 9", MAXFONTNAME);
++	g_strlcpy (config.cal_print_day_num_font, "Sans Bold 14", MAXFONTNAME);
++	g_strlcpy (config.cal_print_event_font, "Sans 6", MAXFONTNAME);
+ 	config.cal_print_event_length = 256;
+ 	config.cal_print_padding = 4;
+ 	config.cal_print_page_orientation = PORTRAIT;
+@@ -218,7 +218,7 @@
+ 	g_strlcpy (config.due_today_color, "#00981E", MAXCOLORNAME);
+ 	g_strlcpy (config.due_7days_color, "#0047B7", MAXCOLORNAME);
+ 	g_strlcpy (config.past_due_color, "#CB362C", MAXCOLORNAME);
+-	g_strlcpy (config.task_info_font, "Sans 14", MAXFONTNAME);
++	g_strlcpy (config.task_info_font, "Sans 12", MAXFONTNAME);
+ 	config.global_notification_command[0] = '\0';
+ 
+     /* contacts */
+@@ -259,8 +259,8 @@
+     config.import_bluetooth_channel = 1;
+     config.import_usb_interface = 0;
+     config.import_binary_xml = 0;
+-	config.contact_name_font_size = 18;
+-	config.contact_item_font_size = 11;
++	config.contact_name_font_size = 16;
++	config.contact_item_font_size = 10;
+ 	g_strlcpy (config.import_bluetooth_address, "00:00:00:00:00:00", MAXADDRESS);
+ 	g_strlcpy (config.contact_tag_color, "#228B22", MAXCOLORNAME);
+ 	g_strlcpy (config.contact_link_color, "blue", MAXCOLORNAME);
+@@ -301,7 +301,7 @@
+     config.current_category_in_notes = 0;
+     config.use_system_date_in_notes = FALSE;
+     config.text_separator = '=';
+-	g_strlcpy (config.notes_editor_font, "Sans 11", MAXFONTNAME);
++	g_strlcpy (config.notes_editor_font, "Sans 10", MAXFONTNAME);
+ }
+ 
+ /*------------------------------------------------------------------------------*/

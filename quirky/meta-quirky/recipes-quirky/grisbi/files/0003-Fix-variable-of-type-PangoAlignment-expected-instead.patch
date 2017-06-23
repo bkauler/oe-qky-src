@@ -1,0 +1,23 @@
+From: Stephane Glondu <steph@glondu.net>
+Date: Tue, 8 Apr 2014 00:57:55 +0200
+Subject: Fix variable of type PangoAlignment expected instead of gfloat
+
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=688453
+---
+ src/print_transactions_list.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/print_transactions_list.c b/src/print_transactions_list.c
+index 820be53..8fef497 100644
+--- a/src/print_transactions_list.c
++++ b/src/print_transactions_list.c
+@@ -896,7 +896,7 @@ static gint print_transactions_list_draw_row ( GtkPrintContext *context,
+ 					      gint line_position )
+ {
+     gint column;
+-    gfloat alignment[] = {
++    PangoAlignment alignment[] = {
+ 	PANGO_ALIGN_CENTER, PANGO_ALIGN_CENTER, PANGO_ALIGN_LEFT,
+ 	PANGO_ALIGN_CENTER, PANGO_ALIGN_RIGHT, PANGO_ALIGN_RIGHT, PANGO_ALIGN_RIGHT
+     };
+-- 

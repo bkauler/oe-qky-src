@@ -1,0 +1,18 @@
+# Recipe created by recipetool
+# recipetool create -o xf86-video-cyrix_1.1.0.bb https://www.x.org/archive/individual/driver/xf86-video-cyrix-1.1.0.tar.gz
+
+require recipes-graphics/xorg-driver/xorg-driver-video.inc
+
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING;md5=4641deddaa80fe7ca88e944e1fd94a94"
+
+SRC_URI = "https://www.x.org/archive/individual/driver/xf86-video-cyrix-${PV}.tar.gz"
+SRC_URI[md5sum] = "97e173f20d4ae45b5156cf1d93da0677"
+SRC_URI[sha256sum] = "e51559f59b589f7a27885868929b025f48cb40f4f0340ca563c49fee2d634b86"
+
+DEPENDS += "fontsproto xserver-xorg xproto"
+
+inherit pkgconfig autotools
+
+#EXTRA_OECONF = ""
+

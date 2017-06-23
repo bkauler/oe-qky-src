@@ -1,0 +1,54 @@
+Description: Make author name in manpage UTF-8.
+Author: Unknown.
+Index: gwhere-0.2.3.dfsg.1/doc/man/gwhere.1
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/doc/man/gwhere.1	2013-07-16 11:11:10.372921652 -0400
++++ gwhere-0.2.3.dfsg.1/doc/man/gwhere.1	2013-07-16 11:12:20.189267853 -0400
+@@ -1,24 +1,24 @@
+ .TH GWHERE 1
+-.SH NAME
+-gwhere \- Catalog manager
+-.SH SYNOPSIS
+-.PP
+-.B gwhere
+-[
+-.BR catalog
+-]
+-.SH DESCRIPTION
+-GWhere allows to manage a database of your CDs and other removable media
+-(hard disks, floppy drive, Zip drive, CD-ROM, etc...). It's easy to browse
+-your CDs or to make a quick search without the need to insert the CDs or
+-other media in the drive each at once.
+-.SH OPTIONS
+-You can specify the program to load a catalog file on startup by passing the
+-catalog filename as an argument
+-.TP
+-.BR catalog
+-The filename of the catalog to load at program startup.
+-.SH AUTHOR
+-Sébastien LECACHEUR <zero@gwhere.org>
+-
+-This manual page written by Luis Parravicini <luis@ktulu.com.ar>
++.SH NAME
++gwhere \- Catalog manager
++.SH SYNOPSIS
++.PP
++.B gwhere
++[
++.BR catalog
++]
++.SH DESCRIPTION
++GWhere allows to manage a database of your CDs and other removable media
++(hard disks, floppy drive, Zip drive, CD-ROM, etc...). It's easy to browse
++your CDs or to make a quick search without the need to insert the CDs or
++other media in the drive each at once.
++.SH OPTIONS
++You can specify the program to load a catalog file on startup by passing the
++catalog filename as an argument
++.TP
++.BR catalog
++The filename of the catalog to load at program startup.
++.SH AUTHOR
++S\['e]bastien LECACHEUR <zero@gwhere.org>
++
++This manual page written by Luis Parravicini <luis@ktulu.com.ar>

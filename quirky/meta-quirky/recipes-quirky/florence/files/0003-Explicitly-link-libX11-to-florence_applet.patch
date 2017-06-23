@@ -1,0 +1,25 @@
+From: =?UTF-8?q?J=C3=A9r=C3=A9my=20Bobbio?= <lunar@debian.org>
+Date: Fri, 1 Apr 2011 07:33:07 +0200
+Subject: [PATCH] Explicitly link libX11 to florence_applet
+
+libX11 is used indirectly by other libraries used by florence_applet.
+To make florence buildable with ld --no-add-needed/--no-copy-dt-needed-entries
+it needs to be directly referenced on the linker command line.
+---
+ src/Makefile.am |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 753279b..2400b4f 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -31,7 +31,7 @@ florence_applet_CPPFLAGS = -DAPPLET -DICONDIR="\"$(ICONDIR)\""\
+    -DDATADIR="\"$(datadir)/florence\"" $(DEPS_CFLAGS)\
+    $(LIBGNOME_CFLAGS) $(LIBNOTIFY_CFLAGS) $(LIBPANELAPPLET_CFLAGS) $(XTST_CFLAGS) $(AT_SPI_CFLAGS) $(AT_SPI2_CFLAGS) $(INCLUDES)
+ 
+-florence_applet_LDADD = $(DEPS_LIBS) $(LIBGNOME_LIBS) $(LIBNOTIFY_LIBS) $(LIBPANELAPPLET_LIBS) $(XTST_LIBS) $(AT_SPI_LIBS) $(AT_SPI2_LIBS)
++florence_applet_LDADD = $(DEPS_LIBS) $(X11_LIBS) $(LIBGNOME_LIBS) $(LIBNOTIFY_LIBS) $(LIBPANELAPPLET_LIBS) $(XTST_LIBS) $(AT_SPI_LIBS) $(AT_SPI2_LIBS)
+ 
+ serverdir       = $(libdir)/bonobo/servers
+ server_in_files = florence.server.in
+-- 

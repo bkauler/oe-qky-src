@@ -1,0 +1,21 @@
+# Recipe created by recipetool
+# recipetool create -o xf86-video-chips_1.2.7.bb https://www.x.org/archive/individual/driver/xf86-video-chips-1.2.7.tar.gz
+
+require recipes-graphics/xorg-driver/xorg-driver-video.inc
+
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING;md5=d16ab8e6e1c8f1eaca1ef57449f284b2"
+
+SRC_URI = "https://www.x.org/archive/individual/driver/xf86-video-chips-${PV}.tar.gz"
+SRC_URI[md5sum] = "91306604cdcbdbee97b9f15be405064a"
+SRC_URI[sha256sum] = "207bab37f9f15c072c024f94811a9e889f92ab4ad82c081200e461e1641a16e5"
+
+DEPENDS += "xserver-xorg xproto fontsproto libpciaccess"
+
+inherit pkgconfig autotools
+
+#EXTRA_OECONF = ""
+
+
+HOMEPAGE = "http://www.X.org"
+SUMMARY = "The Xorg Chips and Technologies video driver"

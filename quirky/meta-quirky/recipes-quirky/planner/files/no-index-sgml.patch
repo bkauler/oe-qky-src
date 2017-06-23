@@ -1,0 +1,20 @@
+Description: Stop installing index.sgml
+ gtk-doc 1.25 uses devhelp2 files instead of index.sgml,
+ and index.sgml is therefore no longer built or required.
+Author: Adrian Bunk <bunk@stusta.de>
+Bug-Debian: https://bugs.debian.org/819839
+Forwarded: no
+
+--- a/docs/libplanner/Makefile.am
++++ b/docs/libplanner/Makefile.am
+@@ -164,10 +164,8 @@
+ 	  for i in $$installfiles; do \
+ 	    echo '-- Installing '$$i ; \
+ 	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR); \
+ 	  done; \
+-	  echo '-- Installing $(srcdir)/html/index.sgml' ; \
+-	  $(INSTALL_DATA) $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR); \
+ 	fi)
+ 
+ uninstall-local:
+ 	rm -f $(DESTDIR)$(TARGET_DIR)/*

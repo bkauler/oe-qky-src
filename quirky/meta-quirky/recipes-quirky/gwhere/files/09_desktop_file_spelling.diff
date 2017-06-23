@@ -1,0 +1,50 @@
+Description: Fix spelling/grammar errors in upstream desktop file.
+Bug-Debian: http://bugs.debian.org/620160
+Author: Andrea Carpineti <carpineti.dev@gmail.com>
+Index: gwhere-0.2.3.dfsg.1/gwhere.desktop
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/gwhere.desktop	2013-07-16 11:46:16.199363882 -0400
++++ gwhere-0.2.3.dfsg.1/gwhere.desktop	2013-07-16 11:47:32.911744278 -0400
+@@ -1,7 +1,6 @@
+ [Desktop Entry]
+ Version=1.0
+-Encoding=UTF-8
+-Name=Removable media catalog managment
++Name=Removable media catalog management
+ Name[ar]=Administración de catálogos de medios removibles
+ Name[cs]=Správa katalogu vımìnnıch médií
+ Name[de]=Katalog-Verwaltung für Wechselmedien
+@@ -13,20 +12,21 @@
+ Name[nl]=Beheer verwijderbare media
+ Name[pl]=Innych mediów katalog zarz±dzanie
+ Name[pt]=Gestor de catálogos de media removivel
+-Comment=GWhere allows to manage a database of yours CDs and others removable media (hard disks, floppy drive, Zip drive, CD-ROM, etc...). With GWhere it's easy to browse yours CDs or to make quick search without need to insert yours CDs in the drive at each once.
+-Comment[ar]=GWhere permite administrar una base de datos de tus CDs y otros medios removibles (disco duros, diskettes, discos Zip, CD-ROMs, etc...). Con GWhere es fácil navegar tus CDs o realizar búsquedas sin la necesidad de insertar los CDs en la lectora de a uno por vez.
+-Comment[cs]=GWhere slou¾í k uchování obsahu CD a dal¹ích médií(HDD, floppy, zip,...). Potom mù¾ete procházet databázia vyhledávat soubory bez nutnosti vlo¾it CD do mechaniky.
+-Comment[de]=GWhere erlaubt die Verwaltung einer Datenbank Ihrer CDs und anderer Wechselmedien (Festplatten, Floppies, Zip-Disketten, CD-ROM usw. ...). Mit GWhere ist es sehr einfach, Ihre CDs zu durchsuchen oder eine Schnellsuche durchzuführen ohne jedesmal die CD ins Laufwerk zu stecken.
+-Comment[el]=Ôï GWhere óáò åğéôñİğåé íá äéá÷åéñéóôåßôå ìéá âÜóç äåäïìİíùí ôùí CD êáé Üëëùí áğïóğşìåíùí ìİóùí óáò (óêëçñïß äßóêïé, äéóêİôåò, Zip drive, CD-ROM, êëğ...). Ìå ôï GWhere åßíáé åıêïëï íá ñßîåôå ìéá ìáôéÜ óôá CD óáò Ş íá áíáæçôŞóåôå ãñŞãïñá êÜôé óå áõôÜ ÷ùñßò ôçí áíÜãêç íá ôá åéóÜãåôå óôï drive êÜèå öïñÜ.
+-Comment[es]=GWhere permite manipular una base de datos de tus CDs y otros medios extraibles (discos duros, disquetes, Zips, CD-ROM, etc...) Con GWhere es fácil navegar en tus CDs o hacer búsquedas rápidas sin necesidad de introducir tus CDs en la unidad cada vez.
+-Comment[fr]=GWhere permet de gérer une base de données de vos CD et autres media amovibles (disques durs, disquettes, disquettes Zip, CD-ROM, etc...). Avec GWhere il est facile de parcourir vos CDs ou de faire une recherche rapide sans avoir besoin d'insérer vos CDs dans le lecteur à chaque fois.
+-Comment[hu]=GWhere lehetõvé teszi a CD lemezeid és más mozgatható adathordozóid (hdd, floppy, Zip meghajtó, USB drive....) katalogizálását. A GWhere a lemezekrõl egy adatbázist készít, ami tartalmazza a fájlok neveit, majd késõbb ebben az adatbázisból a CD lemez érintése nélkül gyorsan megállapíthatod melyik lemezen van a keresett fájl.
+-Comment[it]=Gwhere permette di creare e gestire un database dei tuoi CD e di altri dispositivi rimovibili come hard disk, floppy drive, Zip drive, CD-ROM, etc...). Con GWHERE \xc3\xa8 facile leggere i contenuti dei tuoi CD ed \xc3\xa8 anchepossibile fare veloci ricerche senza alcuna necessit\xc3\xa0 di inserire i CD in tuo possesso nel lettore.
+-Comment[nl]=Met GWhere kun je een gegevensbank van je CD's en andere verwijderbare media beheren (harde schijven, diskettes, ZIP diskettes, CD-ROM, enz...). Met GWhere is het makkelijk je CD's te doorlopen of snel iets op te zoeken zonder telkens je CD's in de speler te moeten steken.
+-Comment[pl]=GWHere to program zarz±dzaj±cy baz± Twoich p³yt CD oraz innych mediów (takich jak twarde dyski, dyskietki, dyski Zip itp.). Dziêki GWhere w ³atwy sposób mo¿esz przegl±daæ Twoje p³yty CD i szybko znale¼æ potrzebny Ci plik bez konieczno¶ci ci±g³ego wsadzania p³yt do napêdu.
+-Comment[pt]=GWhere permite gerir uma base de dados dos seus CDs ou outros tipos de media removível (discos rígidos, disquetes, drives ZIP, CD-ROM, etc...). Com o GWhere é fácil explorar os seus CDs ou fazer rápidas pesquisas sem a necessidade de inserir cada um dos seus CDs na drive.
++Comment=GWhere allows one to manage a database of your CDs and other removable media (hard disks, floppy drive, Zip drive, CD-ROM, etc...). With GWhere it's easy to browse yours CDs or to make quick search without need to insert yours CDs in the drive repeatedly.
++Comment[ar]=GWhere permite administrar una base de datos de tus CDs y otros medios removibles (disco duros, diskettes, discos Zip, CD-ROMs, etc...). Con GWhere es fácil navegar tus CDs o realizar búsquedas sin la necesidad de insertar los CDs en la lectora de a uno por vez
++Comment[cs]=GWhere slou¾í k uchování obsahu CD a dal¹ích médií(HDD, floppy, zip,...). Potom mù¾ete procházet databázia vyhledávat soubory bez nutnosti vlo¾it CD do mechaniky
++Comment[de]=GWhere erlaubt die Verwaltung einer Datenbank Ihrer CDs und anderer Wechselmedien (Festplatten, Floppies, Zip-Disketten, CD-ROM usw. ...). Mit GWhere ist es sehr einfach, Ihre CDs zu durchsuchen oder eine Schnellsuche durchzuführen ohne jedesmal die CD ins Laufwerk zu stecken
++Comment[el]=Ôï GWhere óáò åğéôñİğåé íá äéá÷åéñéóôåßôå ìéá âÜóç äåäïìİíùí ôùí CD êáé Üëëùí áğïóğşìåíùí ìİóùí óáò (óêëçñïß äßóêïé, äéóêİôåò, Zip drive, CD-ROM, êëğ...). Ìå ôï GWhere åßíáé åıêïëï íá ñßîåôå ìéá ìáôéÜ óôá CD óáò Ş íá áíáæçôŞóåôå ãñŞãïñá êÜôé óå áõôÜ ÷ùñßò ôçí áíÜãêç íá ôá åéóÜãåôå óôï drive êÜèå öïñÜ
++Comment[es]=GWhere permite manipular una base de datos de tus CDs y otros medios extraibles (discos duros, disquetes, Zips, CD-ROM, etc...) Con GWhere es fácil navegar en tus CDs o hacer búsquedas rápidas sin necesidad de introducir tus CDs en la unidad cada vez
++Comment[fr]=GWhere permet de gérer une base de données de vos CD et autres media amovibles (disques durs, disquettes, disquettes Zip, CD-ROM, etc...). Avec GWhere il est facile de parcourir vos CDs ou de faire une recherche rapide sans avoir besoin d'insérer vos CDs dans le lecteur à chaque fois
++Comment[hu]=GWhere lehetõvé teszi a CD lemezeid és más mozgatható adathordozóid (hdd, floppy, Zip meghajtó, USB drive....) katalogizálását. A GWhere a lemezekrõl egy adatbázist készít, ami tartalmazza a fájlok neveit, majd késõbb ebben az adatbázisból a CD lemez érintése nélkül gyorsan megállapíthatod melyik lemezen van a keresett fájl
++Comment[it]=Gwhere permette di creare e gestire un database dei tuoi CD e di altri dispositivi rimovibili (hard disk, floppy drive, Zip drive, CD-ROM, etc...). Con GWHERE \xc3\xa8 facile leggere i contenuti dei tuoi CD ed \xc3\xa8 anche possibile fare veloci ricerche senza alcuna necessit\xc3\xa0 di inserire i CD in tuo possesso nel lettore
++Comment[nl]=Met GWhere kun je een gegevensbank van je CD's en andere verwijderbare media beheren (harde schijven, diskettes, ZIP diskettes, CD-ROM, enz...). Met GWhere is het makkelijk je CD's te doorlopen of snel iets op te zoeken zonder telkens je CD's in de speler te moeten steken
++Comment[pl]=GWHere to program zarz±dzaj±cy baz± Twoich p³yt CD oraz innych mediów (takich jak twarde dyski, dyskietki, dyski Zip itp.). Dziêki GWhere w ³atwy sposób mo¿esz przegl±daæ Twoje p³yty CD i szybko znale¼æ potrzebny Ci plik bez konieczno¶ci ci±g³ego wsadzania p³yt do napêdu
++Comment[pt]=GWhere permite gerir uma base de dados dos seus CDs ou outros tipos de media removível (discos rígidos, disquetes, drives ZIP, CD-ROM, etc...). Com o GWhere é fácil explorar os seus CDs ou fazer rápidas pesquisas sem a necessidade de inserir cada um dos seus CDs na drive
+ TryExec=gwhere
+ Exec=gwhere
++Keywords=media;utility;search;
+ Icon=gwhere.xpm
+ Terminal=false
+ Type=Application

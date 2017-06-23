@@ -1,0 +1,12 @@
+diff -Naur libgtkhtml-2.11.1ORIG/configure.in libgtkhtml-2.11.1/configure.in
+--- libgtkhtml-2.11.1ORIG/configure.in	2007-08-14 07:08:14.000000000 +0800
++++ libgtkhtml-2.11.1/configure.in	2017-06-12 07:15:38.116743544 +0800
+@@ -58,7 +58,7 @@
+ 	          AC_MSG_WARN([*** test apps will be built without GNOME VFS support.]) 
+                   have_vfs=false)
+ 
+-AM_CONDITIONAL(HAVE_GNOME_VFS, test x$have_vfs = xtrue)
++AM_CONDITIONAL(HAVE_GNOME_VFS, test XXXx$have_vfs = xtrue)
+ 
+ 
+ AC_SUBST(GTKHTML2_CFLAGS)

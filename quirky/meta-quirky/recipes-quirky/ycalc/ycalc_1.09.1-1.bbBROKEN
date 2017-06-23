@@ -1,0 +1,40 @@
+# Recipe created by recipetool
+# recipetool create -o ycalc_1.09.1-1.bb http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/ycalc-1.09.1-1.tar.bz2
+
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=18810669f13b87348459e611d31ab760"
+
+SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/ycalc-${PV}.tar.bz2"
+SRC_URI[md5sum] = "305c2ddafb82eae4702f871bd8bfd049"
+SRC_URI[sha256sum] = "866cd4b538475adbb738415629100199d3b3b77fdb01931b7c2d51b89a40e73a"
+
+DEPENDS = "libx11 libxaw libxpm"
+inherit pkgconfig
+
+# NOTE: this is a Makefile-only piece of software.
+
+SROOT = "${WORKDIR}/recipe-sysroot"
+
+do_configure () {
+    #sed -i -e "s%^LIB=.*%LIB= ${LDFLAGS} -lm -lX11%" Makefile
+    #sed -i -e "s%^CCFLAGS=.*%CCFLAGS= ${CFLAGS} -O2%" Makefile
+    #sed -i -e "s%^	cc %    ${CC} %" Makefile
+    #sed -i -e 's%{%(%g' Makefile
+    #sed -i -e 's%}%)%g' Makefile
+    true
+}
+
+do_compile () {
+    #oe_runmake
+    for aFILE in ascii binary calc keys main memory req
+    do
+     ${CC} -c ${aFILE}.c ${CFLAGS} -I${SROOT}/usr/include/X11
+    done
+    ${CC} -o ycalc ${LDFLAGS} -lm -lX11 ascii.o binary.o calc.o keys.o main.o memory.o req.o
+}
+
+do_install () {
+    install -d ${D}/usr/bin
+    install -m755 ycalc ${D}/usr/bin
+}
+

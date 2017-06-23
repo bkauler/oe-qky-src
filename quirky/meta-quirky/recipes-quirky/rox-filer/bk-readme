@@ -1,0 +1,9 @@
+
+01 june 2017
+------------
+first attempt compiling for target i586, everything built except rox-filer
+built a 64-bit executable.
+
+fixed by editing files/oe-precreate-makefile.patch:
+commented out the "CC = gcc", as this prevented OE from using its cross-compiler.
+changed "CFLAGS =" and "LDFLAGS =" to "CFLAGS +=" and "LDFLAGS +="

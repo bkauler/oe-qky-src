@@ -1,0 +1,70 @@
+Description: Fix libdir variable in upstream build system.
+Author: Unknown.
+Index: gwhere-0.2.3.dfsg.1/configure.in
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/configure.in	2013-07-16 11:13:22.329575990 -0400
++++ gwhere-0.2.3.dfsg.1/configure.in	2013-07-16 11:13:22.325575970 -0400
+@@ -170,27 +170,27 @@
+ dnl Set PACKAGE_PLUGINS_DIR in config.h
+ dnl ================================
+ if test "x${prefix}" = "xNONE"; then
+-  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_DIR, "${ac_default_prefix}/share/${PACKAGE}/plugins")
++  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_DIR, "${ac_default_prefix}/lib/${PACKAGE}/plugins")
+ else
+-  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_DIR, "${prefix}/share/${PACKAGE}/plugins")
++  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_DIR, "${prefix}/lib/${PACKAGE}/plugins")
+ fi
+ 
+ 
+ dnl Set PACKAGE_PLUGINS_CATALOG_DIR in config.h
+ dnl ================================
+ if test "x${prefix}" = "xNONE"; then
+-  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_CATALOG_DIR, "${ac_default_prefix}/share/${PACKAGE}/plugins/catalog")
++  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_CATALOG_DIR, "${ac_default_prefix}/lib/${PACKAGE}/plugins/catalog")
+ else
+-  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_CATALOG_DIR, "${prefix}/share/${PACKAGE}/plugins/catalog")
++  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_CATALOG_DIR, "${prefix}/lib/${PACKAGE}/plugins/catalog")
+ fi
+ 
+ 
+ dnl Set PACKAGE_PLUGINS_DESCRIPTION_DIR in config.h
+ dnl ================================
+ if test "x${prefix}" = "xNONE"; then
+-  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_DESCRIPTION_DIR, "${ac_default_prefix}/share/${PACKAGE}/plugins/descr")
++  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_DESCRIPTION_DIR, "${ac_default_prefix}/lib/${PACKAGE}/plugins/descr")
+ else
+-  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_DESCRIPTION_DIR, "${prefix}/share/${PACKAGE}/plugins/descr")
++  AC_DEFINE_UNQUOTED(PACKAGE_PLUGINS_DESCRIPTION_DIR, "${prefix}/lib/${PACKAGE}/plugins/descr")
+ fi
+ 
+ 
+Index: gwhere-0.2.3.dfsg.1/src/plugins/catalog/csv/Makefile.am
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/src/plugins/catalog/csv/Makefile.am	2013-07-16 11:13:22.329575990 -0400
++++ gwhere-0.2.3.dfsg.1/src/plugins/catalog/csv/Makefile.am	2013-07-16 11:13:22.325575970 -0400
+@@ -1,4 +1,4 @@
+-libdir = $(exec_prefix)/share/${PACKAGE}/plugins/catalog
++libdir = $(exec_prefix)/lib/${PACKAGE}/plugins/catalog
+ 
+ lib_LTLIBRARIES = libgwplugincatalogcsv.la
+ 
+Index: gwhere-0.2.3.dfsg.1/src/plugins/catalog/gwcatalog/Makefile.am
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/src/plugins/catalog/gwcatalog/Makefile.am	2013-07-16 11:13:22.329575990 -0400
++++ gwhere-0.2.3.dfsg.1/src/plugins/catalog/gwcatalog/Makefile.am	2013-07-16 11:13:22.325575970 -0400
+@@ -1,4 +1,4 @@
+-libdir = $(exec_prefix)/share/${PACKAGE}/plugins/catalog
++libdir = $(exec_prefix)/lib/${PACKAGE}/plugins/catalog
+ 
+ lib_LTLIBRARIES = libgwplugincataloggwcatalog.la
+ 
+Index: gwhere-0.2.3.dfsg.1/src/plugins/descr/Makefile.am
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/src/plugins/descr/Makefile.am	2013-07-16 11:13:22.329575990 -0400
++++ gwhere-0.2.3.dfsg.1/src/plugins/descr/Makefile.am	2013-07-16 11:13:22.325575970 -0400
+@@ -1,4 +1,4 @@
+-libdir = $(exec_prefix)/share/${PACKAGE}/plugins/descr
++libdir = $(exec_prefix)/lib/${PACKAGE}/plugins/descr
+ 
+ lib_LTLIBRARIES = libgwplugindescriptionavi.la \
+ 			libgwplugindescriptiondescript_ion.la \

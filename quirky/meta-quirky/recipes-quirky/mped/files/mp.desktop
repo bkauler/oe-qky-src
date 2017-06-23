@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=MP console text editor
+Icon=mp.xpm
+Comment=MP console text editor
+Exec=rxvt -geometry 80x25 -e mp
+Terminal=false
+Type=Application
+Categories=TextEditor
+GenericName=MP

@@ -1,0 +1,27 @@
+Description: Run AM_INIT_AUTOMAKE earlier to work around buggy autotools
+Author: Adam Conrad <adconrad@ubuntu.com>
+Origin: http://cgit.freedesktop.org/xcb/libxcb/commit/?id=50fb3a6312dd0b6b613fc886ffd6827952d1e286
+Upstream-Bug: http://lists.gnu.org/archive/html/bug-autoconf/2013-07/msg00000.html
+
+--- grisbi-1.0.0.orig/configure.in
++++ grisbi-1.0.0/configure.in
+@@ -22,6 +22,9 @@ dnl ====================================
+ dnl Standard checks.
+ dnl ================================================================
+ 
++AM_INIT_AUTOMAKE([-Wall foreign dist-bzip2 no-dist-gzip])
++m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
++
+ AC_PROG_CC
+ AC_USE_SYSTEM_EXTENSIONS
+ AC_HEADER_STDC
+@@ -33,9 +36,6 @@ AC_PROG_OBJC
+ dnl Check if we have backtrace support
+ AC_CHECK_FUNCS(backtrace)
+ 
+-AM_INIT_AUTOMAKE([-Wall foreign dist-bzip2 no-dist-gzip])
+-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+-
+ dnl Initialize libtool
+ LT_INIT
+ 

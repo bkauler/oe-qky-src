@@ -1,0 +1,15 @@
+Description: Patch to fix underlinkage of libgmodule-2.0.
+Bug-Debian: http://bugs.debian.org/713620
+Author: Barry deFreese <bdefreese@debian.org>
+Index: gwhere-0.2.3.dfsg.1/src/Makefile.am
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/src/Makefile.am	2013-07-16 11:17:33.358820777 -0400
++++ gwhere-0.2.3.dfsg.1/src/Makefile.am	2013-07-16 11:18:17.867041481 -0400
+@@ -34,6 +34,6 @@
+ 	@top_srcdir@/src/data/libgwdata.a \
+ 	@top_srcdir@/src/gui/libgwgui.a \
+ 	@GTK_LIBS@ \
+-	$(INTLLIBS)
++	$(INTLLIBS) -lgmodule-2.0
+ 
+ gwhere_LDFLAGS =

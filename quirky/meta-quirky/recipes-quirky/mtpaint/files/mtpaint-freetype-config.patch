@@ -1,0 +1,14 @@
+diff -Naur mtpaint-3.49.12ORIG/configure mtpaint-3.49.12/configure
+--- mtpaint-3.49.12ORIG/configure	2017-05-18 15:56:53.000000000 +0000
++++ mtpaint-3.49.12/configure	2017-05-18 16:11:17.079858042 +0000
+@@ -577,8 +577,8 @@
+ 	DEFS="$DEFS -DU_FREETYPE"
+ 	if [ "$OS" = "GNU/Linux" ]
+ 	then # Do it the old way, for native builds on *very* old distros
+-		INCLUDES="$INCLUDES `freetype-config --cflags`"
+-		LIB_NAME "" "$STATIC_FT" "`freetype-config --libs`"
++		INCLUDES="$INCLUDES `pkg-config --cflags freetype2`"
++		LIB_NAME "" "$STATIC_FT" "`pkg-config --libs freetype2`"
+ 	elif [ "$OS" != "${OS%/MSYS}" ]
+ 	then # pkg-config may be missing on Windows - hardcode its results
+ 		INCLUDES="$INCLUDES -I/include/freetype2"

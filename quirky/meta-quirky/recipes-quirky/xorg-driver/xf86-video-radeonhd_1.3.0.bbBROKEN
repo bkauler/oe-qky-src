@@ -1,0 +1,27 @@
+# Recipe created by recipetool
+# recipetool create -o xf86-video-radeonhd_1.3.0.bb https://www.x.org/archive/individual/driver/xf86-video-radeonhd-1.3.0.tar.gz
+
+require recipes-graphics/xorg-driver/xorg-driver-video.inc
+
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING;md5=3fdc4336b91fdb5570cbbd0bfaf7b72a"
+
+SRC_URI = "https://www.x.org/archive/individual/driver/xf86-video-radeonhd-${PV}.tar.gz"
+SRC_URI[md5sum] = "d635f5f0f6ab821662502ce87dc7077a"
+SRC_URI[sha256sum] = "637d72f125e4d42798df60e10f0b20b1e7455ac9ae6d8b8a45abb2ae9e0c5cd1"
+
+DEPENDS = "xf86driproto glproto zlib xextproto xserver-xorg xproto fontsproto libpciaccess libdrm mesa"
+
+inherit pkgconfig autotools
+
+# ref: http://lists.openembedded.org/pipermail/openembedded-commits/2009-July/104205.html
+# ref: tmp-glibc/work/core2-64-oe-linux/xf86-video-*/*/recipe-sysroot/usr/include/xorg
+EXTRA_OECONF = "ac_cv_file__usr_include_xorg_dri_h=yes \
+                ac_cv_file__usr_include_xorg_sarea_h=yes \
+                ac_cv_file__usr_include_xorg_dristruct_h=yes \
+                ac_cv_file__usr_include_xorg_damage_h=yes \
+                ac_cv_file__usr_include_xorg_exa_h=yes"
+
+
+HOMEPAGE = "http://www.X.org"
+SUMMARY = "The Xorg radeonhd video driver"

@@ -1,0 +1,15 @@
+Fixes desktop-file-in-wrong-dir.
+
+Index: gwhere-0.2.3.dfsg.1/Makefile.am
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/Makefile.am	2013-07-16 11:15:46.638291578 -0400
++++ gwhere-0.2.3.dfsg.1/Makefile.am	2013-07-16 11:17:20.782758416 -0400
+@@ -2,7 +2,7 @@
+ 
+ SUBDIRS = slackware doc intl po src win32
+ 
+-ApplicationGnomedir = $(datadir)/gnome/apps/Applications
++ApplicationGnomedir = $(datadir)/applications
+ ApplicationGnome_DATA = gwhere.desktop
+ 
+ ApplicationKDEdir = $(datadir)/applnk/Applications

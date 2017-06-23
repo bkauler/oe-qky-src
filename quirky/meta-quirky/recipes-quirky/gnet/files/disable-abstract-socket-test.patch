@@ -1,0 +1,53 @@
+diff -Naur gnet-2.0.8ORIG/configure.ac gnet-2.0.8/configure.ac
+--- gnet-2.0.8ORIG/configure.ac	2008-02-03 20:04:42.000000000 +0800
++++ gnet-2.0.8/configure.ac	2017-06-12 07:58:20.620166578 +0800
+@@ -336,48 +336,8 @@
+ dnl Check if abstract sockets are supported
+ dnl #######################################
+  
+-AC_LANG_PUSH(C)
+-AC_CACHE_CHECK([for abstract socket namespace availability],
+-		ac_cv_gnet_have_abstract_sockets,
+-		[AC_RUN_IFELSE([AC_LANG_PROGRAM(
+-[[
+-#include <sys/types.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <stdio.h>
+-#include <sys/socket.h>
+-#include <sys/un.h>
+-#include <errno.h>
+-]],
+-[[
+-  int listen_fd, len;
+-  struct sockaddr_un addr;
+-  
+-  listen_fd = socket (PF_UNIX, SOCK_STREAM, 0);
+-  if (listen_fd < 0) {
+-    perror ("socket() failed: ");
+-    exit (1);
+-  }
+-  memset (&addr, '\0', sizeof (addr));
+-  addr.sun_family = AF_UNIX;
+-  strcpy (addr.sun_path, "X/tmp/gnet-fake-socket-path-used-in-configure-test");
+-  len = SUN_LEN (&addr); /* calculate size before adding the \0 */
+-  addr.sun_path[0] = '\0'; /* this is what makes it abstract */
+-  
+-  if (bind (listen_fd, (struct sockaddr*) &addr, len) < 0) {
+-    perror ("Abstract socket namespace bind() failed: ");
+-    exit (1);
+-  }
+-  exit (0);
+-]])],
+-              [ac_cv_gnet_have_abstract_sockets=yes],
+-              [ac_cv_gnet_have_abstract_sockets=no]
+-)])
+-AC_LANG_POP(C)
+ 
+-if test x$ac_cv_gnet_have_abstract_sockets = xyes ; then
+-   AC_DEFINE(HAVE_ABSTRACT_SOCKETS,1,[Have abstract socket namespace])
+-fi
++AC_DEFINE(HAVE_ABSTRACT_SOCKETS,1,[Have abstract socket namespace])
+ 
+ ###############################
+ # Compiler characteristics

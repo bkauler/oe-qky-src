@@ -1,0 +1,19 @@
+From: Tobias Quathamer <toddy@debian.org>
+Date: Wed, 16 Feb 2011 15:23:40 +0100
+Subject: Add POTFILES.skip
+
+---
+ po/POTFILES.skip |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+ create mode 100644 po/POTFILES.skip
+
+diff --git a/po/POTFILES.skip b/po/POTFILES.skip
+new file mode 100644
+index 0000000..519bb25
+--- /dev/null
++++ b/po/POTFILES.skip
+@@ -0,0 +1,3 @@
++# List of ignored source files containing translatable strings.
++data/fpm2.desktop.in
++fpm2.glade
+-- 

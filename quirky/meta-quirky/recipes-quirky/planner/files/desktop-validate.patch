@@ -1,0 +1,31 @@
+Last-Update: 2013-04-09
+Forwarded: not-needed
+Origin: upstream
+Bug-Planner: https://bugzilla.gnome.org/show_bug.cgi?id=683601
+Author: Dmitry Smirnov <onlyjob@member.fsf.org>
+Description: fix .desktop file validation
+ Fix problems revealed by "desktop-file-validate".
+
+--- a/data/planner.desktop.in.in
++++ b/data/planner.desktop.in.in
+@@ -1,12 +1,16 @@
+ [Desktop Entry]
+-_Name=Project Management
+-_Comment=Planner Project Management
++Version=1.0
++_Name=Planner
++_GenericName=Project Management
++_X-GNOME-FullName=Planner Project Management
++_Comment=Handle the tasks, resources, and cost of your projects
++_Keywords=Gantt;Chart;Critical path;Relationship;Dependency;WBS;
+ Exec=planner %F
+-Icon=gnome-planner.png
++Icon=gnome-planner
+ Terminal=false
+ Type=Application
+-Categories=GNOME;GTK;Application;Office;ProjectManagement;
++Categories=GNOME;GTK;Office;ProjectManagement;
+ StartupNotify=true
+ MimeType=application/x-planner;
+ X-GNOME-Bugzilla-Bugzilla=GNOME
+ X-GNOME-Bugzilla-Product=planner

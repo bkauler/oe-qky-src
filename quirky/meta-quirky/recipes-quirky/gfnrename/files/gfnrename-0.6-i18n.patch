@@ -1,0 +1,706 @@
+diff -Naur gfnrename-0.6/src/callbacks.c gfnrename-0.6-patched_i18n/src/callbacks.c
+--- gfnrename-0.6/src/callbacks.c	2010-08-07 05:18:17.000000000 +0800
++++ gfnrename-0.6-patched_i18n/src/callbacks.c	2015-01-08 02:48:42.000000000 +0800
+@@ -30,6 +30,10 @@
+ #  include <config.h>
+ #endif
+ 
++#include <libintl.h>
++#include <locale.h>
++#define _(STRING) gettext(STRING)
++
+ #include <gtk/gtk.h>
+ 
+ #include "callbacks.h"
+@@ -74,12 +78,12 @@
+ 	// Setup for Files listbox (filebox) //////////////////////////////////////
+ 	treeview = (GtkTreeView *) lookup_widget(GTK_WIDGET(App1), "filebox");
+ 	// Setup Column 1
+-	column = gtk_tree_view_column_new_with_attributes("Old Name", renderer, "text", OLD_NAME, NULL);
++	column = gtk_tree_view_column_new_with_attributes(_("Old Name"), renderer, "text", OLD_NAME, NULL);
+ 	gtk_tree_view_column_set_resizable(column, TRUE);
+ 	gtk_tree_view_column_set_sort_column_id(column, OLD_NAME);
+ 	gtk_tree_view_append_column(treeview, column);
+ 	// Setup Column 2
+-	column = gtk_tree_view_column_new_with_attributes("New Name", renderer, "text", NEW_NAME, NULL);
++	column = gtk_tree_view_column_new_with_attributes(_("New Name"), renderer, "text", NEW_NAME, NULL);
+ 	gtk_tree_view_column_set_resizable(column, TRUE);
+ 	gtk_tree_view_column_set_sort_column_id(column, NEW_NAME);
+ 	gtk_tree_view_append_column(treeview, column);
+diff -Naur gfnrename-0.6/src/interface.c gfnrename-0.6-patched_i18n/src/interface.c
+--- gfnrename-0.6/src/interface.c	2010-08-07 04:50:11.000000000 +0800
++++ gfnrename-0.6-patched_i18n/src/interface.c	2015-01-07 19:59:43.000000000 +0800
+@@ -6,6 +6,10 @@
+ #  include <config.h>
+ #endif
+ 
++#include <libintl.h>
++#include <locale.h>
++#define _(STRING) gettext(STRING)
++
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+@@ -149,14 +153,14 @@
+   tooltips = gtk_tooltips_new ();
+ 
+   App1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+-  gtk_window_set_title (GTK_WINDOW (App1), "gFnRename v0.6 - A Simple File Renaming Utility");
++  gtk_window_set_title (GTK_WINDOW (App1), _("gFnRename v0.6 - A Simple File Renaming Utility"));
+   gtk_window_set_default_size (GTK_WINDOW (App1), 600, 400);
+ 
+   vbox1 = gtk_vbox_new (FALSE, 0);
+   gtk_widget_show (vbox1);
+   gtk_container_add (GTK_CONTAINER (App1), vbox1);
+ 
+-  label_top = gtk_label_new ("label_top");
++  label_top = gtk_label_new (_("label_top"));
+   gtk_box_pack_start (GTK_BOX (vbox1), label_top, FALSE, TRUE, 0);
+   gtk_widget_set_size_request (label_top, -1, 24);
+   gtk_label_set_justify (GTK_LABEL (label_top), GTK_JUSTIFY_CENTER);
+@@ -177,7 +181,7 @@
+   gtk_widget_show (hbox_selectioncmds);
+   gtk_box_pack_start (GTK_BOX (vbox_left), hbox_selectioncmds, FALSE, TRUE, 0);
+ 
+-  btn_show_hidden = gtk_toggle_button_new_with_mnemonic ("Show Hidden");
++  btn_show_hidden = gtk_toggle_button_new_with_mnemonic (_("Show Hidden"));
+   gtk_widget_show (btn_show_hidden);
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), btn_show_hidden, TRUE, TRUE, 2);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_show_hidden), 2);
+@@ -187,7 +191,7 @@
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), vseparator2, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (vseparator2, 4, -1);
+ 
+-  btn_reread = gtk_button_new_with_mnemonic ("Re-Read Directory");
++  btn_reread = gtk_button_new_with_mnemonic (_("Re-Read Directory"));
+   gtk_widget_show (btn_reread);
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), btn_reread, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_reread), 2);
+@@ -197,7 +201,7 @@
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), vseparator3, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (vseparator3, 4, -1);
+ 
+-  btn_select_all = gtk_button_new_with_mnemonic ("Select All / None");
++  btn_select_all = gtk_button_new_with_mnemonic (_("Select All / None"));
+   gtk_widget_show (btn_select_all);
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), btn_select_all, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_select_all), 2);
+@@ -207,28 +211,28 @@
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), vseparator4, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (vseparator4, 4, -1);
+ 
+-  btn_home = gtk_button_new_with_mnemonic ("~");
++  btn_home = gtk_button_new_with_mnemonic (_("~"));
+   gtk_widget_show (btn_home);
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), btn_home, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_home), 2);
+-  gtk_tooltips_set_tip (tooltips, btn_home, "Home", NULL);
++  gtk_tooltips_set_tip (tooltips, btn_home, _("Home"), NULL);
+ 
+-  btn_show_bookmark = gtk_toggle_button_new_with_mnemonic ("B");
++  btn_show_bookmark = gtk_toggle_button_new_with_mnemonic (_("B"));
+   gtk_widget_show (btn_show_bookmark);
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), btn_show_bookmark, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_show_bookmark), 2);
+ 
+-  btn_goto_mark = gtk_button_new_with_mnemonic (">");
++  btn_goto_mark = gtk_button_new_with_mnemonic (_(">"));
+   gtk_widget_show (btn_goto_mark);
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), btn_goto_mark, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_goto_mark), 2);
+-  gtk_tooltips_set_tip (tooltips, btn_goto_mark, "Bookmark", NULL);
++  gtk_tooltips_set_tip (tooltips, btn_goto_mark, _("Bookmark"), NULL);
+ 
+-  btn_up_one_level = gtk_button_new_with_mnemonic ("..");
++  btn_up_one_level = gtk_button_new_with_mnemonic (_(".."));
+   gtk_widget_show (btn_up_one_level);
+   gtk_box_pack_start (GTK_BOX (hbox_selectioncmds), btn_up_one_level, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_up_one_level), 2);
+-  gtk_tooltips_set_tip (tooltips, btn_up_one_level, "Up", NULL);
++  gtk_tooltips_set_tip (tooltips, btn_up_one_level, _("Up"), NULL);
+ 
+   hseparator12 = gtk_hseparator_new ();
+   gtk_widget_show (hseparator12);
+@@ -238,7 +242,7 @@
+   combo_pathbox = gtk_combo_box_new_text ();
+   gtk_widget_show (combo_pathbox);
+   gtk_box_pack_start (GTK_BOX (vbox_left), combo_pathbox, FALSE, TRUE, 0);
+-  gtk_combo_box_append_text (GTK_COMBO_BOX (combo_pathbox), "/");
++  gtk_combo_box_append_text (GTK_COMBO_BOX (combo_pathbox), _("/"));
+ 
+   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
+   gtk_widget_show (scrolledwindow1);
+@@ -254,11 +258,11 @@
+   hbox_bookmark = gtk_hbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox_left), hbox_bookmark, FALSE, TRUE, 0);
+ 
+-  btn_mark_dir = gtk_button_new_with_mnemonic (" + ");
++  btn_mark_dir = gtk_button_new_with_mnemonic (_(" + "));
+   gtk_widget_show (btn_mark_dir);
+   gtk_box_pack_start (GTK_BOX (hbox_bookmark), btn_mark_dir, FALSE, FALSE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_mark_dir), 2);
+-  gtk_tooltips_set_tip (tooltips, btn_mark_dir, "Bookmark the current directory", NULL);
++  gtk_tooltips_set_tip (tooltips, btn_mark_dir, _("Bookmark the current directory"), NULL);
+ 
+   entry_bookmark = gtk_entry_new ();
+   gtk_widget_show (entry_bookmark);
+@@ -282,7 +286,7 @@
+   gtk_widget_show (hbox_delete_last);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_delete_last, TRUE, TRUE, 0);
+ 
+-  cb_delete_last = gtk_check_button_new_with_mnemonic ("Delete Last ");
++  cb_delete_last = gtk_check_button_new_with_mnemonic (_("Delete Last "));
+   gtk_widget_show (cb_delete_last);
+   gtk_box_pack_start (GTK_BOX (hbox_delete_last), cb_delete_last, FALSE, FALSE, 0);
+ 
+@@ -296,10 +300,10 @@
+   gtk_box_pack_start (GTK_BOX (hbox_delete_last_opts), entry_delete_last, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (entry_delete_last, 30, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_delete_last), 2);
+-  gtk_entry_set_text (GTK_ENTRY (entry_delete_last), "0");
++  gtk_entry_set_text (GTK_ENTRY (entry_delete_last), _("0"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_delete_last), TRUE);
+ 
+-  label15 = gtk_label_new (" Base Chars");
++  label15 = gtk_label_new (_(" Base Chars"));
+   gtk_widget_show (label15);
+   gtk_box_pack_start (GTK_BOX (hbox_delete_last_opts), label15, FALSE, FALSE, 0);
+ 
+@@ -307,7 +311,7 @@
+   gtk_widget_show (hbox_delete_first);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_delete_first, TRUE, TRUE, 0);
+ 
+-  cb_delete_first = gtk_check_button_new_with_mnemonic ("Delete First ");
++  cb_delete_first = gtk_check_button_new_with_mnemonic (_("Delete First "));
+   gtk_widget_show (cb_delete_first);
+   gtk_box_pack_start (GTK_BOX (hbox_delete_first), cb_delete_first, FALSE, FALSE, 0);
+ 
+@@ -321,10 +325,10 @@
+   gtk_box_pack_start (GTK_BOX (hbox_delete_first_opts), entry_delete_first, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (entry_delete_first, 30, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_delete_first), 2);
+-  gtk_entry_set_text (GTK_ENTRY (entry_delete_first), "0");
++  gtk_entry_set_text (GTK_ENTRY (entry_delete_first), _("0"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_delete_first), TRUE);
+ 
+-  label10 = gtk_label_new (" Characters");
++  label10 = gtk_label_new (_(" Characters"));
+   gtk_widget_show (label10);
+   gtk_box_pack_start (GTK_BOX (hbox_delete_first_opts), label10, FALSE, FALSE, 0);
+ 
+@@ -332,7 +336,7 @@
+   gtk_widget_show (hbox_insert);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_insert, TRUE, TRUE, 0);
+ 
+-  cb_insert = gtk_check_button_new_with_mnemonic ("Insert ");
++  cb_insert = gtk_check_button_new_with_mnemonic (_("Insert "));
+   gtk_widget_show (cb_insert);
+   gtk_box_pack_start (GTK_BOX (hbox_insert), cb_insert, FALSE, FALSE, 0);
+ 
+@@ -346,10 +350,10 @@
+   gtk_box_pack_start (GTK_BOX (hbox_insert_opts), entry_insert, TRUE, TRUE, 0);
+   gtk_widget_set_size_request (entry_insert, 32, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_insert), 32);
+-  gtk_entry_set_text (GTK_ENTRY (entry_insert), "abc");
++  gtk_entry_set_text (GTK_ENTRY (entry_insert), _("abc"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_insert), TRUE);
+ 
+-  label21 = gtk_label_new (" At Offset ");
++  label21 = gtk_label_new (_(" At Offset "));
+   gtk_widget_show (label21);
+   gtk_box_pack_start (GTK_BOX (hbox_insert_opts), label21, FALSE, FALSE, 0);
+ 
+@@ -358,14 +362,14 @@
+   gtk_box_pack_start (GTK_BOX (hbox_insert_opts), entry_insert_at, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (entry_insert_at, 30, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_insert_at), 3);
+-  gtk_entry_set_text (GTK_ENTRY (entry_insert_at), "0");
++  gtk_entry_set_text (GTK_ENTRY (entry_insert_at), _("0"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_insert_at), TRUE);
+ 
+   hbox_replace = gtk_hbox_new (FALSE, 0);
+   gtk_widget_show (hbox_replace);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_replace, TRUE, TRUE, 0);
+ 
+-  cb_replace = gtk_check_button_new_with_mnemonic ("Replace ");
++  cb_replace = gtk_check_button_new_with_mnemonic (_("Replace "));
+   gtk_widget_show (cb_replace);
+   gtk_box_pack_start (GTK_BOX (hbox_replace), cb_replace, FALSE, FALSE, 0);
+ 
+@@ -375,17 +379,17 @@
+   gtk_widget_set_size_request (entry_replacechar, 40, -1);
+   gtk_widget_set_sensitive (entry_replacechar, FALSE);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_replacechar), 80);
+-  gtk_entry_set_text (GTK_ENTRY (entry_replacechar), "abc");
++  gtk_entry_set_text (GTK_ENTRY (entry_replacechar), _("abc"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_replacechar), TRUE);
+ 
+   hbox_replace_with = gtk_hbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_replace_with, TRUE, TRUE, 0);
+ 
+-  label20 = gtk_label_new ("       ");
++  label20 = gtk_label_new (_("       "));
+   gtk_widget_show (label20);
+   gtk_box_pack_start (GTK_BOX (hbox_replace_with), label20, FALSE, FALSE, 0);
+ 
+-  label13 = gtk_label_new (" With  ");
++  label13 = gtk_label_new (_(" With  "));
+   gtk_widget_show (label13);
+   gtk_box_pack_start (GTK_BOX (hbox_replace_with), label13, FALSE, FALSE, 0);
+ 
+@@ -394,14 +398,14 @@
+   gtk_box_pack_start (GTK_BOX (hbox_replace_with), entry_replacewith, TRUE, TRUE, 0);
+   gtk_widget_set_size_request (entry_replacewith, 40, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_replacewith), 80);
+-  gtk_entry_set_text (GTK_ENTRY (entry_replacewith), "xyz");
++  gtk_entry_set_text (GTK_ENTRY (entry_replacewith), _("xyz"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_replacewith), TRUE);
+ 
+   hbox_base = gtk_hbox_new (FALSE, 0);
+   gtk_widget_show (hbox_base);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_base, TRUE, TRUE, 0);
+ 
+-  cb_base = gtk_check_button_new_with_mnemonic ("Base: ");
++  cb_base = gtk_check_button_new_with_mnemonic (_("Base: "));
+   gtk_widget_show (cb_base);
+   gtk_box_pack_start (GTK_BOX (hbox_base), cb_base, FALSE, FALSE, 0);
+ 
+@@ -411,17 +415,17 @@
+   gtk_widget_set_size_request (entry_base, 40, -1);
+   gtk_widget_set_sensitive (entry_base, FALSE);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_base), 64);
+-  gtk_entry_set_text (GTK_ENTRY (entry_base), "file");
++  gtk_entry_set_text (GTK_ENTRY (entry_base), _("file"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_base), TRUE);
+ 
+   hbox_base_opts = gtk_hbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_base_opts, TRUE, TRUE, 0);
+ 
+-  label9 = gtk_label_new ("       ");
++  label9 = gtk_label_new (_("       "));
+   gtk_widget_show (label9);
+   gtk_box_pack_start (GTK_BOX (hbox_base_opts), label9, FALSE, FALSE, 0);
+ 
+-  label6 = gtk_label_new ("Seq.Offset: ");
++  label6 = gtk_label_new (_("Seq.Offset: "));
+   gtk_widget_show (label6);
+   gtk_box_pack_start (GTK_BOX (hbox_base_opts), label6, FALSE, FALSE, 0);
+ 
+@@ -430,10 +434,10 @@
+   gtk_box_pack_start (GTK_BOX (hbox_base_opts), entry_offset, TRUE, TRUE, 0);
+   gtk_widget_set_size_request (entry_offset, 32, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_offset), 8);
+-  gtk_entry_set_text (GTK_ENTRY (entry_offset), "1");
++  gtk_entry_set_text (GTK_ENTRY (entry_offset), _("1"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_offset), TRUE);
+ 
+-  label7 = gtk_label_new ("  Digits: ");
++  label7 = gtk_label_new (_("  Digits: "));
+   gtk_widget_show (label7);
+   gtk_box_pack_start (GTK_BOX (hbox_base_opts), label7, FALSE, FALSE, 0);
+ 
+@@ -442,14 +446,14 @@
+   gtk_box_pack_start (GTK_BOX (hbox_base_opts), entry_digits, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (entry_digits, 30, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_digits), 1);
+-  gtk_entry_set_text (GTK_ENTRY (entry_digits), "2");
++  gtk_entry_set_text (GTK_ENTRY (entry_digits), _("2"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_digits), TRUE);
+ 
+   hbox_prepend = gtk_hbox_new (FALSE, 0);
+   gtk_widget_show (hbox_prepend);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_prepend, TRUE, TRUE, 0);
+ 
+-  cb_prepend = gtk_check_button_new_with_mnemonic ("Prepend  ");
++  cb_prepend = gtk_check_button_new_with_mnemonic (_("Prepend  "));
+   gtk_widget_show (cb_prepend);
+   gtk_box_pack_start (GTK_BOX (hbox_prepend), cb_prepend, FALSE, FALSE, 0);
+ 
+@@ -463,21 +467,21 @@
+   gtk_box_pack_start (GTK_BOX (hbox_prepend_opts1), entry_prepend_digits, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (entry_prepend_digits, 20, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_prepend_digits), 1);
+-  gtk_entry_set_text (GTK_ENTRY (entry_prepend_digits), "3");
++  gtk_entry_set_text (GTK_ENTRY (entry_prepend_digits), _("3"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_prepend_digits), TRUE);
+ 
+-  label16 = gtk_label_new ("-Digit Sequential");
++  label16 = gtk_label_new (_("-Digit Sequential"));
+   gtk_widget_show (label16);
+   gtk_box_pack_start (GTK_BOX (hbox_prepend_opts1), label16, FALSE, FALSE, 0);
+ 
+   hbox_prepend_opts2 = gtk_hbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_prepend_opts2, TRUE, TRUE, 0);
+ 
+-  label17 = gtk_label_new ("       ");
++  label17 = gtk_label_new (_("       "));
+   gtk_widget_show (label17);
+   gtk_box_pack_start (GTK_BOX (hbox_prepend_opts2), label17, FALSE, FALSE, 0);
+ 
+-  label18 = gtk_label_new ("Offset: ");
++  label18 = gtk_label_new (_("Offset: "));
+   gtk_widget_show (label18);
+   gtk_box_pack_start (GTK_BOX (hbox_prepend_opts2), label18, FALSE, FALSE, 0);
+ 
+@@ -486,10 +490,10 @@
+   gtk_box_pack_start (GTK_BOX (hbox_prepend_opts2), entry_prepend_offset, TRUE, TRUE, 0);
+   gtk_widget_set_size_request (entry_prepend_offset, 32, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_prepend_offset), 8);
+-  gtk_entry_set_text (GTK_ENTRY (entry_prepend_offset), "10");
++  gtk_entry_set_text (GTK_ENTRY (entry_prepend_offset), _("10"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_prepend_offset), TRUE);
+ 
+-  label19 = gtk_label_new ("  Increment: ");
++  label19 = gtk_label_new (_("  Increment: "));
+   gtk_widget_show (label19);
+   gtk_box_pack_start (GTK_BOX (hbox_prepend_opts2), label19, FALSE, FALSE, 0);
+ 
+@@ -498,14 +502,14 @@
+   gtk_box_pack_start (GTK_BOX (hbox_prepend_opts2), entry_prepend_increment, FALSE, FALSE, 0);
+   gtk_widget_set_size_request (entry_prepend_increment, 30, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_prepend_increment), 4);
+-  gtk_entry_set_text (GTK_ENTRY (entry_prepend_increment), "10");
++  gtk_entry_set_text (GTK_ENTRY (entry_prepend_increment), _("10"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_prepend_increment), TRUE);
+ 
+   hbox_prefix = gtk_hbox_new (FALSE, 0);
+   gtk_widget_show (hbox_prefix);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_prefix, TRUE, TRUE, 0);
+ 
+-  cb_prefix = gtk_check_button_new_with_mnemonic ("Prefix: ");
++  cb_prefix = gtk_check_button_new_with_mnemonic (_("Prefix: "));
+   gtk_widget_show (cb_prefix);
+   gtk_box_pack_start (GTK_BOX (hbox_prefix), cb_prefix, FALSE, FALSE, 0);
+ 
+@@ -515,14 +519,14 @@
+   gtk_widget_set_size_request (entry_prefix, 40, -1);
+   gtk_widget_set_sensitive (entry_prefix, FALSE);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_prefix), 64);
+-  gtk_entry_set_text (GTK_ENTRY (entry_prefix), "pre-");
++  gtk_entry_set_text (GTK_ENTRY (entry_prefix), _("pre-"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_prefix), TRUE);
+ 
+   hbox_append = gtk_hbox_new (FALSE, 0);
+   gtk_widget_show (hbox_append);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_append, TRUE, TRUE, 0);
+ 
+-  cb_append = gtk_check_button_new_with_mnemonic ("Append ");
++  cb_append = gtk_check_button_new_with_mnemonic (_("Append "));
+   gtk_widget_show (cb_append);
+   gtk_box_pack_start (GTK_BOX (hbox_append), cb_append, FALSE, FALSE, 0);
+ 
+@@ -532,14 +536,14 @@
+   gtk_widget_set_size_request (entry_append, 40, -1);
+   gtk_widget_set_sensitive (entry_append, FALSE);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_append), 64);
+-  gtk_entry_set_text (GTK_ENTRY (entry_append), "-b");
++  gtk_entry_set_text (GTK_ENTRY (entry_append), _("-b"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_append), TRUE);
+ 
+   hbox_extension = gtk_hbox_new (FALSE, 0);
+   gtk_widget_show (hbox_extension);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_extension, TRUE, TRUE, 0);
+ 
+-  cb_extension = gtk_check_button_new_with_mnemonic ("Extension: ");
++  cb_extension = gtk_check_button_new_with_mnemonic (_("Extension: "));
+   gtk_widget_show (cb_extension);
+   gtk_box_pack_start (GTK_BOX (hbox_extension), cb_extension, FALSE, FALSE, 0);
+ 
+@@ -553,35 +557,35 @@
+   gtk_box_pack_start (GTK_BOX (hbox_extension_opts1), entry_extension, TRUE, TRUE, 0);
+   gtk_widget_set_size_request (entry_extension, 40, -1);
+   gtk_entry_set_max_length (GTK_ENTRY (entry_extension), 64);
+-  gtk_entry_set_text (GTK_ENTRY (entry_extension), "ext");
++  gtk_entry_set_text (GTK_ENTRY (entry_extension), _("ext"));
+   gtk_entry_set_activates_default (GTK_ENTRY (entry_extension), TRUE);
+ 
+   label22 = gtk_label_new ("  ");
+   gtk_widget_show (label22);
+   gtk_box_pack_start (GTK_BOX (hbox_extension_opts1), label22, FALSE, FALSE, 0);
+ 
+-  cb_extension_replace = gtk_check_button_new_with_mnemonic ("Replace");
++  cb_extension_replace = gtk_check_button_new_with_mnemonic (_("Replace"));
+   gtk_widget_show (cb_extension_replace);
+   gtk_box_pack_start (GTK_BOX (hbox_extension_opts1), cb_extension_replace, FALSE, FALSE, 0);
+ 
+   hbox_extension_opts2 = gtk_hbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_extension_opts2, TRUE, TRUE, 0);
+ 
+-  label8 = gtk_label_new ("       ");
++  label8 = gtk_label_new (_("       "));
+   gtk_widget_show (label8);
+   gtk_box_pack_start (GTK_BOX (hbox_extension_opts2), label8, FALSE, FALSE, 0);
+ 
+-  label23 = gtk_label_new ("Starting Dot: ");
++  label23 = gtk_label_new (_("Starting Dot: "));
+   gtk_widget_show (label23);
+   gtk_box_pack_start (GTK_BOX (hbox_extension_opts2), label23, FALSE, FALSE, 0);
+ 
+-  rb_first_dot = gtk_radio_button_new_with_mnemonic (NULL, "First  ");
++  rb_first_dot = gtk_radio_button_new_with_mnemonic (NULL, _("First  "));
+   gtk_widget_show (rb_first_dot);
+   gtk_box_pack_start (GTK_BOX (hbox_extension_opts2), rb_first_dot, FALSE, FALSE, 0);
+   gtk_radio_button_set_group (GTK_RADIO_BUTTON (rb_first_dot), rb_first_dot_group);
+   rb_first_dot_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (rb_first_dot));
+ 
+-  rb_last_dot = gtk_radio_button_new_with_mnemonic (NULL, "Last");
++  rb_last_dot = gtk_radio_button_new_with_mnemonic (NULL, _("Last"));
+   gtk_widget_show (rb_last_dot);
+   gtk_box_pack_start (GTK_BOX (hbox_extension_opts2), rb_last_dot, FALSE, FALSE, 0);
+   gtk_radio_button_set_group (GTK_RADIO_BUTTON (rb_last_dot), rb_first_dot_group);
+@@ -591,7 +595,7 @@
+   gtk_widget_show (hbox_case);
+   gtk_box_pack_start (GTK_BOX (vbox_options), hbox_case, TRUE, TRUE, 0);
+ 
+-  cb_case = gtk_check_button_new_with_mnemonic ("Case: ");
++  cb_case = gtk_check_button_new_with_mnemonic (_("Case: "));
+   gtk_widget_show (cb_case);
+   gtk_box_pack_start (GTK_BOX (hbox_case), cb_case, FALSE, FALSE, 0);
+ 
+@@ -600,13 +604,13 @@
+   gtk_box_pack_start (GTK_BOX (hbox_case), hbox_case_opts, FALSE, FALSE, 0);
+   gtk_widget_set_sensitive (hbox_case_opts, FALSE);
+ 
+-  rb_lowercase = gtk_radio_button_new_with_mnemonic (NULL, "Lower  ");
++  rb_lowercase = gtk_radio_button_new_with_mnemonic (NULL, _("Lower  "));
+   gtk_widget_show (rb_lowercase);
+   gtk_box_pack_start (GTK_BOX (hbox_case_opts), rb_lowercase, FALSE, FALSE, 0);
+   gtk_radio_button_set_group (GTK_RADIO_BUTTON (rb_lowercase), rb_lowercase_group);
+   rb_lowercase_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (rb_lowercase));
+ 
+-  rb_uppercase = gtk_radio_button_new_with_mnemonic (NULL, "Upper");
++  rb_uppercase = gtk_radio_button_new_with_mnemonic (NULL, _("Upper"));
+   gtk_widget_show (rb_uppercase);
+   gtk_box_pack_start (GTK_BOX (hbox_case_opts), rb_uppercase, FALSE, FALSE, 0);
+   gtk_radio_button_set_group (GTK_RADIO_BUTTON (rb_uppercase), rb_lowercase_group);
+@@ -621,12 +625,12 @@
+   gtk_widget_show (vbox_globaloptions);
+   gtk_box_pack_start (GTK_BOX (vbox_right), vbox_globaloptions, FALSE, TRUE, 0);
+ 
+-  cb_confirmcommit = gtk_check_button_new_with_mnemonic ("Confirm On Commit");
++  cb_confirmcommit = gtk_check_button_new_with_mnemonic (_("Confirm On Commit"));
+   gtk_widget_show (cb_confirmcommit);
+   gtk_box_pack_start (GTK_BOX (vbox_globaloptions), cb_confirmcommit, FALSE, FALSE, 0);
+   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cb_confirmcommit), TRUE);
+ 
+-  cb_logfile = gtk_check_button_new_with_mnemonic ("Log In ~/gfnrename.log");
++  cb_logfile = gtk_check_button_new_with_mnemonic (_("Log In ~/gfnrename.log"));
+   gtk_widget_show (cb_logfile);
+   gtk_box_pack_start (GTK_BOX (vbox_globaloptions), cb_logfile, FALSE, FALSE, 0);
+   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cb_logfile), TRUE);
+@@ -635,16 +639,16 @@
+   gtk_widget_show (hbox_helpdbg);
+   gtk_box_pack_start (GTK_BOX (vbox_globaloptions), hbox_helpdbg, FALSE, FALSE, 0);
+ 
+-  cb_show_help = gtk_check_button_new_with_mnemonic ("Show HelpLine");
++  cb_show_help = gtk_check_button_new_with_mnemonic (_("Show HelpLine"));
+   gtk_widget_show (cb_show_help);
+   gtk_box_pack_start (GTK_BOX (hbox_helpdbg), cb_show_help, FALSE, FALSE, 0);
+   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cb_show_help), TRUE);
+ 
+-  label14 = gtk_label_new (" / ");
++  label14 = gtk_label_new (_(" / "));
+   gtk_widget_show (label14);
+   gtk_box_pack_start (GTK_BOX (hbox_helpdbg), label14, FALSE, FALSE, 0);
+ 
+-  cb_show_status = gtk_check_button_new_with_mnemonic ("StatusLine");
++  cb_show_status = gtk_check_button_new_with_mnemonic (_("StatusLine"));
+   gtk_widget_show (cb_show_status);
+   gtk_box_pack_start (GTK_BOX (hbox_helpdbg), cb_show_status, FALSE, FALSE, 0);
+   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cb_show_status), TRUE);
+@@ -657,7 +661,7 @@
+   vbox_commitdlg = gtk_vbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox_right), vbox_commitdlg, FALSE, TRUE, 0);
+ 
+-  label_confirm = gtk_label_new ("Commit the changes?");
++  label_confirm = gtk_label_new (_("Commit the changes?"));
+   gtk_widget_show (label_confirm);
+   gtk_box_pack_start (GTK_BOX (vbox_commitdlg), label_confirm, FALSE, FALSE, 2);
+ 
+@@ -665,12 +669,12 @@
+   gtk_widget_show (hbox_dialogcmds);
+   gtk_box_pack_start (GTK_BOX (vbox_commitdlg), hbox_dialogcmds, TRUE, TRUE, 0);
+ 
+-  btn_ok = gtk_button_new_with_mnemonic ("OK");
++  btn_ok = gtk_button_new_with_mnemonic (_("OK"));
+   gtk_widget_show (btn_ok);
+   gtk_box_pack_start (GTK_BOX (hbox_dialogcmds), btn_ok, FALSE, TRUE, 2);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_ok), 1);
+ 
+-  btn_cancel = gtk_button_new_with_mnemonic ("Cancel");
++  btn_cancel = gtk_button_new_with_mnemonic (_("Cancel"));
+   gtk_widget_show (btn_cancel);
+   gtk_box_pack_start (GTK_BOX (hbox_dialogcmds), btn_cancel, FALSE, TRUE, 2);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_cancel), 1);
+@@ -679,23 +683,23 @@
+   gtk_widget_show (hbox_actioncmds);
+   gtk_box_pack_start (GTK_BOX (vbox_right), hbox_actioncmds, FALSE, TRUE, 0);
+ 
+-  btn_rename = gtk_button_new_with_mnemonic ("Rename");
++  btn_rename = gtk_button_new_with_mnemonic (_("Rename"));
+   gtk_widget_show (btn_rename);
+   gtk_box_pack_start (GTK_BOX (hbox_actioncmds), btn_rename, TRUE, TRUE, 2);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_rename), 1);
+   GTK_WIDGET_SET_FLAGS (btn_rename, GTK_CAN_DEFAULT);
+ 
+-  btn_commit = gtk_button_new_with_mnemonic ("Commit");
++  btn_commit = gtk_button_new_with_mnemonic (_("Commit"));
+   gtk_widget_show (btn_commit);
+   gtk_box_pack_start (GTK_BOX (hbox_actioncmds), btn_commit, TRUE, TRUE, 2);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_commit), 1);
+ 
+-  btn_help = gtk_button_new_with_mnemonic ("?");
++  btn_help = gtk_button_new_with_mnemonic (_("?"));
+   gtk_widget_show (btn_help);
+   gtk_box_pack_start (GTK_BOX (hbox_actioncmds), btn_help, FALSE, FALSE, 2);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_help), 1);
+ 
+-  btn_exit = gtk_button_new_with_mnemonic ("Exit");
++  btn_exit = gtk_button_new_with_mnemonic (_("Exit"));
+   gtk_widget_show (btn_exit);
+   gtk_box_pack_start (GTK_BOX (hbox_actioncmds), btn_exit, TRUE, TRUE, 2);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_exit), 1);
+@@ -704,7 +708,7 @@
+   gtk_widget_show (hseparator10);
+   gtk_box_pack_start (GTK_BOX (vbox1), hseparator10, FALSE, TRUE, 0);
+ 
+-  label_bottom = gtk_label_new ("label_bottom");
++  label_bottom = gtk_label_new (_("label_bottom"));
+   gtk_box_pack_start (GTK_BOX (vbox1), label_bottom, FALSE, TRUE, 0);
+   gtk_widget_set_size_request (label_bottom, -1, 24);
+   gtk_label_set_justify (GTK_LABEL (label_bottom), GTK_JUSTIFY_CENTER);
+@@ -949,7 +953,7 @@
+   GtkWidget *btn_dlghelp_close;
+ 
+   DlgHelp = gtk_dialog_new ();
+-  gtk_window_set_title (GTK_WINDOW (DlgHelp), "gFnRename Help...");
++  gtk_window_set_title (GTK_WINDOW (DlgHelp), _("gFnRename Help..."));
+   gtk_window_set_default_size (GTK_WINDOW (DlgHelp), 600, 400);
+   gtk_window_set_type_hint (GTK_WINDOW (DlgHelp), GDK_WINDOW_TYPE_HINT_DIALOG);
+ 
+@@ -973,13 +977,13 @@
+   gtk_text_view_set_pixels_inside_wrap (GTK_TEXT_VIEW (textview_dlghelp), 4);
+   gtk_text_view_set_left_margin (GTK_TEXT_VIEW (textview_dlghelp), 10);
+   gtk_text_view_set_right_margin (GTK_TEXT_VIEW (textview_dlghelp), 10);
+-  gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview_dlghelp)), "gFnRename v0.6\n(C)2010 Paul Schuurmans\n\nIntroduction\ngFnRename is a simple utility to rename multiple files.  The listbox on the left side of the main window can be used for both choosing a directory and for selecting items to rename.  Items prefixed with \"[D]\" are directories; \"[f]\" denotes a file.\n\nGlobal Options\nJust below the renaming options, there are a few global options.  If \"Confirm On Commit\" is set, the program will ask for confirmation before actually committing any changes to disk.  \"Log\" specifies whether or not to keep track of actions in a file in your home directory.  \"Show HelpLine\" toggles a help (or hint) line at the top of the main window.  \"StatusLine\" toggles a line at the bottom of the main window where error messages or status info is shown.\n\nChoosing A Directory\nThe path dropdown listbox shows the current directory, and can also be used to switch to any upper-level directory.  To switch to a lower-level directory, either double-click a directory, or select a directory and press [Enter].\nThere are also three navigation buttons at the top right of the main window's left pane.  You can switch to your Home directory by pressing the [~] button, or go up one level by pressing the [..] button.  The [>] button is used to switch to a user-defined bookmark.  The [B] button toggles the Bookmark Bar where you can bookmark the current directory by pressing the [+] button.\n\nSelecting Items To Rename\nTo select consecutive items, select the first desired item and then hold the [Shift] key while selecting the last desired item.  To select non-consecutive items, hold the [Ctrl] key while selecting items.\nAfter selecting the items that you want to rename, you can set various renaming options and then press the [Rename] button.\n\nThe Renaming Process\nThe renaming options are handled in the following order:\n1. If DeleteLast is set, the specified amount of characters are removed from the end of the item's original base name.  The extension at this point is kept intact.\n2. If DeleteFirst is set, the specified amount of characters are removed from the beginning of the item's original name.\n3. If Insert is set, the character string specified in Insert is added at the 0-based offset specified in Offset.\n4. If Replace is set, the character string specified in Replace is replaced with the character string specified in With.\n5. If Base is set, the original base name is replaced with whatever is specified in Base and a sequential number is appended to this base name.  Seq.Offset specifies the starting number, and Digits specifies how many digits to use.  As an example: if Base is \"file\", Offset is \"1\", and Digits is \"3\", then the selected items will be renamed file001, file002, file003, and so on.\n6. If Prepend is set, a number with the specified number of Digits starting at Offset with increments of Increment is added to the beginning of the item's new name.  As an example: if Digits is \"3\", Offset is \"10\", and Increment is \"5\", then the selected items will be renamed 010file.ext, 015file.ext, 020file.ext, 025file.ext and so on.\n7. If Prefix is set, the specified text is added to the beginning of the item's new name.\n8. If Append is set, the specified text is added to the end of the item's new base name.  The extension at this point is kept intact.\n9. If Extension is set, the specified text is used as the item's extension.  If Replace is set, the item's original extension is removed before adding the new extension.    For filenames with multiple dots, you can specify where the extension starts by setting one of the Starting Dot radio buttons.\n10. If Case is set, the item's new name at this point is converted to either lowercase or uppercase (depending on which one is specified).\n\nThe Final Step\nAt this point, there should be one or more items in the New Name column of the file list.  Note that no changes are made to the physical disk at this point.  You now have the following choices:\n- If the new names are not what you expected: select those same items in the file list, set the renaming options, and then press the [Rename] button.\n- If you want to rename other items in the same directory: select those items in the file list, set the renamimg options, and then press [Rename].\n- If you change your mind and decide not to rename an item: select that item in the file list, unset (clear) all renaming options, and then press [Rename].\n- If you're satisfied with all the changes in the New Name column: press the [Commit] button to commit the changes to the physical disk.\n\nBug Reports\nAlthough some effort has been made to make this program as robust as possible, there may be bugs that I don't yet know about.  If you find any bugs, please let me know.  For information on how to contact me, see the README file on my website.\n\n", -1);
++  gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview_dlghelp)), _("gFnRename v0.6\n(C)2010 Paul Schuurmans\n\nIntroduction\ngFnRename is a simple utility to rename multiple files.  The listbox on the left side of the main window can be used for both choosing a directory and for selecting items to rename.  Items prefixed with \"[D]\" are directories; \"[f]\" denotes a file.\n\nGlobal Options\nJust below the renaming options, there are a few global options.  If \"Confirm On Commit\" is set, the program will ask for confirmation before actually committing any changes to disk.  \"Log\" specifies whether or not to keep track of actions in a file in your home directory.  \"Show HelpLine\" toggles a help (or hint) line at the top of the main window.  \"StatusLine\" toggles a line at the bottom of the main window where error messages or status info is shown.\n\nChoosing A Directory\nThe path dropdown listbox shows the current directory, and can also be used to switch to any upper-level directory.  To switch to a lower-level directory, either double-click a directory, or select a directory and press [Enter].\nThere are also three navigation buttons at the top right of the main window's left pane.  You can switch to your Home directory by pressing the [~] button, or go up one level by pressing the [..] button.  The [>] button is used to switch to a user-defined bookmark.  The [B] button toggles the Bookmark Bar where you can bookmark the current directory by pressing the [+] button.\n\nSelecting Items To Rename\nTo select consecutive items, select the first desired item and then hold the [Shift] key while selecting the last desired item.  To select non-consecutive items, hold the [Ctrl] key while selecting items.\nAfter selecting the items that you want to rename, you can set various renaming options and then press the [Rename] button.\n\nThe Renaming Process\nThe renaming options are handled in the following order:\n1. If DeleteLast is set, the specified amount of characters are removed from the end of the item's original base name.  The extension at this point is kept intact.\n2. If DeleteFirst is set, the specified amount of characters are removed from the beginning of the item's original name.\n3. If Insert is set, the character string specified in Insert is added at the 0-based offset specified in Offset.\n4. If Replace is set, the character string specified in Replace is replaced with the character string specified in With.\n5. If Base is set, the original base name is replaced with whatever is specified in Base and a sequential number is appended to this base name.  Seq.Offset specifies the starting number, and Digits specifies how many digits to use.  As an example: if Base is \"file\", Offset is \"1\", and Digits is \"3\", then the selected items will be renamed file001, file002, file003, and so on.\n6. If Prepend is set, a number with the specified number of Digits starting at Offset with increments of Increment is added to the beginning of the item's new name.  As an example: if Digits is \"3\", Offset is \"10\", and Increment is \"5\", then the selected items will be renamed 010file.ext, 015file.ext, 020file.ext, 025file.ext and so on.\n7. If Prefix is set, the specified text is added to the beginning of the item's new name.\n8. If Append is set, the specified text is added to the end of the item's new base name.  The extension at this point is kept intact.\n9. If Extension is set, the specified text is used as the item's extension.  If Replace is set, the item's original extension is removed before adding the new extension.    For filenames with multiple dots, you can specify where the extension starts by setting one of the Starting Dot radio buttons.\n10. If Case is set, the item's new name at this point is converted to either lowercase or uppercase (depending on which one is specified).\n\nThe Final Step\nAt this point, there should be one or more items in the New Name column of the file list.  Note that no changes are made to the physical disk at this point.  You now have the following choices:\n- If the new names are not what you expected: select those same items in the file list, set the renaming options, and then press the [Rename] button.\n- If you want to rename other items in the same directory: select those items in the file list, set the renamimg options, and then press [Rename].\n- If you change your mind and decide not to rename an item: select that item in the file list, unset (clear) all renaming options, and then press [Rename].\n- If you're satisfied with all the changes in the New Name column: press the [Commit] button to commit the changes to the physical disk.\n\nBug Reports\nAlthough some effort has been made to make this program as robust as possible, there may be bugs that I don't yet know about.  If you find any bugs, please let me know.  For information on how to contact me, see the README file on my website.\n\n"), -1);
+ 
+   dialog_action_area1 = GTK_DIALOG (DlgHelp)->action_area;
+   gtk_widget_show (dialog_action_area1);
+   gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area1), GTK_BUTTONBOX_END);
+ 
+-  btn_dlghelp_close = gtk_button_new_with_mnemonic ("Close");
++  btn_dlghelp_close = gtk_button_new_with_mnemonic (_("Close"));
+   gtk_widget_show (btn_dlghelp_close);
+   gtk_dialog_add_action_widget (GTK_DIALOG (DlgHelp), btn_dlghelp_close, GTK_RESPONSE_CLOSE);
+   GTK_WIDGET_SET_FLAGS (btn_dlghelp_close, GTK_CAN_DEFAULT);
+diff -Naur gfnrename-0.6/src/main.c gfnrename-0.6-patched_i18n/src/main.c
+--- gfnrename-0.6/src/main.c	2010-08-07 21:40:16.000000000 +0800
++++ gfnrename-0.6-patched_i18n/src/main.c	2015-01-08 02:15:30.000000000 +0800
+@@ -24,12 +24,17 @@
+  *  You should have received a copy of the GNU General Public License
+  *  along with this program; if not, write to the Free Software
+  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ * 150107 robwoj44 internationalized
+ */
+  
+ #ifdef HAVE_CONFIG_H
+ #  include <config.h>
+ #endif
+ 
++#include <libintl.h>
++#include <locale.h>
++#define _(STRING) gettext(STRING)
++
+ #include <gtk/gtk.h>
+ 
+ #include "interface.h"
+@@ -170,29 +175,29 @@
+ 	rencnt = AppGetRenameCount();
+ 	if(Gbl->PreError > 1) {
+ 		switch(Gbl->PreError) {
+-		  case PE_DUPS: AppSetStatusText(PE_DUPS, "Error: Duplicate names in the 'New Name' column."); break;
+-		  case PE_EXIST: AppSetStatusText(PE_EXIST, "Error: One or more files in the 'New Name' column already exists."); break;
+-		  case PE_WRITE: AppSetStatusText(PE_WRITE, "Error: The current directory is not writable."); break;
+-		  case PE_FWRITE: AppSetStatusText(PE_EXIST, "Error: One or more files in the 'Old Name' column is not writable."); break;
++		  case PE_DUPS: AppSetStatusText(PE_DUPS, _("Error: Duplicate names in the 'New Name' column.")); break;
++		  case PE_EXIST: AppSetStatusText(PE_EXIST, _("Error: One or more files in the 'New Name' column already exists.")); break;
++		  case PE_WRITE: AppSetStatusText(PE_WRITE, _("Error: The current directory is not writable.")); break;
++		  case PE_FWRITE: AppSetStatusText(PE_EXIST, _("Error: One or more files in the 'Old Name' column is not writable.")); break;
+ 		  default: break;
+ 		}
+ 		switch(Gbl->PreError) {
+-		  case PE_WRITE: AppSetStatusText(0, "Change to a writable directory or change the permissions."); break;
+-		  case PE_FWRITE: AppSetStatusText(0, "Change the permissions of files that you want to rename, then press [Re-Read Directory]."); break;
+-		  default: AppSetStatusText(0, "Change the renaming options for the files that caused the error."); break;
++		  case PE_WRITE: AppSetStatusText(0, _("Change to a writable directory or change the permissions.")); break;
++		  case PE_FWRITE: AppSetStatusText(0, _("Change the permissions of files that you want to rename, then press [Re-Read Directory].")); break;
++		  default: AppSetStatusText(0, _("Change the renaming options for the files that caused the error.")); break;
+ 		}
+ 		gtk_widget_set_sensitive(rw, (selcnt && !(Gbl->PreError & PE_WRITE)) ? TRUE : FALSE);
+ 		gtk_widget_set_sensitive(cw, FALSE);
+ 	}
+ 	else {
+-		if(selcnt)  AppSetStatusText(0, "Set the desired renaming options, and then press the [Rename] button.");
+-		else if(rencnt)  AppSetStatusText(0, "Press the [Commit] button to commit the changes to disk, or select other files to rename.");
+-		else  AppSetStatusText(0, "Select the files to rename, or choose a different directory.");
++		if(selcnt)  AppSetStatusText(0, _("Set the desired renaming options, and then press the [Rename] button."));
++		else if(rencnt)  AppSetStatusText(0, _("Press the [Commit] button to commit the changes to disk, or select other files to rename."));
++		else  AppSetStatusText(0, _("Select the files to rename, or choose a different directory."));
+ 		gtk_widget_set_sensitive(rw, (selcnt && !Gbl->PreError) ? TRUE : FALSE);
+ 		gtk_widget_set_sensitive(cw, (rencnt && !Gbl->PreError) ? TRUE : FALSE);
+ 	}
+-	if(Gbl->Errors)  AppSetStatusText(1, "Encountered %d errors.  Check log file or console output.", Gbl->Errors);
+-	else if(!Gbl->PreError)  AppSetStatusText(1, "%d items in list, %d selected, %d ready to commit.", FileStrs->len, selcnt, rencnt);
++	if(Gbl->Errors)  AppSetStatusText(1, _("Encountered %d errors.  Check log file or console output."), Gbl->Errors);
++	else if(!Gbl->PreError)  AppSetStatusText(1, _("%d items in list, %d selected, %d ready to commit."), FileStrs->len, selcnt, rencnt);
+ }
+ 
+ int AppGetRenameCount ()
+@@ -276,14 +281,14 @@
+ 			FnMerge(temp, dir, file, ext);
+ 		}
+ 		else {
+-			AppSetStatusText(1, "Error: Number of characters to delete exceeds name length.");
++			AppSetStatusText(1, _("Error: Number of characters to delete exceeds name length."));
+ 			temp[0] = 0;
+ 		}
+ 		strcpy(buffer, temp);
+ 	}
+ 	if(Gbl->DoDelChars) {
+ 		if(strlen(buffer) < Gbl->DelChars) {
+-			AppSetStatusText(1, "Error: Number of characters to delete exceeds name length.");
++			AppSetStatusText(1, _("Error: Number of characters to delete exceeds name length."));
+ 			temp[0] = 0;
+ 		}
+ 		else  strcpy(temp, (buffer+Gbl->DelChars));
+@@ -297,7 +302,7 @@
+ 			strcat(temp, buffer + Gbl->InsertAt);
+ 		}
+ 		else {
+-			AppSetStatusText(1, "Error: Offset for insertion exceeds name length.");
++			AppSetStatusText(1, _("Error: Offset for insertion exceeds name length."));
+ 			temp[0] = 0;
+ 		}
+ 		strcpy(buffer, temp);
+@@ -429,7 +434,7 @@
+ 	gtk_widget_set_sensitive(w, enable);
+ 	w = lookup_widget(GTK_WIDGET(App1), "btn_up_one_level");
+ 	gtk_widget_set_sensitive(w, (strlen(Gbl->SrcDir) > 1) ? TRUE : FALSE);
+-	if(Gbl->Errors)  AppSetStatusText(1, "Encountered %d errors.  Check log file or console output.", Gbl->Errors);
++	if(Gbl->Errors)  AppSetStatusText(1, _("Encountered %d errors.  Check log file or console output."), Gbl->Errors);
+ 	if(access(Gbl->SrcDir, W_OK) == -1)  Gbl->PreError |= PE_WRITE;
+ 	return(cnt);
+ }
+@@ -595,6 +600,11 @@
+ 	
+ int main (int argc, char *argv[])
+ {
++	setlocale(LC_ALL, "");
++    bindtextdomain("gfnrename", "/usr/share/locale");
++    bind_textdomain_codeset("gfnrename", "UTF-8");
++    textdomain("gfnrename");
++	
+ 	gtk_set_locale();
+ 	gtk_init(&argc, &argv);
+ 	add_pixmap_directory(PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");

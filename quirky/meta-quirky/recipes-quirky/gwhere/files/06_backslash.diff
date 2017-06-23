@@ -1,0 +1,12 @@
+Description: Remove spurious backslash from LDFLAGS in build files.
+Author: Unknown.
+Index: gwhere-0.2.3.dfsg.1/src/Makefile.am
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/src/Makefile.am	2013-07-16 11:14:49.962010536 -0400
++++ gwhere-0.2.3.dfsg.1/src/Makefile.am	2013-07-16 11:14:49.954010496 -0400
+@@ -36,4 +36,4 @@
+ 	@GTK_LIBS@ \
+ 	$(INTLLIBS)
+ 
+-gwhere_LDFLAGS = \
++gwhere_LDFLAGS =

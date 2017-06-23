@@ -1,0 +1,10 @@
+openembedded-core, meta/recipes-support/icu, has icu version 58.2.
+however, firefox and seamonkey linked against this are unstable.
+
+for my layer, using icu 56.1, same as used in both firefox 45.9 and
+seamonkey 2.48b1.
+
+the icu recipe is taken from openembedded-core krogoth release, which
+is 56.1.
+
+the patches are those from krogoth, as well as from seamonkey.

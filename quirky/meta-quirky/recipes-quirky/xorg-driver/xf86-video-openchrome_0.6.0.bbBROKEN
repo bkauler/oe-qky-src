@@ -1,0 +1,18 @@
+# Recipe created by recipetool
+# recipetool create -o xf86-video-openchrome_0.6.0.bb https://www.x.org/archive/individual/driver/xf86-video-openchrome-0.6.0.tar.gz
+
+require recipes-graphics/xorg-driver/xorg-driver-video.inc
+
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING;md5=ed28020670498bb992812791b7aa3cca"
+
+SRC_URI = "https://www.x.org/archive/individual/driver/xf86-video-openchrome-${PV}.tar.gz"
+SRC_URI[md5sum] = "7c2975c01979e50c25d2f1872ae78edb"
+SRC_URI[sha256sum] = "3c51eea4b6ae21f2681686a56b0853e35fa1d6601d783dcc3fbe35f8b757419b"
+
+DEPENDS += "xf86driproto fontsproto xproto libxvmc glproto eudev libpciaccess libx11 xserver-xorg libxext libdrm xextproto mesa"
+
+inherit pkgconfig autotools
+
+#EXTRA_OECONF = ""
+

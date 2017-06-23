@@ -1,0 +1,27 @@
+# Recipe created by recipetool
+# recipetool create -o xf86-video-xgixp_1.8.1.bb https://www.x.org/archive/individual/driver/xf86-video-xgixp-1.8.1.tar.gz
+
+require recipes-graphics/xorg-driver/xorg-driver-video.inc
+
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING;md5=225ca1644e92badb31a40ef755bf2364"
+
+SRC_URI = "https://www.x.org/archive/individual/driver/xf86-video-xgixp-${PV}.tar.gz"
+SRC_URI[md5sum] = "67aa008014c0301e21e7e7493d57ce02"
+SRC_URI[sha256sum] = "e588e3f75fc1c678ee74df5a178c1f8da3b23f30424bff75bb93bbc46871d455"
+
+DEPENDS += "libdrm libpciaccess xserver-xorg xproto xf86driproto fontsproto"
+
+inherit pkgconfig autotools
+
+# ref: http://lists.openembedded.org/pipermail/openembedded-commits/2009-July/104205.html
+# ref: tmp-glibc/work/core2-64-oe-linux/xf86-video-*/*/recipe-sysroot/usr/include/xorg
+EXTRA_OECONF = "ac_cv_file__usr_include_xorg_dri_h=yes \
+                ac_cv_file__usr_include_xorg_sarea_h=yes \
+                ac_cv_file__usr_include_xorg_dristruct_h=yes \
+                ac_cv_file__usr_include_xorg_damage_h=yes \
+                ac_cv_file__usr_include_xorg_exa_h=yes"
+
+
+HOMEPAGE = "http://www.X.org"
+SUMMARY = "The Xorg xgixp video driver"

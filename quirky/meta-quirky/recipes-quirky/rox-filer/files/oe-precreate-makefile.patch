@@ -1,0 +1,75 @@
+diff -Naur srcORIG/Makefile src/Makefile
+--- srcORIG/Makefile	2011-10-23 01:48:50.000000000 +0800
++++ src/Makefile	2017-05-08 16:38:35.400352104 +0800
+@@ -1,15 +1,58 @@
+-# Note: this Makefile is NOT built from Makefile.in. The generated Makefile
+-# goes in the build directory. We just call that from here.
+-# Use AppRun --compile to create the build directory in the first place.
+-
+-BUILDDIR = ../build
+-
+-all:
+-	cd ${BUILDDIR} && ${MAKE}
+-
+-# This ensures we get the header files for GTK 2.4
+-with0launch:
+-	0launch --source --main=/ROX-Filer/build --wrapper='make -C' ../ROX-Filer-src.xml
++SHELL = /bin/sh
++srcdir = .
++
++PLATFORM_DIR = $(srcdir)/..
++# CC = gcc
++.SUFFIXES:
++.SUFFIXES: .c .o
++
++PKG_CONFIG = pkg-config
++LIBS = -ldl -lm   -lX11   -lICE -lSM
++#PROF = -fprofile-arcs -pg
++
++PKG_CONFIG_FLAGS=
++
++CFLAGS += -I. -I${srcdir} ${PROF} -g -O2 -Wall -Wmissing-prototypes -Wno-pointer-sign -fno-stack-protector   \
++	 `${PKG_CONFIG} ${PKG_CONFIG_FLAGS} --cflags gtk+-2.0 libxml-2.0`
++LDFLAGS += ${PROF}  `${PKG_CONFIG} ${PKG_CONFIG_FLAGS} --libs gtk+-2.0 libxml-2.0 | sed 's/-lpangoxft-[^ ]*//'` ${LIBS}
++
++############ Things to change for different programs
++
++PROG = ROX-Filer
++
++SRCS = abox.c action.c appinfo.c appmenu.c bind.c bookmarks.c		\
++	bulk_rename.c cell_icon.c choices.c collection.c dir.c 		\
++	diritem.c display.c dnd.c dropbox.c filer.c find.c fscache.c	\
++	gtksavebox.c							\
++	gui_support.c i18n.c icon.c infobox.c log.c main.c menu.c minibuffer.c\
++	modechange.c mount.c options.c panel.c pinboard.c pixmaps.c	\
++	remote.c run.c sc.c session.c support.c 		\
++	tasklist.c toolbar.c type.c usericons.c view_collection.c	\
++	view_details.c view_iface.c wrapped.c xml.c xtypes.c \
++	xdgmime.c xdgmimeglob.c xdgmimeint.c xdgmimemagic.c xdgmimeparent.c xdgmimealias.c xdgmimecache.c 
++
++OBJECTS = abox.o action.o appinfo.o appmenu.o bind.o bookmarks.o	\
++	bulk_rename.o cell_icon.o choices.o collection.o dir.o		\
++	diritem.o display.o dnd.o dropbox.o filer.o find.o fscache.o	\
++	gtksavebox.o							\
++	gui_support.o i18n.o icon.o infobox.o log.o main.o menu.o minibuffer.o\
++	modechange.o mount.o options.o panel.o pinboard.o pixmaps.o	\
++	remote.o run.o sc.o session.o support.o		\
++	tasklist.o toolbar.o type.o usericons.o view_collection.o	\
++	view_details.o view_iface.o wrapped.o xml.o xtypes.o \
++	xdgmime.o xdgmimeglob.o xdgmimeint.o xdgmimemagic.o xdgmimeparent.o xdgmimealias.o xdgmimecache.o
++
++############ Things to keep the same
++
++${PROG}: ${OBJECTS}
++	${CC} -o "${PROG}" ${OBJECTS} ${LDFLAGS}
++	mv "${PROG}" "${PLATFORM_DIR}"
++	-(cd "${PLATFORM_DIR}" && \
++	 objcopy --only-keep-debug ROX-Filer ROX-Filer.dbg && \
++	 strip ROX-Filer && \
++	 objcopy --add-gnu-debuglink=ROX-Filer.dbg ROX-Filer)
+ 
+ clean:
+-	cd ${BUILDDIR} && ${MAKE} clean
++	rm -f *.o Makefile.bak
++
++

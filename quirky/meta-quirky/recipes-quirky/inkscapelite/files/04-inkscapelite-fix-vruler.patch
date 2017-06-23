@@ -1,0 +1,29 @@
+diff -Naur inkscapelite-0.36.3CPY2/src/widgets/ruler.c inkscapelite-0.36.3/src/widgets/ruler.c
+--- inkscapelite-0.36.3CPY2/src/widgets/ruler.c	2016-04-16 21:59:15.036524100 +0800
++++ inkscapelite-0.36.3/src/widgets/ruler.c	2016-04-17 15:50:53.979907439 +0800
+@@ -321,6 +321,7 @@
+ 				      GdkEventMotion *event);
+ static void sp_vruler_draw_ticks    (GtkRuler       *ruler);
+ static void sp_vruler_draw_pos      (GtkRuler       *ruler);
++static void sp_vruler_size_request (GtkWidget *widget, GtkRequisition *requisition);
+ 
+ 
+ GtkType
+@@ -358,6 +359,7 @@
+   ruler_class = (GtkRulerClass*) klass;
+ 
+   widget_class->motion_notify_event = sp_vruler_motion_notify;
++  widget_class->size_request = sp_vruler_size_request;
+ 
+   ruler_class->draw_ticks = sp_vruler_draw_ticks;
+   ruler_class->draw_pos = sp_vruler_draw_pos;
+@@ -613,3 +615,9 @@
+     gtk_widget_queue_draw (GTK_WIDGET (ruler));
+ }
+ 
++static void
++sp_vruler_size_request (GtkWidget *widget, GtkRequisition *requisition)
++{
++  requisition->width = widget->style->xthickness * 2 + RULER_WIDTH;
++}
++

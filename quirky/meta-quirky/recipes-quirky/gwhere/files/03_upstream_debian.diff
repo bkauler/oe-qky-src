@@ -1,0 +1,26 @@
+Description: Remove references to upstream Debian dir.
+Author: Unknown.
+Index: gwhere-0.2.3.dfsg.1/configure.in
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/configure.in	2013-07-16 11:13:04.029485245 -0400
++++ gwhere-0.2.3.dfsg.1/configure.in	2013-07-16 11:13:04.021485205 -0400
+@@ -392,7 +392,6 @@
+ src/plugins/catalog/gwcatalog/Makefile
+ src/plugins/catalog/csv/Makefile
+ src/Makefile
+-debian/Makefile
+ slackware/Makefile
+ doc/Doxyfile
+ doc/Makefile
+Index: gwhere-0.2.3.dfsg.1/Makefile.am
+===================================================================
+--- gwhere-0.2.3.dfsg.1.orig/Makefile.am	2013-07-16 11:13:04.029485245 -0400
++++ gwhere-0.2.3.dfsg.1/Makefile.am	2013-07-16 11:13:04.021485205 -0400
+@@ -1,6 +1,6 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-SUBDIRS = debian slackware doc intl po src win32
++SUBDIRS = slackware doc intl po src win32
+ 
+ ApplicationGnomedir = $(datadir)/gnome/apps/Applications
+ ApplicationGnome_DATA = gwhere.desktop

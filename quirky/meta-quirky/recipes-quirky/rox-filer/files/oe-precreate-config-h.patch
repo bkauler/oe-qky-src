@@ -1,0 +1,87 @@
+diff -Naur src2ORIG/config.h src2/config.h
+--- src2ORIG/config.h	1970-01-01 08:00:00.000000000 +0800
++++ src2/config.h	2017-05-08 08:24:28.926654493 +0800
+@@ -0,0 +1,83 @@
++/* config.h.  Generated from config.h.in by configure.  */
++/* The configure script will auto-generate config.h from config.h.in */
++
++#define PROJECT "ROX-Filer"
++#define VERSION "2.11"
++#define GTK_VERSION "2.24.30"
++
++#define STDC_HEADERS 1
++/* #undef HAVE_SYS_UCRED_H */
++#define HAVE_MNTENT_H 1
++/* #undef HAVE_SYS_MNTENT_H */
++#define HAVE_FCNTL_H 1
++#define HAVE_GETOPT_LONG 1
++#define HAVE_UNSETENV 1
++#define FILE_B_FLAG 1
++#define USE_PANGO_WRAP_WORD_CHAR 1
++/* #undef HAVE_APSYMBOLS_H */
++/* #undef HAVE_APBUILD_APSYMBOLS_H */
++#define HAVE_STATFS 1
++#define HAVE_STATVFS 1
++#define HAVE_SYS_VFS_H 1
++#define HAVE_SYS_STATVFS_H 1
++#define HAVE_LIBINTL_H 1
++#define HAVE_SYS_INOTIFY_H 1
++
++#define HAVE_MBRTOWC 1
++#define HAVE_WCTYPE_H 1
++
++#define LARGE_FILE_SUPPORT 1
++
++/* #undef HAVE_REGEX_H */
++
++#define HAVE_GETXATTR 1
++/* #undef HAVE_ATTROPEN */
++#define HAVE_SYS_XATTR_H 1
++#define HAVE_ATTR_XATTR_H 1
++
++/* Enable extensions - used for dnotify support */
++#ifndef _GNU_SOURCE
++# define _GNU_SOURCE
++#endif
++
++#if defined(HAVE_APSYMBOLS_H)
++# include <apsymbols.h>
++#elif defined(HAVE_APBUILD_APSYMBOLS_H)
++# include <apbuild/apsymbols.h>
++#endif
++
++#include "my_vfs.h"
++
++#ifdef HAVE_LIBINTL_H
++# include <libintl.h>
++# define _(String) dgettext("ROX-Filer", String)
++#else
++# define _(String) (String)
++#endif
++/* Short for gettext_noop() - marks a string as translatable without
++ * actually translating it at that point. Used by xgettext.
++ */
++#define N_(String) (String)
++
++/* printf format string to print file sizes */
++#ifdef LARGE_FILE_SUPPORT
++# define SIZE_FMT G_GINT64_MODIFIER "d"
++#else
++# define SIZE_FMT G_GINT32_MODIFIER "d"
++#endif
++
++#if 1
++/* For releases... */
++# define GTK_ENABLE_DEPRECATED
++# define GDK_ENABLE_DEPRECATED
++# define G_ENABLE_DEPRECATED
++#else
++/* Only for testing... */
++# define GTK_DISABLE_DEPRECATED 
++# define GDK_DISABLE_DEPRECATED
++# define G_DISABLE_DEPRECATED
++#endif
++
++#ifndef S_ISDOOR
++# define S_ISDOOR(mode) (FALSE)
++#endif

@@ -1,0 +1,4 @@
+
+recipetool create -o gdmap_0.8.1.bb https://downloads.sourceforge.net/project/gdmap/gdmap/0.8.1/gdmap-0.8.1.tar.gz
+
+see T2 project, package/gnome2/gdmap

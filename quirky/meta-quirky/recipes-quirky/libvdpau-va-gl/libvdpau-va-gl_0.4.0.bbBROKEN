@@ -1,0 +1,18 @@
+# Recipe created by recipetool
+# recipetool create -o libvdpau-va-gl_0.4.0.bb https://github.com/i-rinat/libvdpau-va-gl/archive/v0.4.0.tar.gz
+# ref: http://www.linuxfromscratch.org/blfs/view/cvs/x/x7driver.html
+
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=5a9126e7f56a0cf3247050de7f10d0f4"
+
+SRC_URI = "https://github.com/i-rinat/libvdpau-va-gl/archive/v${PV}.tar.gz"
+SRC_URI[md5sum] = "638244652a702d0262039890904f37ce"
+SRC_URI[sha256sum] = "26d66bc1d91bcef5030c1284815c7336e6fdb1845f79e9b6c4a28d56eb4714e9"
+
+DEPENDS = "libx11 ffmpeg libvdpau libva"
+
+inherit cmake pkgconfig
+
+# Specify any options you want to pass to cmake using EXTRA_OECMAKE:
+EXTRA_OECMAKE = "-DCMAKE_BUILD_TYPE=Release"
+

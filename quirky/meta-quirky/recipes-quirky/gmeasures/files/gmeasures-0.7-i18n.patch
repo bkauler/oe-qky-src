@@ -1,0 +1,628 @@
+diff -Naur gmeasures-0.7/src/interface.c gmeasures-0.7-i18n/src/interface.c
+--- gmeasures-0.7/src/interface.c	2007-02-02 23:25:40.000000000 +0800
++++ gmeasures-0.7-i18n/src/interface.c	2015-01-07 04:14:36.000000000 +0800
+@@ -6,6 +6,10 @@
+ #  include <config.h>
+ #endif
+ 
++#include <libintl.h>
++#include <locale.h>
++#define _(STRING) gettext(STRING)
++
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+@@ -86,7 +90,7 @@
+   GtkWidget *btn_exit;
+ 
+   App = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+-  gtk_window_set_title (GTK_WINDOW (App), "gMeasures 0.7");
++  gtk_window_set_title (GTK_WINDOW (App), _("gMeasures 0.7"));
+   gtk_window_set_resizable (GTK_WINDOW (App), FALSE);
+   gtk_window_set_type_hint (GTK_WINDOW (App), GDK_WINDOW_TYPE_HINT_DIALOG);
+ 
+@@ -114,32 +118,32 @@
+   gtk_widget_show (table_measures);
+   gtk_container_add (GTK_CONTAINER (alignment1), table_measures);
+ 
+-  label1 = gtk_label_new ("  ");
++  label1 = gtk_label_new (_("  "));
+   gtk_widget_show (label1);
+   gtk_table_attach (GTK_TABLE (table_measures), label1, 1, 2, 0, 1,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+ 
+-  label2 = gtk_label_new ("Equals :  ");
++  label2 = gtk_label_new (_("Equals :  "));
+   gtk_widget_show (label2);
+   gtk_table_attach (GTK_TABLE (table_measures), label2, 0, 1, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+ 
+-  label19 = gtk_label_new ("  ");
++  label19 = gtk_label_new (_("  "));
+   gtk_widget_show (label19);
+   gtk_table_attach (GTK_TABLE (table_measures), label19, 1, 2, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_misc_set_alignment (GTK_MISC (label19), 0, 0.5);
+ 
+-  label4 = gtk_label_new ("  ");
++  label4 = gtk_label_new (_("  "));
+   gtk_widget_show (label4);
+   gtk_table_attach (GTK_TABLE (table_measures), label4, 1, 2, 2, 3,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+ 
+-  label28 = gtk_label_new ("  ");
++  label28 = gtk_label_new (_("  "));
+   gtk_widget_show (label28);
+   gtk_table_attach (GTK_TABLE (table_measures), label28, 2, 3, 1, 2,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -177,7 +181,7 @@
+                     (GtkAttachOptions) (0), 0, 0);
+   GTK_WIDGET_SET_FLAGS (combo_unit2, GTK_CAN_FOCUS);
+ 
+-  label26 = gtk_label_new ("<b>Weights and Measures</b>");
++  label26 = gtk_label_new (_("<b>Weights and Measures</b>"));
+   gtk_widget_show (label26);
+   gtk_frame_set_label_widget (GTK_FRAME (frame1), label26);
+   gtk_label_set_use_markup (GTK_LABEL (label26), TRUE);
+@@ -206,11 +210,11 @@
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (GTK_FILL), 0, 0);
+ 
+-  label6 = gtk_label_new (" degrees Celsius");
++  label6 = gtk_label_new (_(" degrees Celsius"));
+   gtk_widget_show (label6);
+   gtk_box_pack_start (GTK_BOX (hbox11), label6, FALSE, FALSE, 0);
+ 
+-  label23 = gtk_label_new ("  ");
++  label23 = gtk_label_new (_("  "));
+   gtk_widget_show (label23);
+   gtk_box_pack_start (GTK_BOX (hbox11), label23, TRUE, TRUE, 0);
+ 
+@@ -220,11 +224,11 @@
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (GTK_FILL), 0, 0);
+ 
+-  label11 = gtk_label_new (" degrees Fahrenheit");
++  label11 = gtk_label_new (_(" degrees Fahrenheit"));
+   gtk_widget_show (label11);
+   gtk_box_pack_start (GTK_BOX (hbox12), label11, FALSE, FALSE, 0);
+ 
+-  label24 = gtk_label_new ("  ");
++  label24 = gtk_label_new (_("  "));
+   gtk_widget_show (label24);
+   gtk_box_pack_start (GTK_BOX (hbox12), label24, TRUE, TRUE, 0);
+ 
+@@ -244,19 +248,19 @@
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_widget_set_size_request (sb_entry_fdegrees, 32, -1);
+ 
+-  label8 = gtk_label_new ("Equals :");
++  label8 = gtk_label_new (_("Equals :"));
+   gtk_widget_show (label8);
+   gtk_table_attach (GTK_TABLE (table_temperatures), label8, 0, 1, 1, 2,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+ 
+-  label20 = gtk_label_new ("  ");
++  label20 = gtk_label_new (_("  "));
+   gtk_widget_show (label20);
+   gtk_table_attach (GTK_TABLE (table_temperatures), label20, 1, 2, 1, 2,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+ 
+-  label27 = gtk_label_new ("<b>Temperatures</b>");
++  label27 = gtk_label_new (_("<b>Temperatures</b>"));
+   gtk_widget_show (label27);
+   gtk_frame_set_label_widget (GTK_FRAME (frame2), label27);
+   gtk_label_set_use_markup (GTK_LABEL (label27), TRUE);
+@@ -273,7 +277,7 @@
+   gtk_box_pack_start (GTK_BOX (hbox1), vbox5, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (vbox5), 4);
+ 
+-  btn_edit_add = gtk_button_new_with_mnemonic ("Edit/Add...");
++  btn_edit_add = gtk_button_new_with_mnemonic (_("Edit/Add..."));
+   gtk_widget_show (btn_edit_add);
+   gtk_box_pack_start (GTK_BOX (vbox5), btn_edit_add, TRUE, TRUE, 4);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_edit_add), 2);
+@@ -282,7 +286,7 @@
+   gtk_widget_show (table1);
+   gtk_box_pack_start (GTK_BOX (vbox5), table1, TRUE, TRUE, 0);
+ 
+-  btn_num_1 = gtk_button_new_with_mnemonic (" 1 ");
++  btn_num_1 = gtk_button_new_with_mnemonic (_(" 1 "));
+   gtk_widget_show (btn_num_1);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_1, 0, 1, 0, 1,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -290,7 +294,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_1), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_1, GTK_CAN_FOCUS);
+ 
+-  btn_num_2 = gtk_button_new_with_mnemonic (" 2 ");
++  btn_num_2 = gtk_button_new_with_mnemonic (_(" 2 "));
+   gtk_widget_show (btn_num_2);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_2, 1, 2, 0, 1,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -298,7 +302,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_2), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_2, GTK_CAN_FOCUS);
+ 
+-  btn_num_3 = gtk_button_new_with_mnemonic (" 3 ");
++  btn_num_3 = gtk_button_new_with_mnemonic (_(" 3 "));
+   gtk_widget_show (btn_num_3);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_3, 2, 3, 0, 1,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -306,7 +310,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_3), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_3, GTK_CAN_FOCUS);
+ 
+-  btn_num_4 = gtk_button_new_with_mnemonic (" 4 ");
++  btn_num_4 = gtk_button_new_with_mnemonic (_(" 4 "));
+   gtk_widget_show (btn_num_4);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_4, 0, 1, 1, 2,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -314,7 +318,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_4), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_4, GTK_CAN_FOCUS);
+ 
+-  btn_num_5 = gtk_button_new_with_mnemonic (" 5 ");
++  btn_num_5 = gtk_button_new_with_mnemonic (_(" 5 "));
+   gtk_widget_show (btn_num_5);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_5, 1, 2, 1, 2,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -322,7 +326,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_5), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_5, GTK_CAN_FOCUS);
+ 
+-  btn_num_6 = gtk_button_new_with_mnemonic (" 6 ");
++  btn_num_6 = gtk_button_new_with_mnemonic (_(" 6 "));
+   gtk_widget_show (btn_num_6);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_6, 2, 3, 1, 2,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -330,7 +334,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_6), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_6, GTK_CAN_FOCUS);
+ 
+-  btn_num_7 = gtk_button_new_with_mnemonic (" 7 ");
++  btn_num_7 = gtk_button_new_with_mnemonic (_(" 7 "));
+   gtk_widget_show (btn_num_7);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_7, 0, 1, 2, 3,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -338,7 +342,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_7), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_7, GTK_CAN_FOCUS);
+ 
+-  btn_num_8 = gtk_button_new_with_mnemonic (" 8 ");
++  btn_num_8 = gtk_button_new_with_mnemonic (_(" 8 "));
+   gtk_widget_show (btn_num_8);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_8, 1, 2, 2, 3,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -346,7 +350,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_8), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_8, GTK_CAN_FOCUS);
+ 
+-  btn_num_9 = gtk_button_new_with_mnemonic (" 9 ");
++  btn_num_9 = gtk_button_new_with_mnemonic (_(" 9 "));
+   gtk_widget_show (btn_num_9);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_9, 2, 3, 2, 3,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -354,7 +358,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_9), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_9, GTK_CAN_FOCUS);
+ 
+-  btn_num_0 = gtk_button_new_with_mnemonic (" 0 ");
++  btn_num_0 = gtk_button_new_with_mnemonic (_(" 0 "));
+   gtk_widget_show (btn_num_0);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_0, 0, 1, 3, 4,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -362,7 +366,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_0), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_0, GTK_CAN_FOCUS);
+ 
+-  btn_num_dot = gtk_button_new_with_mnemonic (" . ");
++  btn_num_dot = gtk_button_new_with_mnemonic (_(" . "));
+   gtk_widget_show (btn_num_dot);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_dot, 1, 2, 3, 4,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -370,7 +374,7 @@
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_dot), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_dot, GTK_CAN_FOCUS);
+ 
+-  btn_num_minus = gtk_button_new_with_mnemonic (" - ");
++  btn_num_minus = gtk_button_new_with_mnemonic (_(" - "));
+   gtk_widget_show (btn_num_minus);
+   gtk_table_attach (GTK_TABLE (table1), btn_num_minus, 2, 3, 3, 4,
+                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+@@ -382,13 +386,13 @@
+   gtk_widget_show (hbox8);
+   gtk_box_pack_start (GTK_BOX (vbox5), hbox8, TRUE, TRUE, 0);
+ 
+-  btn_num_bksp = gtk_button_new_with_mnemonic ("BkSp");
++  btn_num_bksp = gtk_button_new_with_mnemonic (_("BkSp"));
+   gtk_widget_show (btn_num_bksp);
+   gtk_box_pack_start (GTK_BOX (hbox8), btn_num_bksp, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_bksp), 2);
+   GTK_WIDGET_UNSET_FLAGS (btn_num_bksp, GTK_CAN_FOCUS);
+ 
+-  btn_num_clear = gtk_button_new_with_mnemonic ("Clear");
++  btn_num_clear = gtk_button_new_with_mnemonic (_("Clear"));
+   gtk_widget_show (btn_num_clear);
+   gtk_box_pack_start (GTK_BOX (hbox8), btn_num_clear, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_num_clear), 2);
+@@ -398,12 +402,12 @@
+   gtk_widget_show (hbox13);
+   gtk_box_pack_start (GTK_BOX (vbox5), hbox13, TRUE, TRUE, 2);
+ 
+-  btn_about = gtk_button_new_with_mnemonic (" ? ");
++  btn_about = gtk_button_new_with_mnemonic (_(" ? "));
+   gtk_widget_show (btn_about);
+   gtk_box_pack_start (GTK_BOX (hbox13), btn_about, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_about), 2);
+ 
+-  btn_exit = gtk_button_new_with_mnemonic ("Exit");
++  btn_exit = gtk_button_new_with_mnemonic (_("Exit"));
+   gtk_widget_show (btn_exit);
+   gtk_box_pack_start (GTK_BOX (hbox13), btn_exit, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (btn_exit), 2);
+@@ -567,7 +571,7 @@
+   GtkWidget *editdlg_btn_ok;
+ 
+   EditDlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+-  gtk_window_set_title (GTK_WINDOW (EditDlg), "Edit/Add Measure...");
++  gtk_window_set_title (GTK_WINDOW (EditDlg), _("Edit/Add Measure..."));
+   gtk_window_set_position (GTK_WINDOW (EditDlg), GTK_WIN_POS_CENTER_ON_PARENT);
+   gtk_window_set_modal (GTK_WINDOW (EditDlg), TRUE);
+   gtk_window_set_resizable (GTK_WINDOW (EditDlg), FALSE);
+@@ -583,7 +587,7 @@
+   gtk_box_pack_start (GTK_BOX (vbox6), table2, FALSE, TRUE, 0);
+   gtk_table_set_row_spacings (GTK_TABLE (table2), 4);
+ 
+-  label14 = gtk_label_new (" Measurement 1 : ");
++  label14 = gtk_label_new (_(" Measurement 1 : "));
+   gtk_widget_show (label14);
+   gtk_table_attach (GTK_TABLE (table2), label14, 0, 1, 0, 1,
+                     (GtkAttachOptions) (GTK_FILL),
+@@ -598,7 +602,7 @@
+   gtk_entry_set_max_length (GTK_ENTRY (editdlg_entry_unit1), 30);
+   gtk_entry_set_width_chars (GTK_ENTRY (editdlg_entry_unit1), 30);
+ 
+-  label15 = gtk_label_new (" Equals This Many : ");
++  label15 = gtk_label_new (_(" Equals This Many : "));
+   gtk_widget_show (label15);
+   gtk_table_attach (GTK_TABLE (table2), label15, 0, 1, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+@@ -613,7 +617,7 @@
+   gtk_entry_set_max_length (GTK_ENTRY (editdlg_entry_value), 16);
+   gtk_entry_set_width_chars (GTK_ENTRY (editdlg_entry_value), 16);
+ 
+-  label16 = gtk_label_new (" Measurement 2 : ");
++  label16 = gtk_label_new (_(" Measurement 2 : "));
+   gtk_widget_show (label16);
+   gtk_table_attach (GTK_TABLE (table2), label16, 0, 1, 2, 3,
+                     (GtkAttachOptions) (GTK_FILL),
+@@ -637,22 +641,22 @@
+   gtk_widget_show (hbox9);
+   gtk_box_pack_start (GTK_BOX (vbox6), hbox9, FALSE, TRUE, 0);
+ 
+-  editdlg_btn_delete = gtk_button_new_with_mnemonic ("Delete");
++  editdlg_btn_delete = gtk_button_new_with_mnemonic (_("Delete"));
+   gtk_widget_show (editdlg_btn_delete);
+   gtk_box_pack_start (GTK_BOX (hbox9), editdlg_btn_delete, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (editdlg_btn_delete), 4);
+ 
+-  label17 = gtk_label_new ("  ");
++  label17 = gtk_label_new (_("  "));
+   gtk_widget_show (label17);
+   gtk_box_pack_start (GTK_BOX (hbox9), label17, TRUE, TRUE, 4);
+ 
+-  editdlg_btn_cancel = gtk_button_new_with_mnemonic ("Cancel");
++  editdlg_btn_cancel = gtk_button_new_with_mnemonic (_("Cancel"));
+   gtk_widget_show (editdlg_btn_cancel);
+   gtk_box_pack_start (GTK_BOX (hbox9), editdlg_btn_cancel, TRUE, TRUE, 4);
+   gtk_container_set_border_width (GTK_CONTAINER (editdlg_btn_cancel), 4);
+   GTK_WIDGET_SET_FLAGS (editdlg_btn_cancel, GTK_CAN_DEFAULT);
+ 
+-  editdlg_btn_ok = gtk_button_new_with_mnemonic ("OK");
++  editdlg_btn_ok = gtk_button_new_with_mnemonic (_("OK"));
+   gtk_widget_show (editdlg_btn_ok);
+   gtk_box_pack_start (GTK_BOX (hbox9), editdlg_btn_ok, TRUE, TRUE, 0);
+   gtk_container_set_border_width (GTK_CONTAINER (editdlg_btn_ok), 4);
+@@ -707,7 +711,7 @@
+   GtkWidget *aboutdlg_btn_close;
+ 
+   AboutDlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+-  gtk_window_set_title (GTK_WINDOW (AboutDlg), "About...");
++  gtk_window_set_title (GTK_WINDOW (AboutDlg), _("About..."));
+   gtk_window_set_position (GTK_WINDOW (AboutDlg), GTK_WIN_POS_CENTER_ON_PARENT);
+   gtk_window_set_type_hint (GTK_WINDOW (AboutDlg), GDK_WINDOW_TYPE_HINT_DIALOG);
+ 
+@@ -732,7 +736,7 @@
+   gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (aboutdlg_textview1), FALSE);
+   gtk_text_view_set_left_margin (GTK_TEXT_VIEW (aboutdlg_textview1), 8);
+   gtk_text_view_set_right_margin (GTK_TEXT_VIEW (aboutdlg_textview1), 8);
+-  gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (aboutdlg_textview1)), "gMeasures v0.7\n(C)2007 Paul Schuurmans\n\n\nIntroduction\n\ngMeasures is a simple utility to convert weights and measures.  It can also convert Celsius / Fahrenheit temperatures.\n\n\nUsing gMeasures\n\nTo calculate weights and measures:\n1. Enter the amount in the first entry field (top left) and select the unit to convert in the first dropdown listbox.\n2. In the second dropdown listbox, select the unit to convert to.\n\nTo edit an existing conversion:\n1. Use the dropdown listboxes to select the conversion.\n2. Press the [Edit/Add] button.\n3. Edit the \"Equals\" field.\n4. Press the [OK] button.\n\nTo add a new conversion:\n1. Press the [Edit/Add] button.\n2. Edit any or all of the fields as necessary.  Note: if you edit only the \"Equals\" field, it counts as an edit (i.e., no new conversion is added).\n3. Press the [OK] button.\n\nTo delete a conversion:\nNote: Read \"The Edit/Add Dialog\" below before doing this for the first time.\n1. Use the dropdown listboxes to select the conversion.\n2. Press the [Edit/Add] button.\n3. Press the [Delete] button.\n\nTo calculate temperatures:\n1. Enter the amount of degrees in either the Celsius or Fahrenheit entry field.\n\n\nThe Edit/Add Dialog\n\nWhen you press the [OK] or [Delete] button, gMeasures will automatically write the current configuration to a file named .gmeasures.cfg in your home directory.  Note that there is no confirmation after pressing either of these buttons.  You can revert back to the original 101 built-in conversions by deleting the .gmeasures.cfg file, but that won't restore any of your own conversions that you've added or edited.  So please be careful, especially before pressing the [Delete] button.\n\n\nLocales\n\nBy default, gMeasures uses the \"C\" locale.  If your locale uses a comma instead of a decimal point, and you want a localized version of this program, here are the steps to take:\n1. In the main.c file, go to main() and uncomment the gtk_set_locale() line.\n2. Also in the main.c file, go to AppReadWriteConfig() and replace the decimal points in the defs array with commas.\n3. Recompile the program.\n\n\nKnown Quirks\n\n- Limited accuracy.  Decimal fractions exceeding 5 digits may or may not be accurate.\n\n\nBug Reports\n\nAlthough some effort has been made to make this program as robust as possible, there may be bugs that I don't yet know about.  If you find any bugs, please let me know.  For information on how to contact me, see the README file on my website.\n\n", -1);
++  gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (aboutdlg_textview1)), _("gMeasures v0.7\n(C)2007 Paul Schuurmans\n\n\nIntroduction\n\ngMeasures is a simple utility to convert weights and measures.  It can also convert Celsius / Fahrenheit temperatures.\n\n\nUsing gMeasures\n\nTo calculate weights and measures:\n1. Enter the amount in the first entry field (top left) and select the unit to convert in the first dropdown listbox.\n2. In the second dropdown listbox, select the unit to convert to.\n\nTo edit an existing conversion:\n1. Use the dropdown listboxes to select the conversion.\n2. Press the [Edit/Add] button.\n3. Edit the \"Equals\" field.\n4. Press the [OK] button.\n\nTo add a new conversion:\n1. Press the [Edit/Add] button.\n2. Edit any or all of the fields as necessary.  Note: if you edit only the \"Equals\" field, it counts as an edit (i.e., no new conversion is added).\n3. Press the [OK] button.\n\nTo delete a conversion:\nNote: Read \"The Edit/Add Dialog\" below before doing this for the first time.\n1. Use the dropdown listboxes to select the conversion.\n2. Press the [Edit/Add] button.\n3. Press the [Delete] button.\n\nTo calculate temperatures:\n1. Enter the amount of degrees in either the Celsius or Fahrenheit entry field.\n\n\nThe Edit/Add Dialog\n\nWhen you press the [OK] or [Delete] button, gMeasures will automatically write the current configuration to a file named .gmeasures.cfg in your home directory.  Note that there is no confirmation after pressing either of these buttons.  You can revert back to the original 101 built-in conversions by deleting the .gmeasures.cfg file, but that won't restore any of your own conversions that you've added or edited.  So please be careful, especially before pressing the [Delete] button.\n\n\nLocales\n\nBy default, gMeasures uses the \"C\" locale.  If your locale uses a comma instead of a decimal point, and you want a localized version of this program, here are the steps to take:\n1. In the main.c file, go to main() and uncomment the gtk_set_locale() line.\n2. Also in the main.c file, go to AppReadWriteConfig() and replace the decimal points in the defs array with commas.\n3. Recompile the program.\n\n\nKnown Quirks\n\n- Limited accuracy.  Decimal fractions exceeding 5 digits may or may not be accurate.\n\n\nBug Reports\n\nAlthough some effort has been made to make this program as robust as possible, there may be bugs that I don't yet know about.  If you find any bugs, please let me know.  For information on how to contact me, see the README file on my website.\n\n"), -1);
+ 
+   hseparator3 = gtk_hseparator_new ();
+   gtk_widget_show (hseparator3);
+@@ -743,11 +747,11 @@
+   gtk_widget_show (hbox10);
+   gtk_box_pack_start (GTK_BOX (vbox7), hbox10, FALSE, TRUE, 0);
+ 
+-  label18 = gtk_label_new ("  ");
++  label18 = gtk_label_new (_("  "));
+   gtk_widget_show (label18);
+   gtk_box_pack_start (GTK_BOX (hbox10), label18, TRUE, TRUE, 0);
+ 
+-  aboutdlg_btn_close = gtk_button_new_with_mnemonic ("Close");
++  aboutdlg_btn_close = gtk_button_new_with_mnemonic (_("Close"));
+   gtk_widget_show (aboutdlg_btn_close);
+   gtk_box_pack_start (GTK_BOX (hbox10), aboutdlg_btn_close, TRUE, TRUE, 4);
+   gtk_container_set_border_width (GTK_CONTAINER (aboutdlg_btn_close), 4);
+diff -Naur gmeasures-0.7/src/main.c gmeasures-0.7-i18n/src/main.c
+--- gmeasures-0.7/src/main.c	2007-02-02 18:35:17.000000000 +0800
++++ gmeasures-0.7-i18n/src/main.c	2015-01-16 23:24:20.000000000 +0800
+@@ -22,12 +22,17 @@
+  *  You should have received a copy of the GNU General Public License
+  *  along with this program; if not, write to the Free Software
+  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ * 150106 robwoj44 internationalized
+ */
+  
+ #ifdef HAVE_CONFIG_H
+ #  include <config.h>
+ #endif
+ 
++#include <libintl.h>
++#include <locale.h> 
++#define _(STRING) gettext(STRING)
++
+ #include <gtk/gtk.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -36,11 +41,21 @@
+ #include "jpslib2.h"
+ #include "main.h"
+ 
++/*__attribute__((constructor)) static void InitTranslations()
++{
++   setlocale(LC_ALL, "");
++   bindtextdomain("gmeasures", "/usr/share/locale");
++   bind_textdomain_codeset("gmeasures", "UTF-8");
++   textdomain("gmeasures");
++}
++*/
++
+ GtkWidget *App, *EditDlg, *AboutDlg;
+ GPtrArray *Msr;
+ int Mode;	// 0=Measurement, 1=Celsius->Fahrenheit, 2=Fahrenheit->Celsius
+ int InSetup;
+ 
++
+ void AppCalculate ()
+ {
+ 	GtkEntry *entry_amount, *entry_result;
+@@ -147,107 +162,107 @@
+ void AppReadWriteConfig (int opmode)
+ {
+ 	char *defs[101] = {
+-		"Acres:Hectares:0.4047",
+-		"Acres:Square_Miles:0.001562",
+-		"Acres:Square_Feet:43560",
+-		"BTU:Horsepower-Hours:0.0003931",
+-		"BTU:Kilowatt-Hours:0.0002928",
+-		"BTU/Hour:Watts:0.2931",
+-		"Bushels:Cubic_Inches:2150.4",
+-		"Bushels_(U.S.):Hectoliters:0.3524",
+-		"Centimeters:Feet:0.03281",
+-		"Centimeters:Inches:0.3937",
+-		"Circumference:Radians:6.283",
+-		"Cubic_Centimeters:Cubic_Inches:0.061024",
+-		"Cubic_Feet:Cubic_Meters:0.0283",
+-		"Cubic_Inches:Cubic_Centimeters:16.387064",
+-		"Cubic_Inches:Liters:0.016387",
+-		"Cubic_Meters:Cubic_Yards:1.3079",
+-		"Cubic_Meters:Cubic_Feet:35.3145",
+-		"Cubic_Yards:Cubic_Meters:0.7646",
+-		"Days:Hours:24",
+-		"Days:Minutes:1440",
+-		"Days:Seconds:86400",
+-		"Degrees:Radians:0.01745",
+-		"Dynes:Grams:0.00102",
+-		"Euros:Guilders:2.20371",
+-		"Fathoms:Feet:6",
+-		"Feet:Meters:0.3048",
+-		"Feet:Miles_(Nautical):0.0001645",
+-		"Feet:Miles_(Statute):0.0001894",
+-		"Feet_Per_Second:Miles_Per_Hour:0.6818",
+-		"Furlongs:Feet:660",
+-		"Furlongs:Miles:0.125",
+-		"Gallons_(U.S.):Liters:3.7853",
+-		"Grains:Grams:0.0648",
+-		"Grams:Grains:15.4324",
+-		"Grams:Pounds:0.002205",
+-		"Grams:Ounces_Avdp.:0.0353",
+-		"Guilders:Euros:0.45378021609",
+-		"Hectares:Acres:2.471005",
+-		"Hectoliters:Bushels_(U.S.):2.8378",
+-		"Horsepower:Watts:745.7",
+-		"Hours:Minutes:60",
+-		"Hours:Seconds:3600",
+-		"Hours:Days:0.041667",
+-		"Inches:Millimeters:25.4",
+-		"Inches:Centimeters:2.54",
+-		"Kilograms:Ounces:35",
+-		"Kilograms:Pounds:2.2046",
+-		"Kilometers:Miles:0.6214",
+-		"Kilowatts:Horsepower:1.341",
+-		"Knots:Nautical_Miles/Hr.:1",
+-		"Knots:Statute_Miles/Hr.:1.151",
+-		"Liters:Fluid_Ounces:34",
+-		"Liters:Gallons_(U.S.):0.2642",
+-		"Liters:Pecks:0.1135",
+-		"Liters:Pints_(Dry):1.8162",
+-		"Liters:Pints_(Liquid):2.1134",
+-		"Liters:Quarts_(Dry):0.9081",
+-		"Liters:Quarts_(Liquid):1.0567",
+-		"Meters:Feet:3.2808",
+-		"Meters:Miles:0.0006214",
+-		"Meters:Yards:1.0936",
+-		"Metric_Tons:Tons_(Long):0.9842",
+-		"Metric_Tons:Tons_(Short):1.1023",
+-		"Miles:Kilometers:1.609344",
+-		"Miles:Feet:5280",
+-		"Miles_(Nautical):Miles_(Statute):1.1516",
+-		"Miles_(Satute):Miles_(Nautical):0.8684",
+-		"Miles_Per_Hour:Feet_Per_Minute:88",
+-		"Millimeters:Inches:0.0394",
+-		"Minutes:Days:0.00069444",
+-		"Minutes:Hours:0.016667",
+-		"Minutes:Seconds:60",
+-		"Ounces:Pounds:0.0625",
+-		"Ounces_(Avdp.):Grams:28.3495",
+-		"Ounces_(Troy):Ounces_(Avdp.):1.09714",
+-		"Pecks:Liters:8.8096",
+-		"Pints_(Dry):Liters:0.5506",
+-		"Pints_(Liquid):Liters:0.4732",
+-		"Pounds:Ounces:16",
+-		"Pounds:Kilograms:0.3782",
+-		"Pounds_Avdp.:Kilograms:0.4536",
+-		"Quarts_(Dry):Liters:1.1012",
+-		"Quarts_(Liquid):Liters:0.9463",
+-		"Radians:Degrees:57.3",
+-		"Rods:Feet:16.5",
+-		"Rods:Meters:5.029",
+-		"Seconds:Minutes:0.01666667",
+-		"Square_Feet:Square_Meters:0.0929",
+-		"Square_Kilometers:Square_Miles:0.3861",
+-		"Square_Meters:Square_Feet:10.7639",
+-		"Square_Meters:Square_Yards:1.196",
+-		"Square_Miles:Square_Kilometers:2.59",
+-		"Square_Yards:Square_Meters:0.8361",
+-		"Tons_(Long):Metric_Tons:1.106",
+-		"Tons_(Long):Pounds:2240",
+-		"Tons_(Short):Metric_Tons:0.9072",
+-		"Tons_(Short):Pounds:2000",
+-		"Watts:BTU/Hour:3.4129",
+-		"Watts:Horsepower:0.001341",
+-		"Yards:Meters:0.9144",
+-		"Yards:Miles:0.0005682"
++		_("Acres:Hectares:0.4047"),
++		_("Acres:Square_Miles:0.001562"),
++		_("Acres:Square_Feet:43560"),
++		_("BTU:Horsepower-Hours:0.0003931"),
++		_("BTU:Kilowatt-Hours:0.0002928"),
++		_("BTU/Hour:Watts:0.2931"),
++		_("Bushels:Cubic_Inches:2150.4"),
++		_("Bushels_(U.S.):Hectoliters:0.3524"),
++		_("Centimeters:Feet:0.03281"),
++		_("Centimeters:Inches:0.3937"),
++		_("Circumference:Radians:6.283"),
++		_("Cubic_Centimeters:Cubic_Inches:0.061024"),
++		_("Cubic_Feet:Cubic_Meters:0.0283"),
++		_("Cubic_Inches:Cubic_Centimeters:16.387064"),
++		_("Cubic_Inches:Liters:0.016387"),
++		_("Cubic_Meters:Cubic_Yards:1.3079"),
++		_("Cubic_Meters:Cubic_Feet:35.3145"),
++		_("Cubic_Yards:Cubic_Meters:0.7646"),
++		_("Days:Hours:24"),
++		_("Days:Minutes:1440"),
++		_("Days:Seconds:86400"),
++		_("Degrees:Radians:0.01745"),
++		_("Dynes:Grams:0.00102"),
++		_("Euros:Guilders:2.20371"),
++		_("Fathoms:Feet:6"),
++		_("Feet:Meters:0.3048"),
++		_("Feet:Miles_(Nautical):0.0001645"),
++		_("Feet:Miles_(Statute):0.0001894"),
++		_("Feet_Per_Second:Miles_Per_Hour:0.6818"),
++		_("Furlongs:Feet:660"),
++		_("Furlongs:Miles:0.125"),
++		_("Gallons_(U.S.):Liters:3.7853"),
++		_("Grains:Grams:0.0648"),
++		_("Grams:Grains:15.4324"),
++		_("Grams:Pounds:0.002205"),
++		_("Grams:Ounces_Avdp.:0.0353"),
++		_("Guilders:Euros:0.45378021609"),
++		_("Hectares:Acres:2.471005"),
++		_("Hectoliters:Bushels_(U.S.):2.8378"),
++		_("Horsepower:Watts:745.7"),
++		_("Hours:Minutes:60"),
++		_("Hours:Seconds:3600"),
++		_("Hours:Days:0.041667"),
++		_("Inches:Millimeters:25.4"),
++		_("Inches:Centimeters:2.54"),
++		_("Kilograms:Ounces:35"),
++		_("Kilograms:Pounds:2.2046"),
++		_("Kilometers:Miles:0.6214"),
++		_("Kilowatts:Horsepower:1.341"),
++		_("Knots:Nautical_Miles/Hr.:1"),
++		_("Knots:Statute_Miles/Hr.:1.151"),
++		_("Liters:Fluid_Ounces:34"),
++		_("Liters:Gallons_(U.S.):0.2642"),
++		_("Liters:Pecks:0.1135"),
++		_("Liters:Pints_(Dry):1.8162"),
++		_("Liters:Pints_(Liquid):2.1134"),
++		_("Liters:Quarts_(Dry):0.9081"),
++		_("Liters:Quarts_(Liquid):1.0567"),
++		_("Meters:Feet:3.2808"),
++		_("Meters:Miles:0.0006214"),
++		_("Meters:Yards:1.0936"),
++		_("Metric_Tons:Tons_(Long):0.9842"),
++		_("Metric_Tons:Tons_(Short):1.1023"),
++		_("Miles:Kilometers:1.609344"),
++		_("Miles:Feet:5280"),
++		_("Miles_(Nautical):Miles_(Statute):1.1516"),
++		_("Miles_(Satute):Miles_(Nautical):0.8684"),
++		_("Miles_Per_Hour:Feet_Per_Minute:88"),
++		_("Millimeters:Inches:0.0394"),
++		_("Minutes:Days:0.00069444"),
++		_("Minutes:Hours:0.016667"),
++		_("Minutes:Seconds:60"),
++		_("Ounces:Pounds:0.0625"),
++		_("Ounces_(Avdp.):Grams:28.3495"),
++		_("Ounces_(Troy):Ounces_(Avdp.):1.09714"),
++		_("Pecks:Liters:8.8096"),
++		_("Pints_(Dry):Liters:0.5506"),
++		_("Pints_(Liquid):Liters:0.4732"),
++		_("Pounds:Ounces:16"),
++		_("Pounds:Kilograms:0.3782"),
++		_("Pounds_Avdp.:Kilograms:0.4536"),
++		_("Quarts_(Dry):Liters:1.1012"),
++		_("Quarts_(Liquid):Liters:0.9463"),
++		_("Radians:Degrees:57.3"),
++		_("Rods:Feet:16.5"),
++		_("Rods:Meters:5.029"),
++		_("Seconds:Minutes:0.01666667"),
++		_("Square_Feet:Square_Meters:0.0929"),
++		_("Square_Kilometers:Square_Miles:0.3861"),
++		_("Square_Meters:Square_Feet:10.7639"),
++		_("Square_Meters:Square_Yards:1.196"),
++		_("Square_Miles:Square_Kilometers:2.59"),
++		_("Square_Yards:Square_Meters:0.8361"),
++		_("Tons_(Long):Metric_Tons:1.106"),
++		_("Tons_(Long):Pounds:2240"),
++		_("Tons_(Short):Metric_Tons:0.9072"),
++		_("Tons_(Short):Pounds:2000"),
++		_("Watts:BTU/Hour:3.4129"),
++		_("Watts:Horsepower:0.001341"),
++		_("Yards:Meters:0.9144"),
++		_("Yards:Miles:0.0005682")
+ 	};
+ 	FILE *fn = NULL;
+ 	TMeasuresInfo *m;
+@@ -359,6 +374,11 @@
+ 
+ int main (int argc, char *argv[])
+ {
++   setlocale(LC_ALL, "");
++   bindtextdomain("gmeasures", "/usr/share/locale");
++   bind_textdomain_codeset("gmeasures", "UTF-8");
++   textdomain("gmeasures");
++	
+ 	//gtk_set_locale();
+ 	gtk_init(&argc, &argv);
+ 	add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");

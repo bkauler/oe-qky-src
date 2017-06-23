@@ -1,0 +1,18 @@
+# Recipe created by recipetool
+# recipetool create -o xf86-video-geode_2.11.19.bb https://www.x.org/archive/individual/driver/xf86-video-geode-2.11.19.tar.gz
+
+require recipes-graphics/xorg-driver/xorg-driver-video.inc
+
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING;md5=e7f3e39474aeea5af381a8e103dafc36"
+
+SRC_URI = "https://www.x.org/archive/individual/driver/xf86-video-geode-${PV}.tar.gz"
+SRC_URI[md5sum] = "353b66ff39a4cd6d7af283660533020b"
+SRC_URI[sha256sum] = "46ef4e23eaf91abc48ffad394ec6479bf60b2482eded8803d6af93f4ccf51aed"
+
+DEPENDS += "xproto libpciaccess xserver-xorg xextproto fontsproto"
+
+inherit pkgconfig autotools
+
+#EXTRA_OECONF = ""
+

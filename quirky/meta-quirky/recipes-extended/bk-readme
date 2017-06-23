@@ -1,0 +1,11 @@
+
+170521
+------
+wget in pyro, at meta/recipes-extended, is version 1.19.1
+unfortunately, this breaks some scripts, as it no longer logs
+to standard error, instead to ~/wget-log*
+
+This causes a problem in scripts that do "wget .... 2>&1 | .... "
+coz they won't get the log info piped through.
+
+have rolled back to 1.17.1, from krogoth.

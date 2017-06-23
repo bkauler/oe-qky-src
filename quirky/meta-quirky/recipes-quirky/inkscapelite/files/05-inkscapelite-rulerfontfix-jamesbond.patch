@@ -1,0 +1,38 @@
+Hard code the ruler font to use dejavu sans mono. Depending on gtkstyle font
+does not always work anymore.
+
+James 2016
+
+diff -ur inkscapelite-old/src/widgets/ruler.c inkscapelite-0.36.3/src/widgets/ruler.c
+--- inkscapelite-old/src/widgets/ruler.c   2016-04-25 12:52:13.373359193 +0700
++++ inkscapelite-0.36.3/src/widgets/ruler.c   2016-04-25 15:47:53.433619191 +0700
+@@ -17,7 +17,7 @@
+ #include <string.h>
+ #include "ruler.h"
+ 
+-
++#define RULER_FONT            "-misc-dejavu sans mono-medium-r-normal--12-*-*-*-m-*-*-*"
+ #define RULER_WIDTH           14
+ #define RULER_HEIGHT          14
+ #define MINIMUM_INCR          5
+@@ -150,8 +150,9 @@
+ 
+   gc = widget->style->fg_gc[GTK_STATE_NORMAL];
+   bg_gc = widget->style->bg_gc[GTK_STATE_NORMAL];
+-  font = gtk_style_get_font(widget->style);
++  //font = gtk_style_get_font(widget->style);
+ 
++  font = gdk_font_load (RULER_FONT);
+   xthickness = widget->style->xthickness;
+   ythickness = widget->style->ythickness;
+   digit_height = font->ascent; /* assume descent == 0 ? */
+@@ -441,7 +442,8 @@
+ 
+   gc = widget->style->fg_gc[GTK_STATE_NORMAL];
+   bg_gc = widget->style->bg_gc[GTK_STATE_NORMAL];
+-  font = gtk_style_get_font(widget->style);
++  //font = gtk_style_get_font(widget->style);
++  font = gdk_font_load (RULER_FONT);
+   xthickness = widget->style->xthickness;
+   ythickness = widget->style->ythickness;
+   digit_height = font->ascent; /* assume descent == 0 ? */

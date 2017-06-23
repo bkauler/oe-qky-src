@@ -1,0 +1,39 @@
+diff -Naur inkscapelite-0.36.3ORIG2/configure inkscapelite-0.36.3/configure
+--- inkscapelite-0.36.3ORIG2/configure	2003-12-11 14:07:37.000000000 +0800
++++ inkscapelite-0.36.3/configure	2014-12-10 23:13:20.000000000 +0800
+@@ -7278,7 +7278,7 @@
+     if test "$ld_shlibs" = yes; then
+       runpath_var=LD_RUN_PATH
+       hardcode_libdir_flag_spec='${wl}--rpath ${wl}$libdir'
+-      export_dynamic_flag_spec='${wl}--export-dynamic'
++      export_dynamic_flag_spec=''
+       case $host_os in
+       cygwin* | mingw* | pw32*)
+ 	# dlltool doesn't understand --whole-archive et. al.
+@@ -9854,7 +9854,7 @@
+     archive_expsym_cmds_CXX='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags ${wl}-soname $wl$soname ${wl}-retain-symbols-file $wl$export_symbols -o $lib'
+ 
+     hardcode_libdir_flag_spec_CXX='${wl}--rpath ${wl}$libdir'
+-    export_dynamic_flag_spec_CXX='${wl}--export-dynamic'
++    export_dynamic_flag_spec_CXX=''
+ 
+     # If archive_cmds runs LD, not CC, wlarc should be empty
+     # XXX I think wlarc can be eliminated in ltcf-cxx, but I need to
+@@ -10249,7 +10249,7 @@
+ 	output_verbose_link_cmd='templist=`$CC $CFLAGS -v conftest.$objext -o libconftest.so 2>&1 | egrep "ld"`; rm -f libconftest.so; list=""; for z in $templist; do case $z in conftest.$objext) list="$list $z";; *.$objext);; *) list="$list $z";;esac; done; echo $list'
+ 
+ 	hardcode_libdir_flag_spec_CXX='${wl}--rpath,$libdir'
+-	export_dynamic_flag_spec_CXX='${wl}--export-dynamic'
++	export_dynamic_flag_spec_CXX=''
+ 
+ 	# Archives containing C++ object files must be created using
+ 	# "CC -Bstatic", where "CC" is the KAI C++ compiler.
+@@ -13226,7 +13226,7 @@
+     if test "$ld_shlibs_GCJ" = yes; then
+       runpath_var=LD_RUN_PATH
+       hardcode_libdir_flag_spec_GCJ='${wl}--rpath ${wl}$libdir'
+-      export_dynamic_flag_spec_GCJ='${wl}--export-dynamic'
++      export_dynamic_flag_spec_GCJ=''
+       case $host_os in
+       cygwin* | mingw* | pw32*)
+ 	# dlltool doesn't understand --whole-archive et. al.

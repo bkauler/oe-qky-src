@@ -1,0 +1,28 @@
+# Recipe created by recipetool
+# recipetool create -o xf86-video-xgi_1.6.1.bb https://www.x.org/archive/individual/driver/xf86-video-xgi-1.6.1.tar.gz
+
+require recipes-graphics/xorg-driver/xorg-driver-video.inc
+
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING;md5=2b1ee283c95fdba674307f121936ca9a"
+
+SRC_URI = "https://www.x.org/archive/individual/driver/xf86-video-xgi-${PV}.tar.gz"
+SRC_URI[md5sum] = "dd3668e6a044f5f82bc13ca47f617ba0"
+SRC_URI[sha256sum] = "ac0f219ab2b3cd46e22a13042c4e82aeb076c3be0d3f452d2e12a56e8af64be9"
+
+DEPENDS += "glproto fontsproto xextproto xproto xf86driproto libdrm xserver-xorg libpciaccess"
+
+inherit pkgconfig autotools
+
+#EXTRA_OECONF = ""
+# ref: http://lists.openembedded.org/pipermail/openembedded-commits/2009-July/104205.html
+# ref: tmp-glibc/work/core2-64-oe-linux/xf86-video-*/*/recipe-sysroot/usr/include/xorg
+EXTRA_OECONF = "ac_cv_file__usr_include_xorg_dri_h=yes \
+                ac_cv_file__usr_include_xorg_sarea_h=yes \
+                ac_cv_file__usr_include_xorg_dristruct_h=yes \
+                ac_cv_file__usr_include_xorg_damage_h=yes \
+                ac_cv_file__usr_include_xorg_exa_h=yes"
+
+
+HOMEPAGE = "http://www.X.org"
+SUMMARY = "The Xorg xgi video driver"

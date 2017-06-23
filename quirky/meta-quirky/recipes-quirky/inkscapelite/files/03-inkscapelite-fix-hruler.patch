@@ -1,0 +1,31 @@
+diff -Naur inkscapelite-0.36.3ORIG/src/widgets/ruler.c inkscapelite-0.36.3/src/widgets/ruler.c
+--- inkscapelite-0.36.3ORIG/src/widgets/ruler.c	2003-10-31 04:48:05.000000000 +0800
++++ inkscapelite-0.36.3/src/widgets/ruler.c	2016-04-16 21:32:49.829953278 +0800
+@@ -298,6 +298,13 @@
+ 
+ 	  ruler->xsrc = x;
+ 	  ruler->ysrc = y;
++
++      if (!ruler->non_gr_exp_gc)
++        {
++          ruler->non_gr_exp_gc = gdk_gc_new (widget->window);
++          gdk_gc_set_exposures (ruler->non_gr_exp_gc, FALSE);
++        }
++
+ 	}
+     }
+ }
+@@ -581,6 +588,13 @@
+ 
+ 	  ruler->xsrc = x;
+ 	  ruler->ysrc = y;
++
++      if (!ruler->non_gr_exp_gc)
++        {
++          ruler->non_gr_exp_gc = gdk_gc_new (widget->window);
++          gdk_gc_set_exposures (ruler->non_gr_exp_gc, FALSE);
++        }
++
+ 	}
+     }
+ }

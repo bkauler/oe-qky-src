@@ -1,0 +1,15 @@
+
+these are from openembedded-core krogoth branch...
+# patch -p1 < ../../patches-krogoth/fix-install-manx.patch
+# patch -p1 < ../../patches-krogoth/icu-pkgdata-large-cmd.patch
+# patch -p1 < ../../patches-krogoth/icu-release-56-1-flagparser-fix.patch
+
+
+these patches are from the internal icu, seamonkey 2.48b1:
+
+# patch -p4 < ../../patches-seamonkey-2.48b1/bug-915735
+# patch -p4 < ../../patches-seamonkey-2.48b1/bug-1172609-icu-fix.diff
+# patch -p4 < ../../patches-seamonkey-2.48b1/bug-1172609-timezone-recreateDefault.diff
+# patch -p4 < ../../patches-seamonkey-2.48b1/bug-1198952-workaround-make-3.82-bug.diff
+# patch -p4 < ../../patches-seamonkey-2.48b1/bug-1228227-bug-1263325-libc++-gcc_hidden.diff
+# patch -p4 < ../../patches-seamonkey-2.48b1/suppress-warnings.diff
