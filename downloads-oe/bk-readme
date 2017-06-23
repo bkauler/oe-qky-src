@@ -1,0 +1,23 @@
+
+This is how these sources were downloaded:
+
+20170513 Pyro released
+----------------------
+# git clone -b pyro git://git.openembedded.org/openembedded-core openembedded-core --depth 1
+# git clone -b pyro git://git.openembedded.org/meta-openembedded meta-openembedded --depth 1
+# git clone -b '1.34' git://git.openembedded.org/bitbake bitbake --depth 1
+# git clone git://github.com/OSSystems/meta-browser.git meta-browser --depth 1
+# git clone git://github.com/schnitzeltony/meta-office.git meta-office --depth 1
+
+20170531 Raspberry Pi
+---------------------
+ref: 
+https://layers.openembedded.org/layerindex/branch/master/layer/meta-raspberrypi/
+d/l:
+# git clone git://git.yoctoproject.org/meta-raspberrypi meta-raspberrypi --depth 1
+
+
+--------------------------------
+The utility 'dir2tgz' can be used to make folders into tarballs.
+Note, this utility is in all Puppy Linux and derivatives.
+Note, I removed the .git folder from each before making into tarball.
