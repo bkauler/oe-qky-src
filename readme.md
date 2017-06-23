@@ -42,25 +42,39 @@ To use _Toaster_, which is a GUI interface available in OE, it is also required 
 Itemizing, install these, as well as their dependencies:  
 _ca-certificates_, _python3_, _python3-django_, _python3-pip_, _python-beautifulsoup_  
 
-Puppy Linux distributions should be OK also, in particular those based on Debian/Ubuntu DEBs (for example XenialPup).  
+Puppy Linux x86_64 distributions should be OK also, in particular those based on Debian/Ubuntu DEBs (for example XenialPup).  
 
 ## Getting started
 
-In a Linux partition with at least 150GB free space, create a top-level folder with an appropriate name, for example "oe", then expand the downloaded tarball (replace "*" with the actual text of the tarball):  
+In a Linux partition with at least 150GB free space, create a top-level folder with an appropriate name, for example "oe", then download 'oe-qky-src' from github.  
 
-<pre># mkdir oe  
-# cd oe  
-# tar -xf oe-qky-src-*.tar.gz</pre>
+The download can be done in a few different ways. If you have 'git' installed, with a terminal open inside the 'oe' folder, run this:  
 
-This will expand to a folder named "oe-qky-src-*", again substitute the correct text in place of that "*":  
+<pre># git clone https://github.com/bkauler/oe-qky-src.git oe-qky-src</pre>
 
-<pre># cd oe-qky-src-*  
+Or, if you don't have 'ca-certificates' installed (meaning that the above won't work), then this will work:  
+
+<pre># git clone git://github.com/bkauler/oe-qky-src.git oe-qky-src</pre>
+
+To either of the above, you can append "--depth 1" if you don't want the history -- and the download is smaller.  
+
+Or, you can download a zip file. Go to the github page in your browser and click on the "Download" button, then choose "Download zip". This will download 'oe-qky-src-master.zip' -- download into the "oe" folder.  
+
+oe-qky-src site: [https://github.com/bkauler/oe-qky-src](https://github.com/bkauler/oe-qky-src)  
+
+In Puppy and derivatives, you can right-click on the zip file and choose "Open with...", then "Xarchive" or "PupZip" to extract the files. They will extract to folder "oe-qky-src-master" -- rename that to just "oe-qky-src".  
+
+OK, now to using it...  
+
+<pre># cd oe-qky-src  
 # ./create-oe-qky</pre>
 
-Up-one level, you will see newly-created folders "downloads", "oe-quirky" and "sstate_cache". Folder "oe-quirky" has everything, and you can get setup to do a build:  
+Up-one level, you will see newly-created folders "downloads" and "oe-quirky". Folder "oe-quirky" has everything, and you can get setup to do a build:  
 
 <pre># cd ../oe-quirky  
-# source ./oe-init-build-env buildPC</pre>
+# source oe-init-build-env buildPC</pre>
+
+Folder "buildPC" is building for a PC, x86_64 CPU. Alternatives are "buildPC32" for a PC with i686 32-bit CPU, and "buildPi" is for a Raspberry Pi2 and Pi3.  
 
 A quick sanity test is to check that the layers are found:  
 
@@ -71,6 +85,8 @@ Also, a fast PC with plenty of RAM is required. Although OE state a minimum of 2
 
 Note that the Internet connection must be maintained throughout the build, as some packages, such as libreoffice, download extra source packages during compile.  
 In otherwords, you cannot download all source packages prior to commencing the build.  
+
+An annoyance is that libreoffice does not preserve the downloads globally for other builds. So, everytime that libreoffice gets compiled, it has to download lots of extra packages.  
 
 Off we go, for the next few hours (or days, depending on your PC):  
 
