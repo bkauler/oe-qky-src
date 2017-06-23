@@ -1,0 +1,86 @@
+#!/bin/sh
+#open a terminal inside folder 'oe-qky-src' and run this script.
+#it will create folder '../oe-quirky' and populate it.
+#170531 added meta-raspberrypi.
+#170606 tweaks.
+#170621 snapshots now tarballs.
+
+if [ -d ../oe-quirky ];then
+ echo "Error, 'oe-quirky' already exists."
+ exit
+fi
+if [ ! -d downloads-oe ];then
+ echo "Error, current directory must be in 'oe-qky-src' folder."
+ exit
+fi
+
+#need these to fetch from https sites...
+if which update-ca-certificates;then
+ mkdir -p /etc/ssl/certs
+ [ "$(find /etc/ssl/certs -mindepth 1 -maxdepth 1)" == "" ] && update-ca-certificates > /dev/null 2>&1 #populates /etc/ssl
+else
+ echo "Error, 'ca-certificates' package is not installed."
+ exit
+fi
+
+mkdir -p ../downloads
+
+mkdir ../oe-quirky
+echo 'Populating ../oe-quirky...'
+#cp -a downloads-oe/openembedded-core/* ../oe-quirky/
+#cp -a downloads-oe/openembedded-core/.templateconf ../oe-quirky/
+tar -xf downloads-oe/openembedded-core.tar.gz --directory=../oe-quirky --strip=1
+#cp -a -f downloads-oe/meta-openembedded/* ../oe-quirky/
+tar -xf downloads-oe/meta-openembedded.tar.gz --directory=../oe-quirky --strip=1
+#cp -a downloads-oe/bitbake ../oe-quirky/
+tar -xf downloads-oe/bitbake.tar.gz --directory=../oe-quirky
+#cp -a downloads-oe/meta-browser ../oe-quirky/
+tar -xf downloads-oe/meta-browser.tar.gz --directory=../oe-quirky
+#cp -a downloads-oe/meta-office ../oe-quirky/
+tar -xf downloads-oe/meta-office.tar.gz --directory=../oe-quirky
+#cp -a downloads-oe/meta-raspberrypi ../oe-quirky/
+tar -xf downloads-oe/meta-raspberrypi.tar.gz --directory=../oe-quirky
+cp -a -f quirky/* ../oe-quirky/
+sync
+
+# copy the docs also...
+cp -a docs ../oe-quirky/
+cp -a -f readme.htm ../oe-quirky/
+
+# hacks...
+#allow run as root...
+sed -i '/getuid/d' ../oe-quirky/meta/classes/sanity.bbclass
+sed -i '/Do not use Bitbake as root/d' ../oe-quirky/meta/classes/sanity.bbclass
+#'setterm' is out of util-linux pkg...
+[ ! -e /usr/bin/setterm ] && cp -a -f setterm /usr/bin/
+[ ! -e /usr/bin/python2 ] && [ -e /usr/bin/python2.7 ] && ln -s python2.7 /usr/bin/python2
+FNDPY3="$(find /usr/bin -maxdepth 1 -type f -name 'python3.[0-9]' | head -n 1)"
+if [ ! "$FNDPY3" ];then
+ echo "Error, Python >= 3.4 is required."
+ exit
+fi
+BASEPY3="$(basename $FNDPY3)"
+[ ! -e /usr/bin/python3 ] && ln -s $BASEPY3 /usr/bin/python3
+ln -s ../../downloads ../oe-quirky/buildPC/downloads
+ln -s ../../downloads ../oe-quirky/buildPi/downloads
+ln -s ../../downloads ../oe-quirky/buildPC32/downloads
+
+#fix absolute paths in bblayers.conf...
+PWD1="`pwd`"
+ABSPATH="$(dirname $PWD1)" #ex: /mnt/sda2/oe
+PTN1="s%/mnt/sda2/oe%${ABSPATH}%"
+sed -i -e "$PTN1" ../oe-quirky/buildPC/conf/bblayers.conf
+sed -i -e "$PTN1" ../oe-quirky/buildPi/conf/bblayers.conf
+sed -i -e "$PTN1" ../oe-quirky/buildPC32/conf/bblayers.conf
+
+echo "Folder '../oe-quirky' populated.
+Now what you have to do, is open a terminal in 'oe-quirky'
+and run this, for pc x86_64 build:
+# source oe-init-build-env buildPC
+# bitbake core-image-quirky
+Or this, for pc x86 32-bit build:
+# source oe-init-build-env buildPC32
+# bitbake core-image-quirky
+Or this, for raspberry pi2 build:
+# source oe-init-build-env buildPi
+# bitbake rpi-hwup-image"
