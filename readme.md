@@ -39,8 +39,10 @@ For Quirky 8.1.6, it is required to install _python3_ and _ca-certificates_ from
 
 To use _Toaster_, which is a GUI interface available in OE, it is also required to install _python3-django_, _python3-pip_ and _python-beautifulsoup_.  
 
+Not to forget the full development environment, gcc, headers and the rest, which is, in the case of Quirky 8.1.6, a single PET package named _devx-8.1.6-xerus64.pet_.  
+
 Itemizing, install these, as well as their dependencies:  
-_ca-certificates_, _python3_, _python3-django_, _python3-pip_, _python-beautifulsoup_  
+_devx, ca-certificates_, _python3_, _python3-django_, _python3-pip_, _python-beautifulsoup_  
 
 Puppy Linux x86_64 distributions should be OK also, in particular those based on Debian/Ubuntu DEBs (for example XenialPup).  
 
