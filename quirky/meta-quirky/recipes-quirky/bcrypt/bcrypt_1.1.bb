@@ -14,6 +14,10 @@ DEPENDS = "zlib"
 
 do_configure () {
     sed -i -e "s%/usr/local%/usr%" Makefile
+    sed -i -e 's%^CC = %# CC = %' Makefile
+    sed -i -e 's%^CFLAGS = %CFLAGS += %' Makefile
+    sed -i -e 's%^LDFLAGS = .*%LDFLAGS += -lz%' Makefile
+    sed -i -e 's%^%%' Makefile
 }
 
 do_compile () {
