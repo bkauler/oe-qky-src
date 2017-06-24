@@ -29,5 +29,5 @@ do_install () {
 }
 
 
-HOMEPAGE = "https://manned.org/gcolorsel/fc5eb031"
+HOMEPAGE = "http://nixbit.com/software/gcolorsel-review/"
 SUMMARY = "It is a program to select colors with a GTK+ 2.0 interface"
