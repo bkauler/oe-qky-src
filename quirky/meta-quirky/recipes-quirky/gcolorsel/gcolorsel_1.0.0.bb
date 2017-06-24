@@ -13,6 +13,9 @@ inherit pkgconfig gettext
 
 do_configure () {
     sed -i -e 's%/usr/local%/usr%' Makefile
+    sed -i -e 's%^CC = %# CC = %' Makefile
+    sed -i -e 's%^CFLAGS = %CFLAGS += %' Makefile
+    sed -i -e 's%^LFLAGS = %LFLAGS = $(LDFLAGS) %' Makefile
     oe_runmake depend
 }
 
@@ -26,5 +29,5 @@ do_install () {
 }
 
 
-HOMEPAGE = ""
+HOMEPAGE = "https://manned.org/gcolorsel/fc5eb031"
 SUMMARY = "It is a program to select colors with a GTK+ 2.0 interface"
