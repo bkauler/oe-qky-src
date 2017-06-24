@@ -19,6 +19,13 @@ do_configure () {
     sed -i -e 's%/usr/local%/usr%' Makefile
     sed -i -e 's%mousepad%defaulttexteditor%' Makefile
     sed -i -e 's%firefox%defaultbrowser%' Makefile
+    sed -i -e 's%^export CC %# export CC %' Makefile
+    sed -i -e 's%^export AR %# export AR %' Makefile
+    sed -i -e 's%^CC      =%# CC      =%' iniparser-2.17/Makefile
+    sed -i -e 's%^CFLAGS  = -O3 %CFLAGS  += -O2 %' iniparser-2.17/Makefile
+    sed -i -e 's%^AR	    =%# AR	    =%' iniparser-2.17/Makefile
+    sed -i -e 's%^LDFLAGS = %# LDFLAGS = %' iniparser-2.17/Makefile
+    sed -i -e 's%^LDSHFLAGS = -shared .*%LDSHFLAGS = -shared $(LDFLAGS)%' iniparser-2.17/Makefile
 }
 
 do_compile () {
