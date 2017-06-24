@@ -1,0 +1,101 @@
+# Recipe created by recipetool
+# recipetool create -o inkscapelite_0.36.3-p06.bb http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/inkscapelite-0.36.3.tar.bz2
+
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=94d55d512a9ba36caa9b7df079bae19f"
+
+SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/inkscapelite-0.36.3.tar.bz2 \
+           file://01-inkscapelite-glib.h.patch \
+           file://02-inkscapelite-export-dynamic.patch.disabled \
+           file://03-inkscapelite-fix-hruler.patch \
+           file://04-inkscapelite-fix-vruler.patch \
+           file://05-inkscapelite-rulerfontfix-jamesbond.patch"
+SRC_URI[md5sum] = "816615d99d1d9673a14c1465c2467924"
+SRC_URI[sha256sum] = "e83476d9c8a3af0c47d7d0934991587060fede4ab3cb23e2a92ca4b6f2404088"
+
+# BK 170624 this patch is for 64-bit target only. SITEINFO_BIT will have value of 32 or 64, for target cpu...
+# ref: http://lists.openembedded.org/pipermail/openembedded-devel/2017-January/110874.html
+SRC_URI_append = "${@['',' file://06-inkscapelite-texttoolcrash-jamesbond.patch'][d.getVar('SITEINFO_BITS') != '32']}"
+
+S = "${WORKDIR}/${BPN}-0.36.3"
+
+#       (this is based on recipes that have previously been built and packaged)
+DEPENDS = "libxft gtk+ libx11 intltool-native fontconfig flex-native libice libxml2 libart-lgpl glib-2.0 expat freetype glib-2.0-native popt libpng"
+
+inherit pkgconfig gettext autotools-brokensep
+
+EXTRA_OECONF = "--with-popt --with-xft --without-gnome-print --disable-mmx"
+
+# 170624 do_compile fails:
+# libtool: Version mismatch error.  This is libtool 2.4.6, but the
+# libtool: definition of this LT_INIT comes from an older release.
+# libtool: You should recreate aclocal.m4 with macros from libtool 2.4.6
+# libtool: and run autoconf again.
+# ref: https://stackoverflow.com/questions/3096989/libtool-version-mismatch-error
+# BK stuffed around...
+#do_configure_prepend() {
+#    #rm -f ${S}/aclocal.m4
+#    #rm -f ${S}/acinclude.m4
+#    oe_runconf
+#    oe_runmake maintainer-clean
+#    #aclocal; libtoolize --force; autoheader
+#    #glib-gettextize --force --copy
+#    #aclocal
+#    #intltoolize --copy --force --automake
+#    #autoheader
+#    ##automake --foreign
+#    rm -f ${S}/aclocal.m4
+#    #rm -f ${S}/acinclude.m4
+#    rm -f ${S}/config.h.in
+#    rm -f ${S}/configure
+#    rm -f ${S}/Makefile.in
+#    rm -f ${S}/ltmain.sh
+#}
+
+# BK just run existing configure, works...
+do_configure() {
+    oe_runconf
+}
+
+# BK 170624 do_compile: src/libnr/gen_nr_config binary executable wants to run,
+# and generate file 'nr_config.h'
+do_compile_prepend() {
+    echo '#ifndef __NR_CONFIG_H__
+#define __NR_CONFIG_H__
+
+#define NR_SIZEOF_CHAR 1
+#define NR_SIZEOF_SHORT 2
+#define NR_SIZEOF_INT 4
+#define NR_SIZEOF_LONG 8
+
+typedef signed char NRByte;
+typedef unsigned char NRUByte;
+typedef signed short NRShort;
+typedef unsigned short NRUShort;
+typedef signed int NRLong;
+typedef unsigned int NRULong;
+
+#endif' > ${S}/src/libnr/nr_config.h
+    #remove this line;
+    sed -i -e 's%\./gen_nr_config > nr_config\.h%%' ${S}/src/libnr/Makefile
+
+    #
+    for aFILE in Makefile extensions/Makefile glade/Makefile po/Makefile src/Makefile src/libarikkei/Makefile src/svg/Makefile src/libnr/Makefile src/display/Makefile src/helper/Makefile src/xml/Makefile src/libnrtype/Makefile src/widgets/Makefile src/dialogs/Makefile src/utest/Makefile src/modules/Makefile
+    do
+     sed -i -e "s%^includedir=.*%includedir=${SROOT}/usr/include%" ${S}/${aFILE}
+     sed -i -e "s%^oldincludedir=.*%oldincludedir=${SROOT}/usr/include%" ${S}/${aFILE}
+    done
+}
+
+# BK 170624 do_compile now complains using freetype-config
+# also there is an absolute path /usr/include
+SROOT = "${WORKDIR}/recipe-sysroot"
+do_configure_prepend() {
+    sed -i -e 's%$FREETYPE_CONFIG --cflags%pkg-config --cflags freetype2%' ${S}/configure
+    sed -i -e 's%$FREETYPE_CONFIG --libs%pkg-config --libs freetype2%' ${S}/configure
+    #sed -i -e "s%^includedir=.*%includedir=${SROOT}/usr/include%" ${S}/configure
+    #sed -i -e "s%^oldincludedir=.*%oldincludedir=${SROOT}/usr/include%" ${S}/configure
+}
+
+HOMEPAGE = "http://puppylinux.org/wikka/InkLite"
+SUMMARY = "A Gtk SVG Scaleable Vector Graphic application"
