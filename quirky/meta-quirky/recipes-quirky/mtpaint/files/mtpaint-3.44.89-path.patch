@@ -1,0 +1,12 @@
+diff -Naur mtpaint-3.44.89ORIG/configure mtpaint-3.44.89/configure
+--- mtpaint-3.44.89ORIG/configure	2014-10-04 22:51:12.000000000 +0800
++++ mtpaint-3.44.89/configure	2014-12-02 23:19:13.000000000 +0800
+@@ -268,7 +268,7 @@
+ 	EXEEXT=".exe"
+ 	MT_PREFIX="${MT_PREFIX-/c/Program Files/mtPaint}"
+ else
+-	MT_PREFIX="${MT_PREFIX-/usr/local}"
++	MT_PREFIX="${MT_PREFIX-/usr}"
+ fi
+ MT_BINDIR="${MT_BINDIR:-$MT_PREFIX/bin}"
+ MT_DATAROOT="${MT_DATAROOT:-$MT_PREFIX/share}"
