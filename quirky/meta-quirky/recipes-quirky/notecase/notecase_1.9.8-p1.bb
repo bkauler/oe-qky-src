@@ -24,6 +24,9 @@ do_configure () {
     sed -i -e 's%HAVE_GNOME_VFS=1%HAVE_GNOME_VFS=%' Makefile
     #something odd, this is unset but gets set somehow in this file...
     sed -i -e 's%^#ifdef HAVE_GNOME_VFS%#ifdef HAVE_GNOME_VFSxxxxx%' src/main.cpp
+    #sneaky, there is another Makefile, needs fixing...
+    sed -i -e 's%^ CC=%#  CC=%' src/lib/zlib/Makefile
+    sed -i -e 's%^SHELL=.*%SHELL=sh%' src/lib/zlib/Makefile
 }
 
 do_compile () {
