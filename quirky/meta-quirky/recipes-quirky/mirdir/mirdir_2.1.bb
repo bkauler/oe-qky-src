@@ -19,6 +19,10 @@ do_install() {
     install ${B}/bin/mirdir ${D}/usr/bin
 }
 
+# 170627 pi2 build, strip fails...
+do_compile_prepend() {
+    sed -i -e 's%strip $(EXE)%%' ${B}/Makefile
+}
 
-HOMEPAGE = ""
+HOMEPAGE = "https://sourceforge.net/p/mirdir/wiki/Home/"
 SUMMARY = "Compare two directory trees copy differences."

@@ -19,6 +19,8 @@ inherit pkgconfig
 do_configure () {
     sed -i -e 's%^CFLAGS := %# CFLAGS := %' Makefile
     sed -i -e 's%^LDFLAGS = %LDFLAGS += %' Makefile
+    #buildPi cross-compile, remove strip:
+    sed -i '/strip/d' Makefile
 }
 
 do_compile () {

@@ -17,6 +17,8 @@ do_configure () {
     sed -i -e 's%/usr/ucb/install%install%' makefile
     sed -i -e 's%555%755%' makefile
     sed -i -e 's%444%644%' makefile
+    #cross-compile, stripping fails...
+    sed -i -e 's% \-s % %' makefile
 }
 
 do_compile () {

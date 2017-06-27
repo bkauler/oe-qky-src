@@ -9,8 +9,8 @@ SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/x/xine-
 SRC_URI[md5sum] = "981f509f5f765e19610f62e82f55d24e"
 SRC_URI[sha256sum] = "7dfc11a36ba9569588da349b5998c61aad0ce505e8bb919a7771c4414d45a6d0"
 
-# just added in case: lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec
-DEPENDS = "zlib libxext fontconfig freetype libx11 librsvg libpng ffmpeg alsa-lib libdvdnav faac faad2 flac gdk-pixbuf mesa libglu liba52 libmad libmng libtheora libva libvdpau libvorbis libogg libvpx libsdl libsdl-image libsdl-mixer libsdl-ttf speex libmodplug vcdimager wavpack x264 libxcb libxvmc lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec"
+# just added in case: lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec schroedinger taglib openssl libsamplerate0
+DEPENDS = "zlib libxext fontconfig freetype libx11 librsvg libpng ffmpeg alsa-lib libdvdnav faac faad2 flac gdk-pixbuf mesa libglu liba52 libmad libmng libtheora libva libvdpau libvorbis libogg libvpx libsdl libsdl-image libsdl-mixer libsdl-ttf speex libmodplug vcdimager wavpack x264 libxcb libxvmc lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec schroedinger taglib openssl libsamplerate0"
 
 inherit pkgconfig gettext perlnative autotools
 
