@@ -14,8 +14,11 @@ DEPENDS = "zlib libpng freetype jpeg tiff fontconfig libxpm giflib"
 
 inherit cmake pkgconfig
 
-# Specify any options you want to pass to cmake using EXTRA_OECMAKE:
-EXTRA_OECMAKE = ""
+EXTRA_OECMAKE = "-DENABLE_PNG=1 -DENABLE_JPEG=1 -DENABLE_TIFF=1 -DENABLE_XPM=1 -DENABLE_FREETYPE=1 -DENABLE_FONTCONFIG=1"
 
+# do_package put libgd.so into libgd-dev, but its the only one, needed by utilities.
+# this moves libgd.so from package libgd-dev to libgd...
+FILES_${PN}-dev = "/usr/include/*"
+FILES_${PN} += "/usr/lib/libgd.so"
 
 HOMEPAGE = "http://www.libgd.org/"
