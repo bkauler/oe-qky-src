@@ -5,6 +5,7 @@
 #170606 tweaks.
 #170621 snapshots now tarballs.
 #170623 chmod 755 setterm
+#171018 added x86_64 x32
 
 if [ -d ../oe-quirky ];then
  echo "Error, 'oe-quirky' already exists."
@@ -68,6 +69,7 @@ BASEPY3="$(basename $FNDPY3)"
 ln -s ../../downloads ../oe-quirky/buildPC/downloads
 ln -s ../../downloads ../oe-quirky/buildPi/downloads
 ln -s ../../downloads ../oe-quirky/buildPC32/downloads
+ln -s ../../downloads ../oe-quirky/buildPC64x32/downloads
 
 #fix absolute paths in bblayers.conf...
 PWD1="`pwd`"
@@ -76,6 +78,7 @@ PTN1="s%/mnt/sda2/oe%${ABSPATH}%"
 sed -i -e "$PTN1" ../oe-quirky/buildPC/conf/bblayers.conf
 sed -i -e "$PTN1" ../oe-quirky/buildPi/conf/bblayers.conf
 sed -i -e "$PTN1" ../oe-quirky/buildPC32/conf/bblayers.conf
+sed -i -e "$PTN1" ../oe-quirky/buildPC64x32/conf/bblayers.conf
 
 echo "Folder '../oe-quirky' populated.
 Now what you have to do, is open a terminal in 'oe-quirky'
@@ -84,6 +87,9 @@ and run this, for pc x86_64 build:
 # bitbake core-image-quirky
 Or this, for pc x86 32-bit build:
 # source oe-init-build-env buildPC32
+# bitbake core-image-quirky
+Or this, for pc x86_64 x32 build:
+# source oe-init-build-env buildPC64x32
 # bitbake core-image-quirky
 Or this, for raspberry pi2 build:
 # source oe-init-build-env buildPi
