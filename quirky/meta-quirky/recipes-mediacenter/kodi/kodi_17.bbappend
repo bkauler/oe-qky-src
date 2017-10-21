@@ -1,5 +1,6 @@
 
 # 'avahi' snuck back in, remove... remove 'samba'...
+# BK put 'samba' back in...
 DEPENDS = " \
             cmake-native \
             curl-native \
@@ -42,6 +43,7 @@ DEPENDS = " \
             lzo \
             mpeg2dec \
             python \
+            samba \
             sqlite3 \
             taglib \
             virtual/egl \
