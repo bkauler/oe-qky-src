@@ -144,12 +144,12 @@ Puppy related:
 
 Quirky related:  
 
-*   Quirky x86_64 8.1.6: [http://barryk.org/news/?viewDetailed=00496](http://barryk.org/news/?viewDetailed=00496)    
+*   Quirky x86_64 8.1.6: [http://bkhome.org/news/201701/quirky-816-x8664-released.html](http://bkhome.org/news/201701/quirky-816-x8664-released.html)    
 
-*   Easy: [http://barryk.org/easy/how-easy-works.htm](http://barryk.org/easy/how-easy-works.htm)    
+*   Easy: [http://bkhome.org/easy/](http://bkhome.org/easy/)    
 
 To find out more about what Barry is doing, read his blog:  
-[http://barryk.org/news](http://barryk.org/news)  
+[http://bkhome.org/news](http://bkhome.org/news)  
 
 </td>
 
