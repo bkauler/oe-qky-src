@@ -1,0 +1,173 @@
+diff -Naur sakura-2.4.2ORIG/src/sakura.c sakura-2.4.2/src/sakura.c
+--- sakura-2.4.2ORIG/src/sakura.c	2011-07-31 03:35:11.000000000 +0800
++++ sakura-2.4.2/src/sakura.c	2017-11-01 20:48:27.749378608 +0800
+@@ -43,7 +43,7 @@
+ #define N_(String) (String)
+ #define GETTEXT_PACKAGE "sakura"
+ 
+-#define SAY(format,...) do {\
++/*#define SAY(format,...) do {\
+ 	if (strcmp("Debug", BUILDTYPE)==0) {\
+ 	    fprintf(stderr, "[%d] ", getpid());\
+ 	    fprintf(stderr, "[%s] ", __FUNCTION__);\
+@@ -51,7 +51,7 @@
+ 	    fputc('\n', stderr);\
+ 		fflush(stderr);\
+ 	}\
+-} while (0)
++} while (0)*/
+ 
+ #define PALETTE_SIZE 16
+ 
+@@ -401,10 +401,10 @@
+ 	}
+ 
+ 	/* copy_accelerator-[C/V] pressed */
+-	SAY("copy acc: %d", sakura.copy_accelerator);
+-	SAY("ev+copy: %d", (event->state & sakura.copy_accelerator));
++	/*SAY("copy acc: %d", sakura.copy_accelerator);
++	SAY("ev+copy: %d", (event->state & sakura.copy_accelerator));*/
+ 	if ( (event->state & sakura.copy_accelerator)==sakura.copy_accelerator ) {
+-		SAY("%d %d", event->keyval, sakura.copy_key);
++		/*SAY("%d %d", event->keyval, sakura.copy_key);*/
+ 		if (event->keyval==sakura.copy_key) {
+ 			sakura_copy(NULL, NULL);
+ 			return TRUE;
+@@ -543,11 +543,11 @@
+ 	sakura_config_done();
+ 
+ 	if (option_hold==TRUE) {
+-		SAY("hold option has been activated");
++		/*SAY("hold option has been activated");*/
+ 		return;
+ 	}
+ 
+-	SAY("waiting for terminal pid %d", term->pid);
++	/*SAY("waiting for terminal pid %d", term->pid);*/
+ 
+ 	waitpid(term->pid, &status, WNOHANG);
+ 	/* TODO: check wait return */
+@@ -565,7 +565,7 @@
+ 	int status;
+ 	struct terminal *term;
+ 
+-	SAY("Got EOF signal");
++	/*SAY("Got EOF signal");*/
+ 
+ 	sakura_config_done();
+ 
+@@ -577,11 +577,11 @@
+ 		term = sakura_get_page_term(sakura, 0);
+ 
+ 		if (option_hold==TRUE) {
+-			SAY("hold option has been activated");
++			/*SAY("hold option has been activated");*/
+ 			return;
+ 		}
+ 
+-        SAY("waiting for terminal pid (in eof) %d", term->pid);
++        /*SAY("waiting for terminal pid (in eof) %d", term->pid);*/
+ 
+         waitpid(term->pid, &status, WNOHANG);
+ 		/* TODO: check wait return */
+@@ -1344,7 +1344,7 @@
+ 
+ 	if (n_pages==-1) return;
+ 
+-	SAY("Calculating row_col");
++	/*SAY("Calculating row_col");*/
+ 	term = sakura_get_page_term(sakura, 0);
+ 
+ 	/* This is to prevent a race with ConfigureEvents when the window is being destroyed */
+@@ -1360,7 +1360,7 @@
+ 		sakura.columns = (width/sakura.char_width);
+ 		sakura.rows = (height/sakura.char_height);
+ 		sakura.keep_fc=false;
+-		SAY("new columns %ld and rows %ld", sakura.columns, sakura.rows);
++		/*SAY("new columns %ld and rows %ld", sakura.columns, sakura.rows);*/
+ 	}
+ 	sakura.width = sakura.main_window->allocation.width + x_padding;
+ 	sakura.height = sakura.main_window->allocation.height + y_padding;
+@@ -1400,8 +1400,8 @@
+ sakura_resized_window (GtkWidget *widget, GdkEventConfigure *event, void *data)
+ {
+ 	if (event->width!=sakura.width || event->height!=sakura.height) {
+-		SAY("sakura w & h %d %d event w & h %d %d",
+-		sakura.width, sakura.height, event->width, event->height);
++		/*SAY("sakura w & h %d %d event w & h %d %d",
++		sakura.width, sakura.height, event->width, event->height);*/
+ 		/* Window has been resized by the user. Recalculate sizes */
+ 		sakura_calculate_row_col (event->width, event->height);
+ 	}
+@@ -1472,7 +1472,7 @@
+ static void
+ sakura_new_window (GtkWidget *widget, void *data)
+ {
+-	SAY("Forking a new process");
++	/*SAY("Forking a new process");*/
+ 	pid_t pid = vfork();
+ 	if (pid == 0) {
+ 		execlp("sakura", "sakura", NULL);
+@@ -1803,7 +1803,7 @@
+ 
+ 	sakura.main_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
+ 	gtk_window_set_title(GTK_WINDOW(sakura.main_window), "sakura");
+-	gtk_window_set_icon_from_file(GTK_WINDOW(sakura.main_window), DATADIR "/pixmaps/" ICON_FILE, &gerror);
++	gtk_window_set_icon_from_file(GTK_WINDOW(sakura.main_window), "/usr/share" "/pixmaps/" ICON_FILE, &gerror);
+ 	/* Default terminal size*/
+ 	sakura.columns = DEFAULT_COLUMNS;
+ 	sakura.rows = DEFAULT_ROWS;
+@@ -2118,7 +2118,7 @@
+ static void
+ sakura_destroy()
+ {
+-	SAY("Destroying sakura");
++	/*SAY("Destroying sakura");*/
+ 
+ 	/* Delete all existing tabs */
+ 	while (gtk_notebook_get_n_pages(GTK_NOTEBOOK(sakura.notebook)) >= 1) {
+@@ -2157,7 +2157,7 @@
+ 
+ 	vte_terminal_get_padding(VTE_TERMINAL(term->vte), (int *)&pad_x, (int *)&pad_y);
+ 	gtk_widget_style_get(term->vte, "inner-border", &term->border, NULL);
+-	SAY("l%d r%d t%d b%d", term->border.left, term->border.right, term->border.top, term->border.bottom);
++	/*SAY("l%d r%d t%d b%d", term->border.left, term->border.right, term->border.top, term->border.bottom);*/
+ 	char_width = vte_terminal_get_char_width(VTE_TERMINAL(term->vte));
+ 	char_height = vte_terminal_get_char_height(VTE_TERMINAL(term->vte));
+ 
+@@ -2181,7 +2181,7 @@
+ 	/* FIXME: Deprecated GTK_WIDGET_MAPPED. Replace it when gtk+-2.20 is widely used */
+ 	if (GTK_WIDGET_MAPPED (sakura.main_window)) {
+ 		gtk_window_resize (GTK_WINDOW (sakura.main_window), sakura.width, sakura.height);
+-		SAY("Resizing to %ld columns %ld rows", sakura.columns, sakura.rows);
++		/*SAY("Resizing to %ld columns %ld rows", sakura.columns, sakura.rows);*/
+ 	} else {
+ 		gtk_window_set_default_size (GTK_WINDOW (sakura.main_window), sakura.width, sakura.height);
+ 	}
+@@ -2478,7 +2478,7 @@
+ 	int page;
+ 	struct terminal *term;
+ 
+-	if (!infile) SAY("File parameter is NULL");
++	/*if (!infile) SAY("File parameter is NULL");*/
+ 
+ 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(sakura.notebook));
+ 	term = sakura_get_page_term(sakura, page);
+@@ -2566,7 +2566,7 @@
+ 
+ 	/* Localization */
+ 	setlocale(LC_ALL, "");
+-	localedir=g_strdup_printf("%s/locale", DATADIR);
++	localedir=g_strdup_printf("%s/locale", "/usr/share");
+ 	textdomain(GETTEXT_PACKAGE);
+ 	bindtextdomain(GETTEXT_PACKAGE, localedir);
+ 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+@@ -2599,7 +2599,7 @@
+ 	g_option_context_parse (context, &nargc, &nargv, &error);
+ 
+ 	if (option_version) {
+-		fprintf(stderr, _("sakura version is %s\n"), VERSION);
++		fprintf(stderr, _("sakura version is %s\n"), "2.4.2");
+ 		exit(1);
+ 	}
+ 
