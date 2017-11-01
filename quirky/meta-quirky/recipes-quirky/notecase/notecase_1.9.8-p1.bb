@@ -27,9 +27,28 @@ do_configure () {
     #sneaky, there is another Makefile, needs fixing...
     sed -i -e 's%^ CC=%#  CC=%' src/lib/zlib/Makefile
     sed -i -e 's%^SHELL=.*%SHELL=sh%' src/lib/zlib/Makefile
+    sed -i '/^AR=/d' src/lib/zlib/Makefile
+    sed -i '/^RANLIB=/d' src/lib/zlib/Makefile
 }
 
 do_compile () {
+    
+    #zlib compile fails, so try this hack...
+    touch src/lib/zlib/adler32.o
+    touch src/lib/zlib/compress.o
+    touch src/lib/zlib/crc32.o
+    touch src/lib/zlib/deflate.o
+    touch src/lib/zlib/gzio.o
+    touch src/lib/zlib/infback.o
+    touch src/lib/zlib/inffast.o
+    touch src/lib/zlib/inflate.o
+    touch src/lib/zlib/inftrees.o
+    touch src/lib/zlib/trees.o
+    touch src/lib/zlib/uncompr.o
+    touch src/lib/zlib/zutil.o
+    cp -a -f ${WORKDIR}/recipe-sysroot/usr/lib/libz.a src/lib/zlib/
+    touch src/lib/zlib/libz.a
+    
     oe_runmake
 }
 
