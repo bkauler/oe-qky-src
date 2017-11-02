@@ -1,12 +1,9 @@
-# Recipe created by recipetool
-# recipetool create -o inkscapelite_0.36.3-p06.bb http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/inkscapelite-0.36.3.tar.bz2
-
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=94d55d512a9ba36caa9b7df079bae19f"
 
 SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/inkscapelite-0.36.3.tar.bz2 \
            file://01-inkscapelite-glib.h.patch \
-           file://02-inkscapelite-export-dynamic.patch.disabled \
+           file://02-inkscapelite-export-dynamic.patch \
            file://03-inkscapelite-fix-hruler.patch \
            file://04-inkscapelite-fix-vruler.patch \
            file://05-inkscapelite-rulerfontfix-jamesbond.patch"
@@ -15,12 +12,11 @@ SRC_URI[sha256sum] = "e83476d9c8a3af0c47d7d0934991587060fede4ab3cb23e2a92ca4b6f2
 
 # BK 170624 this patch is for 64-bit target only. SITEINFO_BIT will have value of 32 or 64, for target cpu...
 # ref: http://lists.openembedded.org/pipermail/openembedded-devel/2017-January/110874.html
-SRC_URI_append = "${@['',' file://06-inkscapelite-texttoolcrash-jamesbond.patch'][d.getVar('SITEINFO_BITS') != '32']}"
+SRC_URI_append = "${@['',' file://06-inkscapelite-64bit-texttoolcrash-jamesbond.patch'][d.getVar('SITEINFO_BITS') != '32']}"
 
 S = "${WORKDIR}/${BPN}-0.36.3"
 
-#       (this is based on recipes that have previously been built and packaged)
-DEPENDS = "libxft gtk+ libx11 intltool-native fontconfig flex-native libice libxml2 libart-lgpl glib-2.0 expat freetype glib-2.0-native popt libpng"
+DEPENDS = "libxft gtk+ libx11 intltool-native fontconfig flex-native libice libxml2 libart-lgpl glib-2.0 expat freetype glib-2.0-native popt libpng12"
 
 inherit pkgconfig gettext autotools-brokensep
 
@@ -57,9 +53,11 @@ do_configure() {
     oe_runconf
 }
 
+# 171102 ***WARNING*** this fix works for 64-bit build.
 # BK 170624 do_compile: src/libnr/gen_nr_config binary executable wants to run,
 # and generate file 'nr_config.h'
 do_compile_prepend() {
+    touch ${S}/src/libnr/gen_nr_config
     echo '#ifndef __NR_CONFIG_H__
 #define __NR_CONFIG_H__
 
@@ -85,6 +83,10 @@ typedef unsigned int NRULong;
      sed -i -e "s%^includedir=.*%includedir=${SROOT}/usr/include%" ${S}/${aFILE}
      sed -i -e "s%^oldincludedir=.*%oldincludedir=${SROOT}/usr/include%" ${S}/${aFILE}
     done
+    
+    # 171102 final link: error: unrecognized command line option '--export-dynamic'
+    # from t2, this fix, also needs "-lm"
+    sed -i -e 's%\-\-export\-dynamic %-lm %' ${S}/src/Makefile
 }
 
 # BK 170624 do_compile now complains using freetype-config
@@ -95,6 +97,10 @@ do_configure_prepend() {
     sed -i -e 's%$FREETYPE_CONFIG --libs%pkg-config --libs freetype2%' ${S}/configure
     #sed -i -e "s%^includedir=.*%includedir=${SROOT}/usr/include%" ${S}/configure
     #sed -i -e "s%^oldincludedir=.*%oldincludedir=${SROOT}/usr/include%" ${S}/configure
+    
+    #171102 tries to use libpng16
+    rm -f ${WORKDIR}/recipe-sysroot/usr/lib/pkgconfig/libpng.pc
+    ln -s libpng12.pc ${WORKDIR}/recipe-sysroot/usr/lib/pkgconfig/libpng.pc
 }
 
 HOMEPAGE = "http://puppylinux.org/wikka/InkLite"
