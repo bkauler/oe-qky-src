@@ -1,7 +1,10 @@
 # Recipe created by recipetool
 # recipetool create -o pup-tools_20170607.bb http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/p/pup-tools-20170607.tar.gz
 
+PR = "r1"
+
 DEPENDS = "bacon bacon-hug bacon-hug-imports gtk+"
+inherit gettext pkgconfig
 
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://readme.txt;md5=9add27eb01e81e0a682a99520030f7ce"
@@ -21,60 +24,71 @@ do_compile () {
 	cd bacon
 	#[ -d temp1 ] && rm -rf temp1
 	mkdir -p temp1
-	sed -i -e 's%/usr/share/BaCon%.%' welcome1stboot.bac #hug_imports.bac is local.
+	
+	#171102 fails at startup, try with inbuilt hug.bac instead of hug.so...
+	sed -i -e 's%^REM INCLUDE "/usr/share/BaCon/hug.bac"%INCLUDE "/usr/share/BaCon/hug.bac"%' welcome1stboot.bac
+	sed -i -e 's%^INCLUDE "/usr/share/BaCon/hug_imports.bac"%REM INCLUDE "/usr/share/BaCon/hug_imports.bac"%' welcome1stboot.bac
+	
+	sed -i -e 's%/usr/share/BaCon%.%' welcome1stboot.bac #hug_imports.bac, hug.bac are local.
     # -n convert to C only, -a rebuild libbacon.a, -p preserve temporary files,
     # -y automatically delete temporary files, -x extract gettext strings...
 	${TMPDIR}/bacon.sh -y -x -n -p -d temp1 welcome1stboot.bac
 	cd temp1
-	${CC} -fPIC -c welcome1stboot.bac.c
-	${CC} -o welcome1stboot welcome1stboot.bac.o -L. -lbacon -lm  -ldl
+	${CC} -fPIC -c welcome1stboot.bac.c ${CFLAGS}
+	${CC} -o welcome1stboot welcome1stboot.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
 	cd ..
 	${TMPDIR}/bacon.sh -y -n -p -d temp1 debdb2pupdb.bac
 	cd temp1
-	${CC} -fPIC -c debdb2pupdb.bac.c
-	${CC} -o debdb2pupdb debdb2pupdb.bac.o -L. -lbacon -lm  -ldl
+	${CC} -fPIC -c debdb2pupdb.bac.c ${CFLAGS}
+	${CC} -o debdb2pupdb debdb2pupdb.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
 	cd ..
 	${TMPDIR}/bacon.sh -y -n -p -d temp1 find_cat.bac
 	cd temp1
-	${CC} -fPIC -c find_cat.bac.c
-	${CC} -o find_cat find_cat.bac.o -L. -lbacon -lm  -ldl
+	${CC} -fPIC -c find_cat.bac.c ${CFLAGS}
+	${CC} -o find_cat find_cat.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
 	cd ..
 	${TMPDIR}/bacon.sh -y -n -p -d temp1 pngoverlay.bac
 	cd temp1
-	${CC} -fPIC -c pngoverlay.bac.c
-	${CC} -o pngoverlay pngoverlay.bac.o -L. -lbacon -lm  -ldl
+	${CC} -fPIC -c pngoverlay.bac.c ${CFLAGS}
+	${CC} -o pngoverlay pngoverlay.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
 	cd ..
 	sed -i -e 's%/usr/share/BaCon%.%' popup.bac #hug_imports.bac is local.
 	${TMPDIR}/bacon.sh -y -n -p -d temp1 popup.bac
 	cd temp1
-	${CC} -fPIC -c popup.bac.c
-	${CC} -o popup popup.bac.o -L. -lbacon -lm  -ldl
+	${CC} -fPIC -c popup.bac.c ${CFLAGS}
+	${CC} -o popup popup.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
 	cd ..
-	sed -i -e 's%/usr/share/BaCon%.%' proxy-setup.bac #hug_imports.bac is local.
+	
+	#171102 fails at startup, try with inbuilt hug.bac instead of hug.so...
+	#oh, found needs "ENTRY" inserted...
+	sed -i -e 's%^REM INCLUDE "/usr/share/BaCon/hug.bac"%INCLUDE "/usr/share/BaCon/hug.bac",ENTRY%' proxy-setup.bac
+	sed -i -e 's%^INCLUDE "/usr/share/BaCon/hug_imports.bac"%REM INCLUDE "/usr/share/BaCon/hug_imports.bac"%' proxy-setup.bac
+	
+	sed -i -e 's%/usr/share/BaCon%.%' proxy-setup.bac #hug_imports.bac, hug.bac are local.
 	${TMPDIR}/bacon.sh -x -y -n -p -d temp1 proxy-setup.bac
 	cd temp1
-	${CC} -fPIC -c proxy-setup.bac.c
-	${CC} -o proxy-setup proxy-setup.bac.o -L. -lbacon -lm  -ldl
+	${CC} -fPIC -c proxy-setup.bac.c ${CFLAGS}
+	${CC} -o proxy-setup proxy-setup.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
 	cd ..
 	${TMPDIR}/bacon.sh -y -n -p -d temp1 pup_event_frontend_d.bac
 	cd temp1
-	${CC} -fPIC -c pup_event_frontend_d.bac.c
-	${CC} -o pup_event_frontend_d pup_event_frontend_d.bac.o -L. -lbacon -lm  -ldl
+	${CC} -fPIC -c pup_event_frontend_d.bac.c ${CFLAGS}
+	${CC} -o pup_event_frontend_d pup_event_frontend_d.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
 	cd ..
 	sed -i -e "s%'CONST IN_MODIFY=2%CONST IN_MODIFY=2%" pup_event_ipc.bac #170608
 	${TMPDIR}/bacon.sh -y -n -p -d temp1 pup_event_ipc.bac
 	cd temp1
-	${CC} -fPIC -c pup_event_ipc.bac.c
-	${CC} -o pup_event_ipc pup_event_ipc.bac.o -L. -lbacon -lm  -ldl
+	${CC} -fPIC -c pup_event_ipc.bac.c ${CFLAGS}
+	${CC} -o pup_event_ipc pup_event_ipc.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
 	cd ..
     cd ..
     
 	cd gcc
 	for aFILE in printcols truncate vercmp
 	do
-	 ${CC} -o ${aFILE} ${aFILE}.c
+	 ${CC} -o ${aFILE} ${aFILE}.c ${CFLAGS} ${LDFLAGS}
 	done
-	${CC} -lX11 getcurpos.c -o getcurpos
+	${CC} -lX11 getcurpos.c -o getcurpos ${CFLAGS} ${LDFLAGS}
 	cd ..
 }
 
