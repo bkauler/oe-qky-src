@@ -1,0 +1,10 @@
+
+171120
+------
+these patches are from seamonkey 2.49.1, which has internal icu 58.2:
+
+bug-1198952-workaround-make-3.82-bug.diff
+bug-1228227-bug-1263325-libc++-gcc_hidden.diff
+bug-915735.patch
+suppress-warnings.diff
+ucol_getKeywordValuesForLocale-ulist_resetList.diff
