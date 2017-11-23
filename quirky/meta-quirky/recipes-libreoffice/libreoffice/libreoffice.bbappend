@@ -1,5 +1,6 @@
 
-# remove 'clucene-core', add 'unzip', remove 'gstreamer1.0-plugins-base'...
+# 170505 remove 'clucene-core', add 'unzip', remove 'gstreamer1.0-plugins-base'...
+# 171120 add 'libepoxy'
 DEPENDS = " \
     python3-lxml-native \
     ccache-native \
@@ -58,9 +59,11 @@ DEPENDS = " \
     graphite2 \
     liblangtag \
     unzip \
+    libepoxy \
 "
 
-# remove '--with-system-clucene', add '--disable-gtk3', '--disable-gstreamer-1-0'...
+# 170505 remove '--with-system-clucene', add '--disable-gtk3', '--disable-gstreamer-1-0'
+# 171120 add '--with-system-epoxy'
 EXTRA_OECONF = " \
     --without-doxygen \
     --enable-release-build \
@@ -127,6 +130,7 @@ EXTRA_OECONF = " \
     --with-system-liblangtag \
     --disable-gtk3 \
     --disable-gstreamer-1-0 \
+    --with-system-epoxy \
 "
 
 # this is a hack, coz still learning....
