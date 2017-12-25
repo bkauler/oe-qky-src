@@ -37,9 +37,8 @@ inherit waf-samba cpan-base perlnative update-rc.d
 RDEPENDS_${PN}_remove = "perl"
 
 # BK add 'cups acl openldap gnutls nss nspr'...
-# BK removed libbsd
-DEPENDS += "readline virtual/libiconv zlib popt libldb libtdb libtevent libtalloc libaio cups acl openldap gnutls nss nspr"
-# ...BK removed 'libpam krb5'
+DEPENDS += "krb5 readline virtual/libiconv zlib popt libtalloc libtdb libtevent libldb libbsd libaio cups acl openldap gnutls nss nspr"
+# ...BK removed 'libpam krb5' ...restored 'krb5'
 DEPENDS_append_libc-musl = " libtirpc"
 CFLAGS_append_libc-musl = " -I${STAGING_INCDIR}/tirpc"
 LDFLAGS_append_libc-musl = " -ltirpc"
@@ -88,7 +87,7 @@ SAMBA4_LIBS="heimdal,!zlib,!popt,!talloc,!pytalloc,!pytalloc-util,!tevent,!pytev
 
 # BK remove: --with-pam --with-pammodulesdir=${base_libdir}/security
 # BK change to --without-pam, --enable-gnutls
-# BK removed --with-system-mitkrb5
+# BK removed --with-system-mitkrb5 ...restored
 EXTRA_OECONF += "--enable-fhs \
                  --with-piddir=/run \
                  --with-sockets-dir=/run/samba \
@@ -105,6 +104,7 @@ EXTRA_OECONF += "--enable-fhs \
                  --with-profiling-data \
                  --with-libiconv=${STAGING_DIR_HOST}${prefix} \
                  --without-pam \
+                 --with-system-mitkrb5 \
                 "
 
 LDFLAGS += "-Wl,-z,relro,-z,now ${@bb.utils.contains('DISTRO_FEATURES', 'ld-is-gold', ' -fuse-ld=bfd ', '', d)}"
