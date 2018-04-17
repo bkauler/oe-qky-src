@@ -1,5 +1,6 @@
 # Recipe created by recipetool
 # recipetool create -o bacon-hug_0.104.bb http://www.basic-converter.org/hug.bac
+# 180417 now at 0.105, matching bacon 3.7.2
 
 DEPENDS = "bash bacon gtk+"
 
@@ -25,14 +26,18 @@ do_configure () {
     true
 }
 
+#20180417 warning: 'bacon' is a dependency, provides libbacon.a in tmp-glibc/work/aarch64-oe-linux/bacon-hug/0.105-r0/recipe-sysroot/usr/lib
+# however, when did a individual clean/rebuild of bacon, it was no longer there
+# ...don't know OE well enough to understand why not.
+
 do_compile () {
    	mkdir -p temp1
     # -n convert to C only, -a rebuild libbacon.a, -p preserve temporary files,
     # -y automatically delete temporary files, -x extract gettext strings...
-	${TMPDIR}/bacon.sh -y -n -p -d temp1 hug.bac
+	bash ${TMPDIR}/bacon.sh -y -n -p -d temp1 hug.bac
 	cd temp1
-    ${CC} -fPIC -c hug.bac.c
-    ${CC} -o hug.so hug.bac.o -lbacon -lm -shared -rdynamic -ldl
+    ${CC} -fPIC ${CFLAGS} -c hug.bac.c
+    ${CC} -o hug.so hug.bac.o -lbacon -lm -shared -rdynamic -ldl ${LDFLAGS}
     cd ..
 }
 

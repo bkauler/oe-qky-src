@@ -1,5 +1,6 @@
 # Recipe created by recipetool
 #  recipetool create -o bacon-hug-imports_0.104.bb http://www.basic-converter.org/hug_imports.bac
+#20180417 hug 0.105, bacon 3.7.2
 
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
