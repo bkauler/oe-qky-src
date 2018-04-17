@@ -1,5 +1,6 @@
 # Recipe created by recipetool
 # recipetool create -o pup-tools_20170607.bb http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/p/pup-tools-20170607.tar.gz
+# 20180417 proxy-setup.bac removed (it is now a shell script).
 
 PR = "r1"
 
@@ -10,12 +11,18 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://readme.txt;md5=9add27eb01e81e0a682a99520030f7ce"
 
 SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/p/pup-tools-${PV}.tar.gz"
-SRC_URI[md5sum] = "08310e9ecf73f9132cd986fd41220ee9"
-SRC_URI[sha256sum] = "dcf10d407efb412f3bc2d98381a17fc0258dba7777d50f52be885b1faef3b038"
+SRC_URI[md5sum] = "08c7c84fe852ff702242de4edecffe45"
+SRC_URI[sha256sum] = "ceb03c587b182ac8aecbfa3b2a3943532e884fb63e411d6babc3a88e994ab0f8"
 
 do_configure() {
     cp -f ${DL_DIR}/hug_imports.bac ${S}/bacon/
     cp -f ${DL_DIR}/hug.bac ${S}/bacon/
+    
+    #180417 this line was correct for bacon 3.0.2, now needs "<poll.h>" ...
+    sed -i -e 's%^PRAGMA INCLUDE poll.h%PRAGMA INCLUDE <poll.h>%' ${S}/bacon/pup_event_frontend_d.bac
+    #ditto...
+    sed -i -e 's%^PRAGMA INCLUDE sys/inotify.h%PRAGMA INCLUDE <sys/inotify.h>%' ${S}/bacon/pup_event_ipc.bac
+    sed -i -e 's%^PRAGMA INCLUDE poll.h%PRAGMA INCLUDE <poll.h>%' ${S}/bacon/pup_event_ipc.bac
 }
 
 do_compile () {
@@ -59,17 +66,18 @@ do_compile () {
 	${CC} -o popup popup.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
 	cd ..
 	
-	#171102 fails at startup, try with inbuilt hug.bac instead of hug.so...
-	#oh, found needs "ENTRY" inserted...
-	sed -i -e 's%^REM INCLUDE "/usr/share/BaCon/hug.bac"%INCLUDE "/usr/share/BaCon/hug.bac",ENTRY%' proxy-setup.bac
-	sed -i -e 's%^INCLUDE "/usr/share/BaCon/hug_imports.bac"%REM INCLUDE "/usr/share/BaCon/hug_imports.bac"%' proxy-setup.bac
+	#180417 removed...
+	##171102 fails at startup, try with inbuilt hug.bac instead of hug.so...
+	##oh, found needs "ENTRY" inserted...
+	#sed -i -e 's%^REM INCLUDE "/usr/share/BaCon/hug.bac"%INCLUDE "/usr/share/BaCon/hug.bac",ENTRY%' proxy-setup.bac
+	#sed -i -e 's%^INCLUDE "/usr/share/BaCon/hug_imports.bac"%REM INCLUDE "/usr/share/BaCon/hug_imports.bac"%' proxy-setup.bac
+	#sed -i -e 's%/usr/share/BaCon%.%' proxy-setup.bac #hug_imports.bac, hug.bac are local.
+	#${TMPDIR}/bacon.sh -x -y -n -p -d temp1 proxy-setup.bac
+	#cd temp1
+	#${CC} -fPIC -c proxy-setup.bac.c ${CFLAGS}
+	#${CC} -o proxy-setup proxy-setup.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
+	#cd ..
 	
-	sed -i -e 's%/usr/share/BaCon%.%' proxy-setup.bac #hug_imports.bac, hug.bac are local.
-	${TMPDIR}/bacon.sh -x -y -n -p -d temp1 proxy-setup.bac
-	cd temp1
-	${CC} -fPIC -c proxy-setup.bac.c ${CFLAGS}
-	${CC} -o proxy-setup proxy-setup.bac.o -L. -lbacon -lm  -ldl ${LDFLAGS}
-	cd ..
 	${TMPDIR}/bacon.sh -y -n -p -d temp1 pup_event_frontend_d.bac
 	cd temp1
 	${CC} -fPIC -c pup_event_frontend_d.bac.c ${CFLAGS}
@@ -110,10 +118,10 @@ do_install () {
     install -m755 bacon/temp1/pup_event_frontend_d ${D}/usr/local/pup_event
     install -m755 bacon/temp1/pup_event_ipc ${D}/usr/local/pup_event
     install -d ${D}/usr/local/simple_network_setup
-    install -m755 bacon/temp1/proxy-setup ${D}/usr/local/simple_network_setup
+    #install -m755 bacon/temp1/proxy-setup ${D}/usr/local/simple_network_setup
 }
 
-FILES_${PN} += "/usr/local/petget /usr/local/pup_event /usr/local/simple_network_setup"
+FILES_${PN} += "/usr/local/petget /usr/local/pup_event"
 
 HOMEPAGE = "http://barryk.org/news/?viewDetailed=00136"
 SUMMARY = "Core utilities used in Puppy and derivatives."
