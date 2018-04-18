@@ -1,12 +1,19 @@
+#180417 ***broken for aarch64***
+
+PR = "r1"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=94d55d512a9ba36caa9b7df079bae19f"
+
+#20180417 as not doing an autoreconf, existing config.sub and config.guess do not
+# recognize aarch64, hence the 07-* patch.
 
 SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/inkscapelite-0.36.3.tar.bz2 \
            file://01-inkscapelite-glib.h.patch \
            file://02-inkscapelite-export-dynamic.patch \
            file://03-inkscapelite-fix-hruler.patch \
            file://04-inkscapelite-fix-vruler.patch \
-           file://05-inkscapelite-rulerfontfix-jamesbond.patch"
+           file://05-inkscapelite-rulerfontfix-jamesbond.patch \
+           file://07-inkscapelite-autotools-fix-aarch64.patch"
 SRC_URI[md5sum] = "816615d99d1d9673a14c1465c2467924"
 SRC_URI[sha256sum] = "e83476d9c8a3af0c47d7d0934991587060fede4ab3cb23e2a92ca4b6f2404088"
 
@@ -87,6 +94,11 @@ typedef unsigned int NRULong;
     # 171102 final link: error: unrecognized command line option '--export-dynamic'
     # from t2, this fix, also needs "-lm"
     sed -i -e 's%\-\-export\-dynamic %-lm %' ${S}/src/Makefile
+
+    ##180417 hmmm, might have to rethink all of this. aarch64 build wants gnu/stubs-32.h
+    #if [ ! -f ${WORKDIR}/recipe-sysroot/usr/include/gnu/stubs-32.h ];then
+    # ln -s stubs-64.h ${WORKDIR}/recipe-sysroot/usr/include/gnu/stubs-32.h
+    #fi
 }
 
 # BK 170624 do_compile now complains using freetype-config

@@ -1,0 +1,36 @@
+diff -Naur inkscapelite-0.36.3ORIG/config.guess inkscapelite-0.36.3/config.guess
+--- inkscapelite-0.36.3ORIG/config.guess	2003-12-11 14:03:06.000000000 +0800
++++ inkscapelite-0.36.3/config.guess	2018-04-18 07:41:33.596556983 +0800
+@@ -815,6 +815,13 @@
+     i*86:Minix:*:*)
+ 	echo ${UNAME_MACHINE}-pc-minix
+ 	exit 0 ;;
++    aarch64:Linux:*:*)
++	echo ${UNAME_MACHINE}-unknown-linux-${LIBC}
++	exit 0 ;;
++    aarch64_be:Linux:*:*)
++	UNAME_MACHINE=aarch64_be
++	echo ${UNAME_MACHINE}-unknown-linux-${LIBC}
++	exit 0 ;;
+     arm*:Linux:*:*)
+ 	echo ${UNAME_MACHINE}-unknown-linux-gnu
+ 	exit 0 ;;
+diff -Naur inkscapelite-0.36.3ORIG/config.sub inkscapelite-0.36.3/config.sub
+--- inkscapelite-0.36.3ORIG/config.sub	2003-12-11 14:03:06.000000000 +0800
++++ inkscapelite-0.36.3/config.sub	2018-04-18 07:34:57.436575545 +0800
+@@ -226,6 +226,7 @@
+ 	# Some are omitted here because they have special meanings below.
+ 	1750a | 580 \
+ 	| a29k \
++	| aarch64 | aarch64_be \
+ 	| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] | alphapca5[67] \
+ 	| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] | alpha64pca5[67] \
+ 	| arc | arm | arm[bl]e | arme[lb] | armv[2345] | armv[345][lb] | avr \
+@@ -291,6 +292,7 @@
+ 	# Recognize the basic CPU types with company name.
+ 	580-* \
+ 	| a29k-* \
++	| aarch64-* | aarch64_be-* \
+ 	| alpha-* | alphaev[4-8]-* | alphaev56-* | alphaev6[78]-* \
+ 	| alpha64-* | alpha64ev[4-8]-* | alpha64ev56-* | alpha64ev6[78]-* \
+ 	| alphapca5[67]-* | alpha64pca5[67]-* | arc-* \
