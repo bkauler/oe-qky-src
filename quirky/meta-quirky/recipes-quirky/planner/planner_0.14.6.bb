@@ -1,8 +1,9 @@
 # Recipe created by recipetool
 # recipetool create -o planner_0.14.6.bb http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/planner-0.14.6.tar.bz2
 
-# BK 170615 amazing, this actually compiles!
+# BK 170615 amazing, this actually compiles!  180419 fixed for aarch64.
 
+PR = "r1"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=94d55d512a9ba36caa9b7df079bae19f"
 
@@ -14,7 +15,8 @@ SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/planner-${P
            file://command_line_args.diff \
            file://no-index-sgml.patch \
            file://fix-as-needed-build.patch \
-           file://planner-rmvgconf-Os.patch"
+           file://planner-rmvgconf-Os.patch \
+           file://planner-fix-aarch64.patch"
 SRC_URI[md5sum] = "1f33d201f5607ddc68b06026b772ad7b"
 SRC_URI[sha256sum] = "3a5577437cf1c1a27e35b5871b4d279fea622c19e6e1f32e26b44ef56d2edb7e"
 
@@ -30,13 +32,9 @@ CFLAGS += "-I${SROOT}/usr/include/libxml2"
 
 do_configure_prepend() {
     #fool the configure, do not have libgnomeui
-    cp -a ${SROOT}/usr/lib/pkgconfig/libgnomecanvas-2.0.pc ${SROOT}/usr/lib/pkgconfig/libgnomeui-2.0.pc
+    cp -a -f ${SROOT}/usr/lib/pkgconfig/libgnomecanvas-2.0.pc ${SROOT}/usr/lib/pkgconfig/libgnomeui-2.0.pc
     #do not have scrollkeeper either...
-    sed -i -e 's%scrollkeeper\-config%pkg-config%' ${S}/configure
-}
-
-do_configure() {
-    oe_runconf
+    sed -i -e 's%scrollkeeper\-config%pkg-config%' ${S}/configure.in
 }
 
 do_install() {
