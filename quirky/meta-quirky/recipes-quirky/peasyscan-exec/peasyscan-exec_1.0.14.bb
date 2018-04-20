@@ -3,12 +3,14 @@
 
 # this is a hacked sane-frontends, by rcrsn51, for use in his 'peasyscan'.
 
+PR = "r1"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=0636e73ff0215e8d672dc4c32c317bb3"
 
 PV = "1.0.14"
 
 SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/peasyscan-sane-frontends-${PV}.tar.bz2 \
+           file://00-peasyscan-fix-aarch64.patch \
            file://01-hot-fix.patch \
            file://02-scan-button.patch"
 SRC_URI[md5sum] = "6ef74b08e87a2d425032172931d2b135"
