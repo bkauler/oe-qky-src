@@ -1,10 +1,12 @@
 # Recipe created by recipetool
 # recipetool create -o gwhere_0.2.3-p4.bb http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/gwhere-0.2.3-patched_4.tar.bz2
 
+PR = "r1"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=94d55d512a9ba36caa9b7df079bae19f"
 
-SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/gwhere-0.2.3-patched_4.tar.bz2"
+SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/gwhere-0.2.3-patched_4.tar.bz2 \
+           file://gwhere-fix-aarch64.patch"
 SRC_URI[md5sum] = "772358f395a1ce0514cf6b57c9ed1b60"
 SRC_URI[sha256sum] = "971efc6279255ae16c07fe166b1f736edcdc062ef71ddf91f13e208ef2a14036"
 
@@ -15,7 +17,7 @@ DEPENDS = "zlib gtk+ glib-2.0"
 inherit gettext autotools-brokensep pkgconfig
 
 # BK '--enable-nls' broken...
-EXTRA_OECONF = "--enable-gtk20 --disable-gtktest --disable-nls"
+EXTRA_OECONF = "--enable-gtk20 --disable-gtktest --disable-nls --disable-static"
 
 # "reconfig" is broken, just run 'configure'...
 do_configure() {
@@ -37,4 +39,20 @@ do_configure() {
     sed -i -e 's%^LDFLAGS =%LDFLAGS += -fPIC%' ${S}/src/db/Makefile
     sed -i -e 's%^CFLAGS =%CFLAGS += -fPIC%' ${S}/src/data/Makefile
     sed -i -e 's%^LDFLAGS =%LDFLAGS += -fPIC%' ${S}/src/data/Makefile
+    
+    #180420
+    for aMake in `find ${S} -type f -name Makefile`
+    do
+     sed -i -e 's%^GW_PROG_PATH_MOUNT =.*%GW_PROG_PATH_MOUNT = /bin/mount%' ${aMake}
+     sed -i -e 's%^GW_PROG_PATH_UMOUNT =.*%GW_PROG_PATH_UMOUNT = /bin/umount%' ${aMake}
+    done
+    sed -i -e 's%GW_PROG_PATH_MOUNT%"/bin/mount"%' ${S}/src/gwdevicemanager.c
+    sed -i -e 's%GW_PROG_PATH_UMOUNT%"/bin/umount"%' ${S}/src/gwdevicemanager.c
+    
+    #needs -lgmodule-2.0
+    sed -i -e 's%^GTK_LIBS = %GTK_LIBS = -lgmodule-2.0 %' ${S}/src/Makefile
+    sed -i -e 's%^LIBS = %LIBS = -lgmodule-2.0 %' ${S}/src/Makefile
 }
+
+#180420 get QA errors, files in wrong place...
+INSANE_SKIP_${PN} += "dev-so libdir"
