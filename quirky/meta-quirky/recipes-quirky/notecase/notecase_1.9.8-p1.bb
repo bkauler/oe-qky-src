@@ -1,6 +1,7 @@
 # Recipe created by recipetool
 # recipetool create -o notecase_1.9.8-p1.bb https://downloads.sourceforge.net/project/notecase/notecase/1.9.8/notecase-1.9.8_src.tar.gz
 
+PR = "r1"
 LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://deb/copyright;md5=b02a353a366d7ce1e6d22131ba8c0382"
 
