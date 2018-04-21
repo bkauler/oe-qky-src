@@ -3,13 +3,12 @@ Description: Fix FTBFS with gcc-4.7
  to prevent the FTBFS.
 Author: Paul Tagliamonte <paultag@ubuntu.com>
 Origin: vendor
-Bug: https://code.google.com/p/wvstreams/issues/detail?id=34
 Bug-Debian: http://bugs.debian.org/667418
-Last-Update: 2013-10-30
+Last-Update: 2012-04-13
 
---- a/utils/wvuid.cc
-+++ b/utils/wvuid.cc
-@@ -33,6 +33,7 @@
+--- wvstreams-4.6.1.orig/utils/wvuid.cc
++++ wvstreams-4.6.1/utils/wvuid.cc
+@@ -33,6 +33,7 @@ wvuid_t wvgetuid()
  
  #else // not WIN32
  
