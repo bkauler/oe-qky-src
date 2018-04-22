@@ -12,7 +12,7 @@ DEPENDS = "zlib ffmpeg jpeg virtual/libx11 libxv \
            libsdl-mixer libsdl-ttf speex libmodplug vcdimager wavpack x264 libxcb \
            libxvmc lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec \
            schroedinger taglib openssl libsamplerate0 libbluray mesa libdvdread \
-           libdvdcss libcddb libcdio-paranoia libarchive libdrm"
+           libdvdcss libcddb libcdio-paranoia libarchive libdrm libwebp"
 
 REQUIRED_DISTRO_FEATURES = "x11"
 
