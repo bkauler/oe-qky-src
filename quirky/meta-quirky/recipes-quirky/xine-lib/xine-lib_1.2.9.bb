@@ -10,15 +10,28 @@ SRC_URI[md5sum] = "cd42d2ba92f943d17736d9bca712b3d1"
 SRC_URI[sha256sum] = "32b34e8049feb762d75a551d5d2cdb56c396fdd83e35b9b7de5fd08e498e948d"
 
 # just added in case: lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec schroedinger taglib openssl libsamplerate0
-DEPENDS = "zlib libxext fontconfig freetype libx11 librsvg libpng ffmpeg alsa-lib libdvdnav faac faad2 flac gdk-pixbuf mesa libglu liba52 libmad libmng libtheora libva libvdpau libvorbis libogg libvpx libsdl libsdl-image libsdl-mixer libsdl-ttf speex libmodplug vcdimager wavpack x264 libxcb libxvmc lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec schroedinger taglib openssl libsamplerate0 libbluray libv4l"
+DEPENDS = "zlib libxext fontconfig freetype libx11 librsvg libpng ffmpeg alsa-lib \
+           libdvdnav faac faad2 flac gdk-pixbuf mesa libglu liba52 libmad libmng \
+           libtheora libva libvdpau libvorbis libogg libvpx libsdl libsdl-image \
+           libsdl-mixer libsdl-ttf speex libmodplug vcdimager wavpack x264 libxcb \
+           libxvmc lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec \
+           schroedinger taglib openssl libsamplerate0 libbluray libv4l libwebp"
 
 inherit pkgconfig gettext perlnative autotools
 
 SROOT = "${WORKDIR}/recipe-sysroot"
 # note, broken finding flac headers, have put in explicit path.
 
-# haven't got v4l, remove:  --enable-v4l2
-EXTRA_OECONF = "--disable-dxr3 --disable-gnomevfs --disable-samba --enable-antialiasing --without-imagemagick --with-freetype --with-fontconfig --without-esound --without-jack --with-libflac --enable-faad --with-real-codecs-path=/usr/lib/codecs --with-w32-path=/usr/lib/codecs --without-caca --without-pulseaudio --with-alsa --enable-mad --enable-faad --enable-a52dec --enable-vdpau --enable-dvb --disable-directfb --disable-aalib --with-xcb --with-external-dvdnav --disable-ipv6 --with-sdl --enable-vpx --enable-mad --enable-opengl --enable-glu --enable-xvmc --enable-vaapi --disable-vcd --with-libFLAC-includes=${SROOT}/usr/include/FLAC --enable-bluray --enable-libv4l"
+EXTRA_OECONF = "--disable-dxr3 --disable-gnomevfs --disable-samba --enable-antialiasing \
+                --without-imagemagick --with-freetype --with-fontconfig --without-esound \
+                --without-jack --with-libflac --enable-faad --with-real-codecs-path=/usr/lib/codecs \
+                --with-w32-path=/usr/lib/codecs --without-caca --without-pulseaudio \
+                --with-alsa --enable-mad --enable-faad --enable-a52dec --enable-vdpau \
+                --enable-dvb --disable-directfb --disable-aalib --with-xcb \
+                --with-external-dvdnav --disable-ipv6 --with-sdl --enable-vpx \
+                --enable-mad --enable-opengl --enable-glu --enable-xvmc --enable-vaapi \
+                --disable-vcd --with-libFLAC-includes=${SROOT}/usr/include/FLAC \
+                --enable-bluray --enable-libv4l"
 
 # ref: http://www.linuxfromscratch.org/blfs/view/svn/multimedia/xine-lib.html
 do_configure_prepend() {
