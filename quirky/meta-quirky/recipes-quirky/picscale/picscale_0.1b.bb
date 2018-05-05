@@ -16,6 +16,10 @@ do_configure () {
 }
 
 do_compile () {
+    
+    #180505 syntax error line 119 picscale.bac...
+    sed -i -e 's% my_msg\$))$% my_msg$)%' picscale.bac
+    
     mkdir -p temp1
     # -n convert to C only, -a rebuild libbacon.a, -p preserve temporary files,
     # -y automatically delete temporary files, -x extract gettext strings...
