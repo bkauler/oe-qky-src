@@ -1,0 +1,42 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sat, 30 Apr 2016 14:12:45 +0200
+Subject: Filter out PIE flags when building shared objects
+
+Filter out -pie, -fpie, and -fPIE when building the shared library and the PAM
+module. This way, hardening=+all can be used unconditionally in debian/rules.
+
+Forwarded: not-needed
+Last-Update: 2016-04-30
+---
+ libcap/Makefile  | 3 +++
+ pam_cap/Makefile | 3 +++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/libcap/Makefile b/libcap/Makefile
+index 460be44..e607ee6 100644
+--- a/libcap/Makefile
++++ b/libcap/Makefile
+@@ -9,6 +9,9 @@ include ../Make.Rules
+ LIBNAME=$(LIBTITLE).so
+ STALIBNAME=$(LIBTITLE).a
+ #
++CFLAGS  := $(filter-out -fPIE,$(CFLAGS))
++LDFLAGS := $(filter-out -fPIE,$(filter-out -pie,$(LDFLAGS)))
++
+ 
+ FILES=cap_alloc cap_proc cap_extint cap_flag cap_text cap_file
+ 
+diff --git a/pam_cap/Makefile b/pam_cap/Makefile
+index 4b15291..4136d97 100644
+--- a/pam_cap/Makefile
++++ b/pam_cap/Makefile
+@@ -3,6 +3,9 @@
+ topdir=$(shell pwd)/..
+ include ../Make.Rules
+ 
++CFLAGS  := $(filter-out -fPIE,$(CFLAGS))
++LDFLAGS := $(filter-out -fPIE,$(filter-out -pie,$(LDFLAGS)))
++
+ # Note (as the author of much of the Linux-PAM library, I am confident
+ # that this next line does *not* require -lpam on it.) If you think it
+ # does, *verify that it does*, and if you observe that it fails as

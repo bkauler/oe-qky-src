@@ -1,0 +1,166 @@
+diff -Naur libcap-2.25/libcap/include/uapi/linux/capability.h libcap-2.25-patched1/libcap/include/uapi/linux/capability.h
+--- libcap-2.25/libcap/include/uapi/linux/capability.h	2016-01-31 09:12:59.000000000 +0800
++++ libcap-2.25-patched1/libcap/include/uapi/linux/capability.h	2018-05-20 20:23:59.000000000 +0800
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+ /*
+  * This is <linux/capability.h>
+  *
+@@ -7,7 +8,7 @@
+  *
+  * See here for the libcap library ("POSIX draft" compliance):
+  *
+- * http://www.kernel.org/pub/linux/libs/security/linux-privs/
++ * ftp://www.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.6/
+  */
+ 
+ #ifndef _UAPI_LINUX_CAPABILITY_H
+@@ -15,8 +16,6 @@
+ 
+ #include <linux/types.h>
+ 
+-struct task_struct;
+-
+ /* User-level do most of the mapping between kernel and user
+    capabilities based on the version tag given by the kernel. The
+    kernel might be somewhat backwards compatible, but don't bet on
+@@ -62,9 +61,13 @@
+ #define VFS_CAP_U32_2           2
+ #define XATTR_CAPS_SZ_2         (sizeof(__le32)*(1 + 2*VFS_CAP_U32_2))
+ 
+-#define XATTR_CAPS_SZ           XATTR_CAPS_SZ_2
+-#define VFS_CAP_U32             VFS_CAP_U32_2
+-#define VFS_CAP_REVISION	VFS_CAP_REVISION_2
++#define VFS_CAP_REVISION_3	0x03000000
++#define VFS_CAP_U32_3           2
++#define XATTR_CAPS_SZ_3         (sizeof(__le32)*(2 + 2*VFS_CAP_U32_3))
++
++#define XATTR_CAPS_SZ           XATTR_CAPS_SZ_3
++#define VFS_CAP_U32             VFS_CAP_U32_3
++#define VFS_CAP_REVISION	VFS_CAP_REVISION_3
+ 
+ struct vfs_cap_data {
+ 	__le32 magic_etc;            /* Little endian */
+@@ -74,6 +77,18 @@
+ 	} data[VFS_CAP_U32];
+ };
+ 
++/*
++ * same as vfs_cap_data but with a rootid at the end
++ */
++struct vfs_ns_cap_data {
++	__le32 magic_etc;
++	struct {
++		__le32 permitted;    /* Little endian */
++		__le32 inheritable;  /* Little endian */
++	} data[VFS_CAP_U32];
++	__le32 rootid;
++};
++
+ #ifndef __KERNEL__
+ 
+ /*
+@@ -207,7 +222,7 @@
+ #define CAP_SYS_MODULE       16
+ 
+ /* Allow ioperm/iopl access */
+-/* Allow sending USB messages to any device via /proc/bus/usb */
++/* Allow sending USB messages to any device via /dev/bus/usb */
+ 
+ #define CAP_SYS_RAWIO        17
+ 
+@@ -349,10 +364,13 @@
+ 
+ /* Allow reading the audit log via multicast netlink socket */
+ 
+-#define CAP_AUDIT_READ       37
++#define CAP_AUDIT_READ		37
++
++/* Allow mounting, unmounting filesystems */
+ 
++#define CAP_SYS_MOUNT		38
+ 
+-#define CAP_LAST_CAP         CAP_AUDIT_READ
++#define CAP_LAST_CAP         CAP_SYS_MOUNT
+ 
+ #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
+ 
+diff -Naur libcap-2.25/libcap/include/uapi/linux/prctl.h libcap-2.25-patched1/libcap/include/uapi/linux/prctl.h
+--- libcap-2.25/libcap/include/uapi/linux/prctl.h	2014-01-02 09:48:02.000000000 +0800
++++ libcap-2.25-patched1/libcap/include/uapi/linux/prctl.h	2017-11-13 02:46:13.000000000 +0800
+@@ -1,6 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+ #ifndef _LINUX_PRCTL_H
+ #define _LINUX_PRCTL_H
+ 
++#include <linux/types.h>
++
+ /* Values to pass as first argument to prctl() */
+ 
+ #define PR_SET_PDEATHSIG  1  /* Second arg is a signal */
+@@ -119,6 +122,31 @@
+ # define PR_SET_MM_ENV_END		11
+ # define PR_SET_MM_AUXV			12
+ # define PR_SET_MM_EXE_FILE		13
++# define PR_SET_MM_MAP			14
++# define PR_SET_MM_MAP_SIZE		15
++
++/*
++ * This structure provides new memory descriptor
++ * map which mostly modifies /proc/pid/stat[m]
++ * output for a task. This mostly done in a
++ * sake of checkpoint/restore functionality.
++ */
++struct prctl_mm_map {
++	__u64	start_code;		/* code section bounds */
++	__u64	end_code;
++	__u64	start_data;		/* data section bounds */
++	__u64	end_data;
++	__u64	start_brk;		/* heap for brk() syscall */
++	__u64	brk;
++	__u64	start_stack;		/* stack starts at */
++	__u64	arg_start;		/* command line arguments bounds */
++	__u64	arg_end;
++	__u64	env_start;		/* environment variables bounds */
++	__u64	env_end;
++	__u64	*auxv;			/* auxiliary vector */
++	__u32	auxv_size;		/* vector size */
++	__u32	exe_fd;			/* /proc/$pid/exe link file */
++};
+ 
+ /*
+  * Set specific pid that is allowed to ptrace the current task.
+@@ -149,4 +177,25 @@
+ 
+ #define PR_GET_TID_ADDRESS	40
+ 
++#define PR_SET_THP_DISABLE	41
++#define PR_GET_THP_DISABLE	42
++
++/*
++ * Tell the kernel to start/stop helping userspace manage bounds tables.
++ */
++#define PR_MPX_ENABLE_MANAGEMENT  43
++#define PR_MPX_DISABLE_MANAGEMENT 44
++
++#define PR_SET_FP_MODE		45
++#define PR_GET_FP_MODE		46
++# define PR_FP_MODE_FR		(1 << 0)	/* 64b FP registers */
++# define PR_FP_MODE_FRE		(1 << 1)	/* 32b compatibility */
++
++/* Control the ambient capability set */
++#define PR_CAP_AMBIENT			47
++# define PR_CAP_AMBIENT_IS_SET		1
++# define PR_CAP_AMBIENT_RAISE		2
++# define PR_CAP_AMBIENT_LOWER		3
++# define PR_CAP_AMBIENT_CLEAR_ALL	4
++
+ #endif /* _LINUX_PRCTL_H */
+diff -Naur libcap-2.25/libcap/include/uapi/linux/securebits.h libcap-2.25-patched1/libcap/include/uapi/linux/securebits.h
+--- libcap-2.25/libcap/include/uapi/linux/securebits.h	2016-01-31 09:12:59.000000000 +0800
++++ libcap-2.25-patched1/libcap/include/uapi/linux/securebits.h	2017-11-13 02:46:13.000000000 +0800
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+ #ifndef _UAPI_LINUX_SECUREBITS_H
+ #define _UAPI_LINUX_SECUREBITS_H
+ 

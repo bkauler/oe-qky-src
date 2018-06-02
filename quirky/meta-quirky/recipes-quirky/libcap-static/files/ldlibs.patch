@@ -1,0 +1,26 @@
+From: Andrew Straw <strawman@astraw.com>
+Date: Fri, 20 May 2011 08:28:55 -0500
+Subject: compile pam_cap with -lpam
+
+A similar fix was in Debian but appears to have been accidentally
+dropped. Drop this one if or when debian gets it back so we can
+directly sync (Closes: #591410).
+
+Last-Update: 2014-07-26
+---
+ pam_cap/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pam_cap/Makefile b/pam_cap/Makefile
+index cc32fb6..f83e324 100644
+--- a/pam_cap/Makefile
++++ b/pam_cap/Makefile
+@@ -7,7 +7,7 @@ include ../Make.Rules
+ # that this next line does *not* require -lpam on it.) If you think it
+ # does, *verify that it does*, and if you observe that it fails as
+ # written (and you know why it fails), email me and explain why. Thanks!
+-LDLIBS += -L../libcap -lcap
++LDLIBS += -L../libcap -lcap -lpam
+ 
+ all: pam_cap.so
+ 	$(MAKE) testcompile
