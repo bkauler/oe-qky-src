@@ -3,6 +3,7 @@
 
 # 180421 ***BROKEN***
 # aarch64, configure works (no error) but no Makefile generated.
+# ditto x86-64 broken, no Makefile.
 
 SUMMARY = "XSane is a graphical frontend for scanners. It uses the library SANE."
 HOMEPAGE = "http://www.xsane.org/"
@@ -41,7 +42,7 @@ DEPENDS = "zlib libjpeg-turbo tiff gtk+ sane-backends libpng lcms"
 inherit pkgconfig gettext autotools-brokensep
 
 # Specify any options you want to pass to the configure script using EXTRA_OECONF:
-EXTRA_OECONF = "--enable-gtk2 --disable-gtktest --disable-sanetest"
+EXTRA_OECONF = "--disable-gimp2 --disable-gimp --enable-gtk2 --disable-gtktest --disable-sanetest --disable-gimptest"
 
 # use the existing 'configure' script...
 XXXXdo_configure () {
