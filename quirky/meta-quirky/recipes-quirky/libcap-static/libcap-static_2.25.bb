@@ -72,6 +72,7 @@ do_compile() {
 	oe_runmake ${PACKAGECONFIG_CONFARGS}
 }
 
+# warning: -s (strip) does not work for aarch64 target...
 do_install() {
 	#oe_runmake install \
 	#	${PACKAGECONFIG_CONFARGS} \
@@ -81,7 +82,7 @@ do_install() {
 	
 	# BK 20180529 only want 'capsh' utility...
 	install -d ${D}/usr/sbin
-	install -m 755 -s progs/capsh ${D}/usr/sbin
+	install -m 755 progs/capsh ${D}/usr/sbin
 }
 
 #do_install_append() {
