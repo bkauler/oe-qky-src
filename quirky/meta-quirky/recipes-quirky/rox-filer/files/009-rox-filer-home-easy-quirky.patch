@@ -1,0 +1,88 @@
+diff -Naur rox-filer-2011-10-22-has_configure-patched008/ROX-Filer/src/main.c rox-filer-2011-10-22-has_configure/ROX-Filer/src/main.c
+--- rox-filer-2011-10-22-has_configure-patched008/ROX-Filer/src/main.c	2018-06-08 08:33:46.879967323 +0800
++++ rox-filer-2011-10-22-has_configure/ROX-Filer/src/main.c	2018-06-08 16:21:53.869980627 +0800
+@@ -90,6 +90,10 @@
+ 
+ int home_dir_len;
+ const char *home_dir, *app_dir;
++int easy_home_dir_len;
++const char *easy_home_dir="/mnt/wkg/home";
++int quirky_home_dir_len;
++const char *quirky_home_dir="/file";
+ 
+ GtkTooltips *tooltips = NULL;
+ 
+@@ -281,6 +285,8 @@
+ 
+ 	home_dir = g_get_home_dir();
+ 	home_dir_len = strlen(home_dir);
++	easy_home_dir_len = strlen(easy_home_dir);
++	quirky_home_dir_len = strlen(quirky_home_dir);
+ 	app_dir = g_strdup(getenv("APP_DIR"));
+ 
+ 	/* Get internationalisation up and running. This requires the
+diff -Naur rox-filer-2011-10-22-has_configure-patched008/ROX-Filer/src/toolbar.c rox-filer-2011-10-22-has_configure/ROX-Filer/src/toolbar.c
+--- rox-filer-2011-10-22-has_configure-patched008/ROX-Filer/src/toolbar.c	2011-10-23 01:48:50.000000000 +0800
++++ rox-filer-2011-10-22-has_configure/ROX-Filer/src/toolbar.c	2018-06-08 16:40:21.303287982 +0800
+@@ -19,9 +19,16 @@
+ 
+ /* toolbar.c - for the button bars that go along the tops of windows */
+ 
++extern int easy_home_dir_len;
++extern const char *easy_home_dir;
++extern int quirky_home_dir_len;
++extern const char *quirky_home_dir;
++
+ #include "config.h"
+ 
+ #include <string.h>
++#include <dirent.h>
++#include <errno.h>
+ 
+ #include "global.h"
+ 
+@@ -346,10 +353,42 @@
+ 	event = get_current_event(GDK_BUTTON_RELEASE);
+ 	if (event->type == GDK_BUTTON_RELEASE && NEW_WIN_BUTTON(event))
+ 	{
+-		filer_opendir(home_dir, filer_window, NULL);
++		/*BK test for easy and quirky...*/
++		DIR* dire = opendir(easy_home_dir); /*/mnt/wkg/home*/
++		if (dire) {
++			closedir(dire);
++			filer_opendir(easy_home_dir, filer_window, NULL);
++		}
++		else {
++			DIR* dirq = opendir(quirky_home_dir); /*/file*/
++			if (dirq) {
++				closedir(dirq);
++				filer_opendir(quirky_home_dir, filer_window, NULL);
++			}
++			else {
++				filer_opendir(home_dir, filer_window, NULL);
++			}
++		}
+ 	}
+ 	else
+-		filer_change_to(filer_window, home_dir, NULL);
++	{
++		/*BK test for easy and quirky...*/
++		DIR* dire = opendir(easy_home_dir); /*/mnt/wkg/home*/
++		if (dire) {
++			closedir(dire);
++			filer_change_to(filer_window, easy_home_dir, NULL);
++		}
++		else {
++			DIR* dirq = opendir(quirky_home_dir); /*/file*/
++			if (dirq) {
++				closedir(dirq);
++				filer_change_to(filer_window, quirky_home_dir, NULL);
++			}
++			else {
++				filer_change_to(filer_window, home_dir, NULL);
++			}
++		}
++	}
+ 	gdk_event_free(event);
+ }
+ 

@@ -7,3 +7,14 @@ built a 64-bit executable.
 fixed by editing files/oe-precreate-makefile.patch:
 commented out the "CC = gcc", as this prevented OE from using its cross-compiler.
 changed "CFLAGS =" and "LDFLAGS =" to "CFLAGS +=" and "LDFLAGS +="
+
+20171022
+--------
+now have source with 'configure' script.
+
+20180608
+--------
+ref: input498/0-rox-filer
+starting with the 20111022 source, apply 20170805 patches.
+new 009-* patch to set home as /mnt/wkg/home (easy), /file (quirky), or /root
+

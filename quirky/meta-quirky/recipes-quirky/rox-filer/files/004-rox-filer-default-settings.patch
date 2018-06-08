@@ -1,0 +1,102 @@
+diff -rupN rox-filer-orig//ROX-Filer/src/display.c rox-filer//ROX-Filer/src/display.c
+--- rox-filer-orig//ROX-Filer/src/display.c	2011-01-02 07:01:36.074000002 +0200
++++ rox-filer//ROX-Filer/src/display.c	2011-01-02 07:01:42.375999996 +0200
+@@ -90,11 +90,11 @@ static void display_set_actual_size_real
+ void display_init()
+ {
+ 	option_add_int(&o_display_caps_first, "display_caps_first", FALSE);
+-	option_add_int(&o_display_dirs_first, "display_dirs_first", FALSE);
+-	option_add_int(&o_display_size, "display_icon_size", AUTO_SIZE_ICONS);
++	option_add_int(&o_display_dirs_first, "display_dirs_first", TRUE);
++	option_add_int(&o_display_size, "display_icon_size", 0);
+ 	option_add_int(&o_display_details, "display_details", DETAILS_NONE);
+ 	option_add_int(&o_display_sort_by, "display_sort_by", SORT_NAME);
+-	option_add_int(&o_large_width, "display_large_width", 155);
++	option_add_int(&o_large_width, "display_large_width", 90);
+ 	option_add_int(&o_small_width, "display_small_width", 250);
+ 	option_add_int(&o_display_show_hidden, "display_show_hidden", FALSE);
+ 	option_add_int(&o_display_show_thumbs, "display_show_thumbs", FALSE);
+@@ -105,7 +105,7 @@ void display_init()
+ 	option_add_int(&o_filer_change_size_num, "filer_change_size_num", 30); 
+ 	option_add_int(&o_vertical_order_small, "vertical_order_small", FALSE);
+ 	option_add_int(&o_vertical_order_large, "vertical_order_large", FALSE);
+-	option_add_int(&o_xattr_show, "xattr_show", TRUE);
++	option_add_int(&o_xattr_show, "xattr_show", FALSE);
+ 
+ 	option_add_notify(options_changed);
+ }
+diff -rupN rox-filer-orig//ROX-Filer/src/dnd.c rox-filer//ROX-Filer/src/dnd.c
+--- rox-filer-orig//ROX-Filer/src/dnd.c	2011-01-02 07:01:36.050000002 +0200
++++ rox-filer//ROX-Filer/src/dnd.c	2011-01-02 07:01:42.379000008 +0200
+@@ -167,7 +167,7 @@ void dnd_init(void)
+ 	option_add_int(&o_dnd_middle_menu, "dnd_middle_menu", TRUE);
+ 
+ 	option_add_string(&o_dnd_uri_handler, "dnd_uri_handler",
+-			"xterm -e wget $1");
++			"rxvt -e wget $1");
+ }
+ 
+ /*			SUPPORT FUNCTIONS			*/
+diff -rupN rox-filer-orig//ROX-Filer/src/main.c rox-filer//ROX-Filer/src/main.c
+--- rox-filer-orig//ROX-Filer/src/main.c	2011-01-02 07:01:36.077000002 +0200
++++ rox-filer//ROX-Filer/src/main.c	2011-01-02 07:06:50.173999979 +0200
+@@ -338,7 +338,7 @@ int main(int argc, char **argv)
+ 	option_add_int(&o_override_redirect, "override_redirect", FALSE);
+ 
+ 	option_add_int(&o_session_panel_or_pin, "session_panel_or_pin",
+-		       SESSION_BOTH);
++		       1);
+ 	option_add_string(&o_session_panel_name, "session_panel_name",
+ 			  "Default");
+ 	option_add_string(&o_session_pinboard_name, "session_pinboard_name",
+diff -rupN rox-filer-orig//ROX-Filer/src/pinboard.c rox-filer//ROX-Filer/src/pinboard.c
+--- rox-filer-orig//ROX-Filer/src/pinboard.c	2011-01-02 07:01:36.084000003 +0200
++++ rox-filer//ROX-Filer/src/pinboard.c	2011-01-02 07:03:36.100000009 +0200
+@@ -238,8 +238,8 @@ static void pinboard_set_backdrop_box(vo
+ 
+ void pinboard_init(void)
+ {
+-	option_add_string(&o_pinboard_fg_colour, "pinboard_fg_colour", "#fff");
+-	option_add_string(&o_pinboard_bg_colour, "pinboard_bg_colour", "#888");
++	option_add_string(&o_pinboard_fg_colour, "pinboard_fg_colour", "#ffffffffffff");
++	option_add_string(&o_pinboard_bg_colour, "pinboard_bg_colour", "#d000d000d000");
+ 	option_add_string(&o_pinboard_shadow_colour, "pinboard_shadow_colour",
+ 			"#000");
+ 	option_add_string(&o_label_font, "label_font", "");
+@@ -248,10 +248,10 @@ void pinboard_init(void)
+ 	option_add_int(&o_pinboard_clamp_icons, "pinboard_clamp_icons", 1);
+ 	option_add_int(&o_pinboard_grid_step, "pinboard_grid_step",
+ 							GRID_STEP_COARSE);
+-	option_add_int(&o_pinboard_tasklist, "pinboard_tasklist", TRUE);
++	option_add_int(&o_pinboard_tasklist, "pinboard_tasklist", FALSE);
+ 	option_add_int(&o_pinboard_tasklist_per_workspace, "pinboard_tasklist_per_workspace", FALSE);
+ 	option_add_int(&o_forward_buttons_13, "pinboard_forward_buttons_13",
+-			FALSE);
++			TRUE);
+ 
+ 	option_add_int(&o_iconify_start, "iconify_start", CORNER_TOP_RIGHT);
+ 	option_add_int(&o_iconify_dir, "iconify_dir", DIR_VERT);
+diff -rupN rox-filer-orig//ROX-Filer/src/run.c rox-filer//ROX-Filer/src/run.c
+--- rox-filer-orig//ROX-Filer/src/run.c	2011-01-02 07:01:36.047000002 +0200
++++ rox-filer//ROX-Filer/src/run.c	2011-01-02 07:01:42.383000002 +0200
+@@ -659,7 +659,7 @@ static gboolean run_desktop(const char *
+ 	expanded = g_ptr_array_new();
+ 
+ 	if (terminal && g_strcasecmp(terminal, "true") == 0) {
+-		g_ptr_array_add(expanded, g_strdup("xterm"));
++		g_ptr_array_add(expanded, g_strdup("rxvt"));
+ 		g_ptr_array_add(expanded, g_strdup("-e"));
+ 	}
+ 
+diff -rupN rox-filer-orig//ROX-Filer/src/xtypes.c rox-filer//ROX-Filer/src/xtypes.c
+--- rox-filer-orig//ROX-Filer/src/xtypes.c	2011-01-02 07:01:36.047000002 +0200
++++ rox-filer//ROX-Filer/src/xtypes.c	2011-01-02 07:08:44.555000074 +0200
+@@ -73,7 +73,7 @@ void xattr_init(void)
+ 	dyn_getxattr = (void *) dlsym(libc, "getxattr");
+ 	dyn_listxattr = (void *) dlsym(libc, "listxattr");
+ 	
+-	option_add_int(&o_xattr_ignore, "xattr_ignore", FALSE);
++	option_add_int(&o_xattr_ignore, "xattr_ignore", TRUE);
+ }
+ 
+ int xattr_supported(const char *path)

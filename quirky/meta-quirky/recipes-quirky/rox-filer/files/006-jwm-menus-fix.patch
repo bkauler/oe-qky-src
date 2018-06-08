@@ -1,0 +1,14 @@
+diff -Naur rox-filerPREV/ROX-Filer/src/pinboard.c rox-filer/ROX-Filer/src/pinboard.c
+--- rox-filerPREV/ROX-Filer/src/pinboard.c	2014-12-23 08:18:12.000000000 +0800
++++ rox-filer/ROX-Filer/src/pinboard.c	2014-12-23 08:30:41.000000000 +0800
+@@ -1363,7 +1363,9 @@
+ 	{
+ 		xev.type = ButtonPress;
+ 		if (!o_blackbox_hack.int_value)
+-			XUngrabPointer(gdk_display, event->time);
++			/*XUngrabPointer(gdk_display, event->time);*/
++			/*npierce jwm menu fix, refer: murga-linux.com/puppy/viewtopic.php?t=72258&start=345  */
++			gdk_display_pointer_ungrab( gdk_x11_lookup_xdisplay( gdk_display ), event->time ) ;
+ 	}
+ 	else
+ 		xev.type = ButtonRelease;

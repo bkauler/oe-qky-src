@@ -1,0 +1,26 @@
+patches to be applied to:
+rox-filer-2011-10-22-has_configure
+
+09-rox-filer-easy-home.patch
+is hardcoded with path /mnt/wkg/home
+to suit Easy Linux.
+
+TODO:
+Improvement to this patch, to work on all pups, maybe have
+file /etc/working-path, instead of this in main.c:
+
+const char *easy_home_dir="/mnt/wkg/home";
+
+replace it with code to read /etc/working-path, or if
+that file not exist or empty, default to "~"
+
+171023
+------
+09-rox-filer-quirky-home.patch
+hardcoded home /file for quirky, alternative to above 09-*
+
+180608
+------
+009-rox-filer-home-easy-quirky.patch tests for home directory /mnt/wkg/home (easy),
+/file (quirky), or /root
+replaces 09-*

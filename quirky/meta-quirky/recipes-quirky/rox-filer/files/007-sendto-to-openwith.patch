@@ -1,0 +1,43 @@
+diff -Naur rox-filerPREV2/ROX-Filer/src/menu.c rox-filer/ROX-Filer/src/menu.c
+--- rox-filerPREV2/ROX-Filer/src/menu.c	2014-12-23 08:10:25.000000000 +0800
++++ rox-filer/ROX-Filer/src/menu.c	2014-12-23 08:38:04.000000000 +0800
+@@ -216,7 +216,7 @@
+ {">" N_("Delete"),	    	"<Ctrl>X", file_op, FILE_DELETE, "<StockItem>", GTK_STOCK_DELETE},
+ {">",				NULL, NULL, 0, "<Separator>"},
+ {">" N_("Shift Open"),   	NULL, file_op, FILE_OPEN_FILE},
+-{">" N_("Send To..."),		NULL, file_op, FILE_SEND_TO, NULL},
++{">" N_("Open With..."),		NULL, file_op, FILE_SEND_TO, NULL},
+ {">",				NULL, NULL, 0, "<Separator>"},
+ {">" N_("Set Run Action..."),	"asterisk", file_op, FILE_RUN_ACTION, "<StockItem>", GTK_STOCK_EXECUTE},
+ {">" N_("Set Icon..."),		NULL, file_op, FILE_SET_ICON, NULL},
+@@ -712,7 +712,7 @@
+ 		filer_window->temp_item_selected = FALSE;
+ 	}
+ 
+-	/* Short-cut to the Send To menu */
++	/* Short-cut to the Open With menu */
+ 	if (state & GDK_SHIFT_MASK)
+ 	{
+ 		GList *paths;
+@@ -1495,10 +1495,10 @@
+ 		mkdir(save, 0777);
+ 
+ 	info_message(
+-		_("The `Send To' menu provides a quick way to send some files "
++		_("The `Open With' menu provides a quick way to send some files "
+ 		"to an application. The applications listed are those in "
+ 		"the following directories:\n\n%s\n%s\n"
+-		"The `Send To' menu may be opened by Shift+Menu clicking "
++		"The `Open With' menu may be opened by Shift+Menu clicking "
+ 		"over a file.\n\n"
+ 		"Advanced use:\n"
+ 		"You can also create subdirectories called "
+@@ -1596,7 +1596,7 @@
+ 	choices_free_list(paths);
+ }
+ 
+-/* Scan the SendTo dir and create and show the Send To menu.
++/* Scan the SendTo dir and create and show the Open With menu.
+  * The 'paths' list and every path in it is claimed, and will be
+  * freed later -- don't free it yourself!
+  */

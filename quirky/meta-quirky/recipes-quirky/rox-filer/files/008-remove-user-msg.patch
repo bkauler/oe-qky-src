@@ -1,0 +1,15 @@
+diff -Naur rox-filerPREV3/ROX-Filer/src/main.c rox-filer/ROX-Filer/src/main.c
+--- rox-filerPREV3/ROX-Filer/src/main.c	2014-12-23 08:18:12.000000000 +0800
++++ rox-filer/ROX-Filer/src/main.c	2014-12-23 08:43:56.000000000 +0800
+@@ -529,9 +529,9 @@
+ 
+ 	tooltips = gtk_tooltips_new();
+ 
+-	if (euid == 0 || show_user)
++	/*if (euid == 0 || show_user)
+ 		show_user_message = g_strdup_printf(_("Running as user '%s'"), 
+-						    user_name(euid));
++						    user_name(euid));*/
+ 	
+ 	/* Add each remaining (non-option) argument to the list of files
+ 	 * to run.

@@ -1,0 +1,33 @@
+From b7cb91e8800f9c9d9b64cd4477b668b41cbed3fc Mon Sep 17 00:00:00 2001
+From: Nicola Fontana <ntd@entidi.it>
+Date: Sat, 18 Feb 2012 15:14:03 +0100
+Subject: [PATCH 1/2] Add explicit dependency on libm and libdl
+
+Math and dynamic loading functions could be defined in external
+libraries not directly included by default, so explicit checking is
+required at configure level.
+
+An alternative approach to AC_CHECK_LIB would be AC_SEARCH_LIBS, a not
+so conventional method with possibly some advantage:
+http://www.flameeyes.eu/autotools-mythbuster/autoconf/finding.html
+---
+ ROX-Filer/src/configure.in |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/ROX-Filer/src/configure.in b/ROX-Filer/src/configure.in
+index cc5ff87..44759f3 100644
+--- a/ROX-Filer/src/configure.in
++++ b/ROX-Filer/src/configure.in
+@@ -173,6 +173,9 @@ AC_TYPE_SIZE_T
+ 
+ dnl Checks for library functions.
+ AC_CHECK_FUNCS(gethostname unsetenv mkdir rmdir strdup strtol statvfs statfs mbrtowc)
++dnl Math functions and dlsym() could be defined outside the standard C library
++AC_CHECK_LIB(m, floor)
++AC_CHECK_LIB(dl, dlsym)
+ dnl Since we're using libintl.h, check if libintl needs to be linked in
+ AC_CHECK_LIB(intl, gettext)
+ 
+-- 
+1.7.9.1
+
