@@ -1,0 +1,36 @@
+diff -Naur shared-mime-info-0.90ORIG/freedesktop.org.xml shared-mime-info-0.90/freedesktop.org.xml
+--- shared-mime-info-0.90ORIG/freedesktop.org.xml	2010-12-02 01:34:54.000000000 +0800
++++ shared-mime-info-0.90/freedesktop.org.xml	2018-06-09 07:56:05.040087936 +0800
+@@ -13688,10 +13688,14 @@
+       <match value="/bin/zsh" type="string" offset="1:16"/>
+       <match value="/bin/sh" type="string" offset="1:16"/>
+       <match value="/bin/ksh" type="string" offset="1:16"/>
++      <match value="/bin/ash" type="string" offset="1:16"/>
++      <match value="/bin/dash" type="string" offset="1:16"/>
+       <match value="#!/usr/bin/env sh" type="string" offset="0"/>
+       <match value="#!/usr/bin/env bash" type="string" offset="0"/>
+       <match value="#!/usr/bin/env zsh" type="string" offset="0"/>
+       <match value="#!/usr/bin/env ksh" type="string" offset="0"/>
++      <match value="#!/usr/bin/env ash" type="string" offset="0"/>
++      <match value="#!/usr/bin/env dash" type="string" offset="0"/>
+     </magic>
+     <glob pattern="*.sh"/>
+   </mime-type>
+diff -Naur shared-mime-info-0.90ORIG/freedesktop.org.xml.in shared-mime-info-0.90/freedesktop.org.xml.in
+--- shared-mime-info-0.90ORIG/freedesktop.org.xml.in	2010-12-02 00:59:21.000000000 +0800
++++ shared-mime-info-0.90/freedesktop.org.xml.in	2018-06-09 07:54:58.383418936 +0800
+@@ -2767,10 +2767,14 @@
+       <match type="string" value="/bin/zsh" offset="1:16"/>
+       <match type="string" value="/bin/sh" offset="1:16"/>
+       <match type="string" value="/bin/ksh" offset="1:16"/>
++      <match type="string" value="/bin/ash" offset="1:16"/>
++      <match type="string" value="/bin/dash" offset="1:16"/>
+       <match type="string" value="#!/usr/bin/env sh" offset="0"/>
+       <match type="string" value="#!/usr/bin/env bash" offset="0"/>
+       <match type="string" value="#!/usr/bin/env zsh" offset="0"/>
+       <match type="string" value="#!/usr/bin/env ksh" offset="0"/>
++      <match type="string" value="#!/usr/bin/env ash" offset="0"/>
++      <match type="string" value="#!/usr/bin/env dash" offset="0"/>
+     </magic>
+     <glob pattern="*.sh"/>
+   </mime-type>
