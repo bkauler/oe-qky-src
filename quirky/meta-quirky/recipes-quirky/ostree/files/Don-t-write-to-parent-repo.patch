@@ -1,0 +1,32 @@
+From: Alexander Larsson <alexl@redhat.com>
+Date: Thu, 29 Mar 2018 15:19:33 +0200
+Subject: Don't write to parent repo
+
+In _try_clone_from_payload_link, don't try to do the clone in the
+parent repo, because we don't want to modify that. parent repos are
+typically used when you want a shared, immutable base.
+
+For example in flatpak, the parent repo is the system repo which you
+don't have write access to, so any modification to it will fail with
+EACCES, making it impossible to install via the system helper.
+
+Closes: #1524
+Approved by: cgwalters
+Applied-upstream: 2018.5, commit:28c7bc6d0e153a0b07bdb82d25473a490765067f
+---
+ src/libostree/ostree-repo-commit.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/src/libostree/ostree-repo-commit.c b/src/libostree/ostree-repo-commit.c
+index 16081a9..98b03e6 100644
+--- a/src/libostree/ostree-repo-commit.c
++++ b/src/libostree/ostree-repo-commit.c
+@@ -777,8 +777,6 @@ _try_clone_from_payload_link (OstreeRepo   *self,
+           return TRUE;
+         }
+     }
+-  if (self->parent_repo)
+-    return _try_clone_from_payload_link (self->parent_repo, payload_checksum, file_info, tmpf, cancellable, error);
+ 
+   return TRUE;
+ }
