@@ -1,0 +1,33 @@
+Author: Steve Langasek <steve.langasek@canonical.com>
+Description: set process environment from pam_getenvlist()
+ Various pam modules provide environment variables that are intended to be
+ set in the environment of the pam session.  pkexec needs to process the
+ output of pam_getenvlist() to get these.
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/982684
+Index: trunk/src/programs/pkexec.c
+===================================================================
+--- trunk.orig/src/programs/pkexec.c
++++ trunk/src/programs/pkexec.c
+@@ -145,6 +145,7 @@
+   gboolean ret;
+   gint rc;
+   pam_handle_t *pam_h;
++  char **envlist;
+   struct pam_conv conversation;
+ 
+   ret = FALSE;
+@@ -176,6 +177,14 @@
+ 
+   ret = TRUE;
+ 
++  envlist = pam_getenvlist (pam_h);
++  if (envlist != NULL) {
++    int i;
++    for (i = 0; envlist[i]; i++)
++      putenv(envlist[i]);
++    free (envlist);
++  }
++
+ out:
+   if (pam_h != NULL)
+     pam_end (pam_h, rc);

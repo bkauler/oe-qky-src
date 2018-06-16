@@ -1,0 +1,116 @@
+From 20ad116a6582e57d20f9d8197758947918753a4c Mon Sep 17 00:00:00 2001
+From: Tomas Bzatek <tbzatek@redhat.com>
+Date: Wed, 29 May 2013 13:45:31 +0000
+Subject: Use GOnce for interface type registration
+
+Static local variable may not be enough since it doesn't provide locking.
+
+Related to these udisksd warnings:
+  GLib-GObject-WARNING **: cannot register existing type `PolkitSubject'
+
+Thanks to Hans de Goede for spotting this!
+
+https://bugs.freedesktop.org/show_bug.cgi?id=65130
+---
+diff --git a/src/polkit/polkitidentity.c b/src/polkit/polkitidentity.c
+index dd15b2f..7813c2c 100644
+--- a/src/polkit/polkitidentity.c
++++ b/src/polkit/polkitidentity.c
+@@ -49,9 +49,9 @@ base_init (gpointer g_iface)
+ GType
+ polkit_identity_get_type (void)
+ {
+-  static GType iface_type = 0;
++  static volatile gsize g_define_type_id__volatile = 0;
+ 
+-  if (iface_type == 0)
++  if (g_once_init_enter (&g_define_type_id__volatile))
+     {
+       static const GTypeInfo info =
+       {
+@@ -67,12 +67,14 @@ polkit_identity_get_type (void)
+         NULL                    /* value_table    */
+       };
+ 
+-      iface_type = g_type_register_static (G_TYPE_INTERFACE, "PolkitIdentity", &info, 0);
++      GType iface_type =
++        g_type_register_static (G_TYPE_INTERFACE, "PolkitIdentity", &info, 0);
+ 
+       g_type_interface_add_prerequisite (iface_type, G_TYPE_OBJECT);
++      g_once_init_leave (&g_define_type_id__volatile, iface_type);
+     }
+ 
+-  return iface_type;
++  return g_define_type_id__volatile;
+ }
+ 
+ /**
+diff --git a/src/polkit/polkitsubject.c b/src/polkit/polkitsubject.c
+index d2c4c20..aed5795 100644
+--- a/src/polkit/polkitsubject.c
++++ b/src/polkit/polkitsubject.c
+@@ -50,9 +50,9 @@ base_init (gpointer g_iface)
+ GType
+ polkit_subject_get_type (void)
+ {
+-  static GType iface_type = 0;
++  static volatile gsize g_define_type_id__volatile = 0;
+ 
+-  if (iface_type == 0)
++  if (g_once_init_enter (&g_define_type_id__volatile))
+     {
+       static const GTypeInfo info =
+       {
+@@ -68,12 +68,14 @@ polkit_subject_get_type (void)
+         NULL                    /* value_table    */
+       };
+ 
+-      iface_type = g_type_register_static (G_TYPE_INTERFACE, "PolkitSubject", &info, 0);
++      GType iface_type =
++        g_type_register_static (G_TYPE_INTERFACE, "PolkitSubject", &info, 0);
+ 
+       g_type_interface_add_prerequisite (iface_type, G_TYPE_OBJECT);
++      g_once_init_leave (&g_define_type_id__volatile, iface_type);
+     }
+ 
+-  return iface_type;
++  return g_define_type_id__volatile;
+ }
+ 
+ /**
+diff --git a/src/polkitbackend/polkitbackendactionlookup.c b/src/polkitbackend/polkitbackendactionlookup.c
+index 5a1a228..20747e7 100644
+--- a/src/polkitbackend/polkitbackendactionlookup.c
++++ b/src/polkitbackend/polkitbackendactionlookup.c
+@@ -74,9 +74,9 @@ base_init (gpointer g_iface)
+ GType
+ polkit_backend_action_lookup_get_type (void)
+ {
+-  static GType iface_type = 0;
++  static volatile gsize g_define_type_id__volatile = 0;
+ 
+-  if (iface_type == 0)
++  if (g_once_init_enter (&g_define_type_id__volatile))
+     {
+       static const GTypeInfo info =
+       {
+@@ -92,12 +92,14 @@ polkit_backend_action_lookup_get_type (void)
+         NULL                    /* value_table    */
+       };
+ 
+-      iface_type = g_type_register_static (G_TYPE_INTERFACE, "PolkitBackendActionLookup", &info, 0);
++      GType iface_type =
++        g_type_register_static (G_TYPE_INTERFACE, "PolkitBackendActionLookup", &info, 0);
+ 
+       g_type_interface_add_prerequisite (iface_type, G_TYPE_OBJECT);
++      g_once_init_leave (&g_define_type_id__volatile, iface_type);
+     }
+ 
+-  return iface_type;
++  return g_define_type_id__volatile;
+ }
+ 
+ /**
+--
+cgit v0.9.0.2-2-gbebe
+
