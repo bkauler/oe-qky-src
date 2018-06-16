@@ -1,0 +1,237 @@
+Subject: Add action to allow but log a syscall
+ This is a minimal backport of a larger pull request to support one of the new
+ dynamic seccomp logging features that will be present in Linux kernel version
+ 4.14. Specifically, this backport only adds support for the SECCOMP_RET_LOG
+ action since the remainder of the pull request is still undergoing review and
+ some public symbols may change by the time the pull request is finalized.
+ .
+ This patch only adds one new libseccomp public symbol. The new symbol is the
+ SCMP_ACT_LOG macro which, by definition, must have the same value as the
+ SECCOMP_RET_LOG macro that has already been acked as part of the upstream
+ kernel.
+Author: Tyler Hicks <tyhicks@canonical.com>
+Origin: other, https://github.com/seccomp/libseccomp/pull/92/commits/e7addf0247162ef4098a0e09c580db81105f8e13
+Origin: other, https://github.com/seccomp/libseccomp/pull/92/commits/fef1077d112de46b96d1347a11da45a14ab0e1d0
+Forwarded: https://github.com/seccomp/libseccomp/pull/92
+Bug-Ubuntu: https://launchpad.net/bugs/1567597
+
+Index: libseccomp-2.3.1/src/system.c
+===================================================================
+--- libseccomp-2.3.1.orig/src/system.c
++++ libseccomp-2.3.1/src/system.c
+@@ -98,6 +98,23 @@ supported:
+ }
+ 
+ /**
++ * Check to see if a seccomp action is supported
++ * @param action the seccomp action
++ *
++ * This function checks to see if a seccomp action is supported by the system.
++ * Returns one if the action is supported, zero otherwise.
++ *
++ */
++int sys_chk_seccomp_action(uint32_t action)
++{
++	if (sys_chk_seccomp_syscall() == 1 &&
++	    syscall(_nr_seccomp, SECCOMP_GET_ACTION_AVAIL, 0, &action) == 0)
++		return 1;
++
++	return 0;
++}
++
++/**
+  * Check to see if a seccomp() flag is supported
+  * @param flag the seccomp() flag
+  *
+Index: libseccomp-2.3.1/src/system.h
+===================================================================
+--- libseccomp-2.3.1.orig/src/system.h
++++ libseccomp-2.3.1/src/system.h
+@@ -102,13 +102,21 @@ typedef struct sock_filter bpf_instr_raw
+ #ifndef SECCOMP_SET_MODE_FILTER
+ #define SECCOMP_SET_MODE_FILTER		1
+ #endif
++#ifndef SECCOMP_GET_ACTION_AVAIL
++#define SECCOMP_GET_ACTION_AVAIL	2
++#endif
+ 
+ /* flags for the seccomp() syscall */
+ #ifndef SECCOMP_FILTER_FLAG_TSYNC
+ #define SECCOMP_FILTER_FLAG_TSYNC	1
+ #endif
+ 
++#ifndef SECCOMP_RET_LOG
++#define SECCOMP_RET_LOG		0x7ffc0000U /* allow after logging */
++#endif
++
+ int sys_chk_seccomp_syscall(void);
++int sys_chk_seccomp_action(uint32_t action);
+ int sys_chk_seccomp_flag(int flag);
+ 
+ int sys_filter_load(const struct db_filter_col *col);
+Index: libseccomp-2.3.1/doc/man/man3/seccomp_init.3
+===================================================================
+--- libseccomp-2.3.1.orig/doc/man/man3/seccomp_init.3
++++ libseccomp-2.3.1/doc/man/man3/seccomp_init.3
+@@ -79,6 +79,11 @@ can be retrieved using the
+ .B PTRACE_GETEVENTMSG
+ option.
+ .TP
++.B SCMP_ACT_LOG
++The seccomp filter will have no effect on the thread calling the syscall if it
++does not match any of the configured seccomp filter rules but the syscall will
++be logged.
++.TP
+ .B SCMP_ACT_ALLOW
+ The seccomp filter will have no effect on the thread calling the syscall if it
+ does not match any of the configured seccomp filter rules.
+Index: libseccomp-2.3.1/doc/man/man3/seccomp_rule_add.3
+===================================================================
+--- libseccomp-2.3.1.orig/doc/man/man3/seccomp_rule_add.3
++++ libseccomp-2.3.1/doc/man/man3/seccomp_rule_add.3
+@@ -126,6 +126,10 @@ can be retrieved using the
+ .B PTRACE_GETEVENTMSG
+ option.
+ .TP
++.B SCMP_ACT_LOG
++The seccomp filter will have no effect on the thread calling the syscall if it
++matches the filter rule but the syscall will be logged.
++.TP
+ .B SCMP_ACT_ALLOW
+ The seccomp filter will have no effect on the thread calling the syscall if it
+ does not match any of the configured seccomp filter rules.
+Index: libseccomp-2.3.1/include/seccomp.h.in
+===================================================================
+--- libseccomp-2.3.1.orig/include/seccomp.h.in
++++ libseccomp-2.3.1/include/seccomp.h.in
+@@ -256,6 +256,10 @@ struct scmp_arg_cmp {
+  */
+ #define SCMP_ACT_TRACE(x)	(0x7ff00000U | ((x) & 0x0000ffffU))
+ /**
++ * Allow the syscall to be executed after the action has been logged
++ */
++#define SCMP_ACT_LOG		0x7ffc0000U
++/**
+  * Allow the syscall to be executed
+  */
+ #define SCMP_ACT_ALLOW		0x7fff0000U
+Index: libseccomp-2.3.1/src/db.c
+===================================================================
+--- libseccomp-2.3.1.orig/src/db.c
++++ libseccomp-2.3.1/src/db.c
+@@ -652,7 +652,10 @@ int db_action_valid(uint32_t action)
+ 		return 0;
+ 	else if (action == SCMP_ACT_TRACE(action & 0x0000ffff))
+ 		return 0;
+-	else if (action == SCMP_ACT_ALLOW)
++	else if (action == SCMP_ACT_LOG) {
++		if (sys_chk_seccomp_action(action) == 1)
++			return 0;
++	} else if (action == SCMP_ACT_ALLOW)
+ 		return 0;
+ 
+ 	return -EINVAL;
+Index: libseccomp-2.3.1/src/gen_pfc.c
+===================================================================
+--- libseccomp-2.3.1.orig/src/gen_pfc.c
++++ libseccomp-2.3.1/src/gen_pfc.c
+@@ -129,6 +129,9 @@ static void _pfc_action(FILE *fds, uint3
+ 	case SCMP_ACT_TRACE(0):
+ 		fprintf(fds, "action TRACE(%u);\n", (action & 0x0000ffff));
+ 		break;
++	case SCMP_ACT_LOG:
++		fprintf(fds, "action LOG;\n");
++		break;
+ 	case SCMP_ACT_ALLOW:
+ 		fprintf(fds, "action ALLOW;\n");
+ 		break;
+Index: libseccomp-2.3.1/src/python/libseccomp.pxd
+===================================================================
+--- libseccomp-2.3.1.orig/src/python/libseccomp.pxd
++++ libseccomp-2.3.1/src/python/libseccomp.pxd
+@@ -69,6 +69,7 @@ cdef extern from "seccomp.h":
+     cdef enum:
+         SCMP_ACT_KILL
+         SCMP_ACT_TRAP
++        SCMP_ACT_LOG
+         SCMP_ACT_ALLOW
+     unsigned int SCMP_ACT_ERRNO(int errno)
+     unsigned int SCMP_ACT_TRACE(int value)
+Index: libseccomp-2.3.1/src/python/seccomp.pyx
+===================================================================
+--- libseccomp-2.3.1.orig/src/python/seccomp.pyx
++++ libseccomp-2.3.1/src/python/seccomp.pyx
+@@ -30,6 +30,7 @@ by application developers.
+ 
+ Filter action values:
+     KILL - kill the process
++    LOG - allow the syscall to be executed after the action has been logged
+     ALLOW - allow the syscall to execute
+     TRAP - a SIGSYS signal will be thrown
+     ERRNO(x) - syscall will return (x)
+@@ -77,6 +78,7 @@ cimport libseccomp
+ 
+ KILL = libseccomp.SCMP_ACT_KILL
+ TRAP = libseccomp.SCMP_ACT_TRAP
++LOG = libseccomp.SCMP_ACT_LOG
+ ALLOW = libseccomp.SCMP_ACT_ALLOW
+ def ERRNO(int errno):
+     """The action ERRNO(x) means that the syscall will return (x).
+@@ -493,7 +495,7 @@ cdef class SyscallFilter:
+         """ Add a new rule to filter.
+ 
+         Arguments:
+-        action - the rule action: KILL, TRAP, ERRNO(), TRACE(), or ALLOW
++        action - the rule action: KILL, TRAP, ERRNO(), TRACE(), LOG, or ALLOW
+         syscall - the syscall name or number
+         args - variable number of Arg objects
+ 
+@@ -575,7 +577,7 @@ cdef class SyscallFilter:
+         """ Add a new rule to filter.
+ 
+         Arguments:
+-        action - the rule action: KILL, TRAP, ERRNO(), TRACE(), or ALLOW
++        action - the rule action: KILL, TRAP, ERRNO(), TRACE(), LOG, or ALLOW
+         syscall - the syscall name or number
+         args - variable number of Arg objects
+ 
+Index: libseccomp-2.3.1/tools/bpf.h
+===================================================================
+--- libseccomp-2.3.1.orig/tools/bpf.h
++++ libseccomp-2.3.1/tools/bpf.h
+@@ -64,6 +64,7 @@ typedef struct sock_filter bpf_instr_raw
+ #define SECCOMP_RET_TRAP	0x00030000U
+ #define SECCOMP_RET_ERRNO	0x00050000U
+ #define SECCOMP_RET_TRACE	0x7ff00000U
++#define SECCOMP_RET_LOG		0x7ffc0000U
+ #define SECCOMP_RET_ALLOW	0x7fff0000U
+ 
+ /* bpf command classes */
+Index: libseccomp-2.3.1/tools/scmp_bpf_disasm.c
+===================================================================
+--- libseccomp-2.3.1.orig/tools/scmp_bpf_disasm.c
++++ libseccomp-2.3.1/tools/scmp_bpf_disasm.c
+@@ -183,6 +183,9 @@ static void bpf_decode_action(uint32_t k
+ 	case SECCOMP_RET_TRACE:
+ 		printf("TRACE(%u)", data);
+ 		break;
++	case SECCOMP_RET_LOG:
++		printf("LOG");
++		break;
+ 	case SECCOMP_RET_ALLOW:
+ 		printf("ALLOW");
+ 		break;
+Index: libseccomp-2.3.1/tools/scmp_bpf_sim.c
+===================================================================
+--- libseccomp-2.3.1.orig/tools/scmp_bpf_sim.c
++++ libseccomp-2.3.1/tools/scmp_bpf_sim.c
+@@ -128,6 +128,9 @@ static void end_action(uint32_t action,
+ 	case SECCOMP_RET_TRACE:
+ 		fprintf(stdout, "TRACE(%u)\n", data);
+ 		break;
++	case SECCOMP_RET_LOG:
++		fprintf(stdout, "LOG\n");
++		break;
+ 	case SECCOMP_RET_ALLOW:
+ 		fprintf(stdout, "ALLOW\n");
+ 		break;

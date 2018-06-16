@@ -1,0 +1,982 @@
+From c86e1f565537b28b73ebd63f0239b4a446925534 Mon Sep 17 00:00:00 2001
+From: Helge Deller <deller@gmx.de>
+Date: Wed, 25 May 2016 16:53:39 +0200
+Subject: [PATCH] arch: Add parisc architecture support
+
+This patch (v4) adds support for the parisc and parisc64 architectures
+to libseccomp.
+
+I didn't split up the patch, because it's pretty trivial.
+Those parisc-specific files gets added:
+ src/arch-parisc-syscalls.c
+ src/arch-parisc.c
+ src/arch-parisc.h
+ src/arch-parisc64.c
+
+All other changes are trivial because they simply add parisc-specific
+case statements in variouse switch statements.
+
+I did ran a "make check" on x86-64 and parisc and all testcases succeeded.
+All live testcases succeed as well when running "./regression -T live".
+
+The patch applies cleanly to current libseccomp git head.
+
+Changes between v4 and v3 of this patch:
+- Added parisc arch to arch-syscall-check.c and fixup syscall table as
+  needed
+- Fixed copyright notices in parisc files as suggested by Mike Frysinger
+
+Changes between v3 and v2 of this patch:
+- Stripped out patch which reports if a check was skipped because
+  valgrind isn't installed.
+- Added tuxcall pseudo syscall for 19-sim-missing_syscalls testcase
+- Added sysmips pseudo syscall for 29-sim-pseudo_syscall testcase
+
+Changes between v2 and v1 of this patch:
+- Enabled seccomp mode 2 regression tests on parisc. Kernel support for
+  hppa was added in kernel 4.6-rc1 and backported into the kernel v4.5.2
+  stable series.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+[PM: corrected a number or errors from 'make check-syntax']
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+---
+ include/seccomp.h.in              |   6 +
+ src/Makefile.am                   |   2 +
+ src/arch-parisc-syscalls.c        | 499 ++++++++++++++++++++++++++++++++++++++
+ src/arch-parisc.c                 |  22 ++
+ src/arch-parisc.h                 |  38 +++
+ src/arch-parisc64.c               |  22 ++
+ src/arch-syscall-check.c          |  11 +
+ src/arch-syscall-dump.c           |   5 +
+ src/arch.c                        |  13 +
+ src/gen_pfc.c                     |   4 +
+ src/python/libseccomp.pxd         |   2 +
+ src/python/seccomp.pyx            |   8 +
+ tests/26-sim-arch_all_be_basic.c  |   6 +
+ tests/26-sim-arch_all_be_basic.py |   2 +
+ tests/regression                  |   3 +-
+ tools/scmp_arch_detect.c          |   6 +
+ tools/scmp_bpf_sim.c              |   4 +
+ tools/util.c                      |   4 +
+ 18 files changed, 656 insertions(+), 1 deletion(-)
+ create mode 100644 src/arch-parisc-syscalls.c
+ create mode 100644 src/arch-parisc.c
+ create mode 100644 src/arch-parisc.h
+ create mode 100644 src/arch-parisc64.c
+
+Index: libseccomp/include/seccomp.h.in
+===================================================================
+--- libseccomp.orig/include/seccomp.h.in	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/include/seccomp.h.in	2016-05-28 19:57:02.038592653 +0200
+@@ -185,6 +185,12 @@
+ #define SCMP_ARCH_S390X		AUDIT_ARCH_S390X
+ 
+ /**
++ * The PA-RISC hppa architecture tokens
++ */
++#define SCMP_ARCH_PARISC	AUDIT_ARCH_PARISC
++#define SCMP_ARCH_PARISC64	AUDIT_ARCH_PARISC64
++
++/**
+  * Convert a syscall name into the associated syscall number
+  * @param x the syscall name
+  */
+Index: libseccomp/src/Makefile.am
+===================================================================
+--- libseccomp.orig/src/Makefile.am	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/src/Makefile.am	2016-05-28 19:57:02.038592653 +0200
+@@ -35,6 +35,8 @@
+ 	arch-mips.h arch-mips.c arch-mips-syscalls.c \
+ 	arch-mips64.h arch-mips64.c arch-mips64-syscalls.c \
+ 	arch-mips64n32.h arch-mips64n32.c arch-mips64n32-syscalls.c \
++	arch-parisc.h arch-parisc.c arch-parisc-syscalls.c \
++	arch-parisc64.h arch-parisc64.c \
+ 	arch-ppc.h arch-ppc.c arch-ppc-syscalls.c \
+ 	arch-ppc64.h arch-ppc64.c arch-ppc64-syscalls.c \
+ 	arch-s390.h arch-s390.c arch-s390-syscalls.c \
+Index: libseccomp/src/arch-parisc-syscalls.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libseccomp/src/arch-parisc-syscalls.c	2016-05-28 19:57:02.042592678 +0200
+@@ -0,0 +1,499 @@
++/*
++ * Copyright (c) 2016 Helge Deller <deller@gmx.de>
++ * Author: Helge Deller <deller@gmx.de>
++ */
++
++#include <string.h>
++
++#include <seccomp.h>
++
++#include "arch.h"
++#include "arch-parisc.h"
++
++/* NOTE: based on Linux 4.5-rc4 */
++const struct arch_syscall_def parisc_syscall_table[] = { \
++	{ "_llseek",	140 },
++	{ "_newselect",	142 },
++	{ "_sysctl",	149 },
++	{ "accept",	35 },
++	{ "accept4",	320 },
++	{ "access",	33 },
++	{ "acct",	51 },
++	{ "add_key",	264 },
++	{ "adjtimex",	124 },
++	{ "afs_syscall", 137 },
++	{ "alarm",	27 },
++	{ "arm_fadvise64_64", __PNR_arm_fadvise64_64 },
++	{ "arm_sync_file_range", __PNR_arm_sync_file_range },
++	{ "arch_prctl", __PNR_arch_prctl },
++	{ "bdflush",	134 },
++	{ "bind",	22 },
++	{ "bpf",	341 },
++	{ "break",	__PNR_break },
++	{ "breakpoint", __PNR_breakpoint },
++	{ "brk",	45 },
++	{ "cachectl",	__PNR_cachectl },
++	{ "cacheflush",	__PNR_cacheflush },
++	{ "capget",	106 },
++	{ "capset",	107 },
++	{ "chdir",	12 },
++	{ "chmod",	15 },
++	{ "chown",	180 },
++	{ "chown32",	__PNR_chown32 },
++	{ "chroot",	61 },
++	{ "clock_adjtime",	324 },
++	{ "clock_getres",	257 },
++	{ "clock_gettime",	256 },
++	{ "clock_nanosleep",	258 },
++	{ "clock_settime",	255 },
++	{ "clone",	120 },
++	{ "close",	6 },
++	{ "connect",	31 },
++	{ "copy_file_range", 346 },
++	{ "creat",	8 },
++	{ "create_module",	127 },
++	{ "delete_module",	129 },
++	{ "dup",	41 },
++	{ "dup2",	63 },
++	{ "dup3",	312 },
++	{ "epoll_create",	224 },
++	{ "epoll_create1",	311 },
++	{ "epoll_ctl",	225 },
++	{ "epoll_ctl_old", __PNR_epoll_ctl_old },
++	{ "epoll_pwait",	297 },
++	{ "epoll_wait",	226 },
++	{ "epoll_wait_old", __PNR_epoll_wait_old },
++	{ "eventfd",	304 },
++	{ "eventfd2",	310 },
++	{ "execve",	11 },
++	{ "execveat",	342 },
++	{ "exit",	1 },
++	{ "exit_group",	222 },
++	{ "faccessat",	287 },
++	{ "fadvise64",	__PNR_fadvise64 },
++	{ "fadvise64_64",	236 },
++	{ "fallocate",	305 },
++	{ "fanotify_init",	322 },
++	{ "fanotify_mark",	323 },
++	{ "fchdir",	133 },
++	{ "fchmod",	94 },
++	{ "fchmodat",	286 },
++	{ "fchown",	95 },
++	{ "fchown32",	__PNR_fchown32 },
++	{ "fchownat",	278 },
++	{ "fcntl",	55 },
++	{ "fcntl64",	202 },
++	{ "fdatasync",	148 },
++	{ "fgetxattr",	243 },
++	{ "finit_module",	333 },
++	{ "flistxattr",	246 },
++	{ "flock",	143 },
++	{ "fork",	2 },
++	{ "fremovexattr",	249 },
++	{ "fsetxattr",	240 },
++	{ "fstat",	28 },
++	{ "fstat64",	112 },
++	{ "fstatat64",	280 },
++	{ "fstatfs",	100 },
++	{ "fstatfs64",	299 },
++	{ "fsync",	118 },
++	{ "ftime",	__PNR_ftime },
++	{ "ftruncate",	93 },
++	{ "ftruncate64",	200 },
++	{ "futex",	210 },
++	{ "futimesat",	279 },
++	{ "get_kernel_syms",	130 },
++	{ "get_mempolicy",	261 },
++	{ "get_robust_list",	290 },
++	{ "get_thread_area",	214 },
++	{ "getcpu",	296 },
++	{ "getcwd",	110 },
++	{ "getdents",	141 },
++	{ "getdents64",	201 },
++	{ "getegid",	50 },
++	{ "getegid32", __PNR_getegid32 },
++	{ "geteuid",	49 },
++	{ "geteuid32", __PNR_geteuid32 },
++	{ "getgid",	47 },
++	{ "getgid32",	__PNR_getgid32 },
++	{ "getgroups",	80 },
++	{ "getgroups32", __PNR_getgroups32 },
++	{ "getitimer",	105 },
++	{ "getpeername",	53 },
++	{ "getpgid",	132 },
++	{ "getpgrp",	65 },
++	{ "getpid",	20 },
++	{ "getpmsg",	196 },
++	{ "getppid",	64 },
++	{ "getpriority",	96 },
++	{ "getrandom",	339 },
++	{ "getresgid",	171 },
++	{ "getresgid32", __PNR_getresgid32 },
++	{ "getresuid",	165 },
++	{ "getresuid32", __PNR_getresuid32 },
++	{ "getrlimit",	76 },
++	{ "getrusage",	77 },
++	{ "getsid",	147 },
++	{ "getsockname",	44 },
++	{ "getsockopt",	182 },
++	{ "gettid",	206 },
++	{ "gettimeofday",	78 },
++	{ "getuid",	24 },
++	{ "getuid32",	__PNR_getuid32 },
++	{ "getxattr",	241 },
++	{ "gtty",	__PNR_gtty },
++	{ "idle",	__PNR_idle },
++	{ "init_module",	128 },
++	{ "inotify_add_watch",	270 },
++	{ "inotify_init",	269 },
++	{ "inotify_init1",	314 },
++	{ "inotify_rm_watch",	271 },
++	{ "io_cancel",	219 },
++	{ "io_destroy",	216 },
++	{ "io_getevents",	217 },
++	{ "io_setup",	215 },
++	{ "io_submit",	218 },
++	{ "ioctl",	54 },
++	{ "ioperm",	__PNR_ioperm },
++	{ "iopl",	__PNR_iopl },
++	{ "ioprio_get",	268 },
++	{ "ioprio_set",	267 },
++	{ "ipc",	__PNR_ipc },
++	{ "kcmp",	332 },
++	{ "kexec_file_load", __PNR_kexec_file_load },
++	{ "kexec_load",	300 },
++	{ "keyctl",	266 },
++	{ "kill",	37 },
++	{ "lchown",	16 },
++	{ "lchown32",	__PNR_lchown32 },
++	{ "lgetxattr",	242 },
++	{ "link",	9 },
++	{ "linkat",	283 },
++	{ "listen",	32 },
++	{ "listxattr",	244 },
++	{ "llistxattr",	245 },
++	{ "lock",	__PNR_lock },
++	{ "lookup_dcookie",	223 },
++	{ "lremovexattr",	248 },
++	{ "lseek",	19 },
++	{ "lsetxattr",	239 },
++	{ "lstat",	84 },
++	{ "lstat64",	198 },
++	{ "madvise",	119 },
++	{ "mbind",	260 },
++	{ "membarrier",	343 },
++	{ "memfd_create",	340 },
++	{ "migrate_pages",	272 },
++	{ "mincore",	72 },
++	{ "mkdir",	39 },
++	{ "mkdirat",	276 },
++	{ "mknod",	14 },
++	{ "mknodat",	277 },
++	{ "mlock",	150 },
++	{ "mlock2",	345 },
++	{ "mlockall",	152 },
++	{ "mmap",	90 },
++	{ "mmap2",	89 },
++	{ "modify_ldt",	__PNR_modify_ldt },
++	{ "mount",	21 },
++	{ "move_pages",	295 },
++	{ "mprotect",	125 },
++	{ "mpx",	__PNR_mpx },
++	{ "mq_getsetattr",	234 },
++	{ "mq_notify",	233 },
++	{ "mq_open",	229 },
++	{ "mq_timedreceive",	232 },
++	{ "mq_timedsend",	231 },
++	{ "mq_unlink",	230 },
++	{ "mremap",	163 },
++	{ "msgctl",	191 },
++	{ "msgget",	190 },
++	{ "msgrcv",	189 },
++	{ "msgsnd",	188 },
++	{ "msync",	144 },
++	{ "multiplexer", __PNR_multiplexer },
++	{ "munlock",	151 },
++	{ "munlockall",	153 },
++	{ "munmap",	91 },
++	{ "name_to_handle_at",	325 },
++	{ "nanosleep",	162 },
++	{ "newfstatat", __PNR_newfstatat },
++	{ "nfsservctl",	169 },
++	{ "nice",	34 },
++	{ "oldfstat",	__PNR_oldfstat },
++	{ "oldlstat",	__PNR_oldlstat },
++	{ "oldolduname", __PNR_oldolduname },
++	{ "oldstat",	__PNR_oldstat },
++	{ "olduname",	__PNR_olduname },
++	{ "oldwait4",	__PNR_oldwait4 },
++	{ "open",	5 },
++	{ "open_by_handle_at",	326 },
++	{ "openat",	275 },
++	{ "pause",	29 },
++	{ "pciconfig_iobase", __PNR_pciconfig_iobase },
++	{ "pciconfig_read", __PNR_pciconfig_read },
++	{ "pciconfig_write", __PNR_pciconfig_write },
++	{ "perf_event_open",	318 },
++	{ "personality",	136 },
++	{ "pipe",	42 },
++	{ "pipe2",	313 },
++	{ "pivot_root",	67 },
++	{ "poll",	168 },
++	{ "ppoll",	274 },
++	{ "prctl",	172 },
++	{ "pread64",	108 },
++	{ "preadv",	315 },
++	{ "prlimit64",	321 },
++	{ "process_vm_readv",	330 },
++	{ "process_vm_writev",	331 },
++	{ "prof",	__PNR_prof },
++	{ "profil",	__PNR_profil },
++	{ "pselect6",	273 },
++	{ "ptrace",	26 },
++	{ "putpmsg",	197 },
++	{ "pwrite64",	109 },
++	{ "pwritev",	316 },
++	{ "query_module",	167 },
++	{ "quotactl",	131 },
++	{ "read",	3 },
++	{ "readahead",	207 },
++	{ "readdir",	__PNR_readdir },
++	{ "readlink",	85 },
++	{ "readlinkat",	285 },
++	{ "readv",	145 },
++	{ "reboot",	88 },
++	{ "recv",	98 },
++	{ "recvfrom",	123 },
++	{ "recvmmsg",	319 },
++	{ "recvmsg",	184 },
++	{ "remap_file_pages",	227 },
++	{ "removexattr",	247 },
++	{ "rename",	38 },
++	{ "renameat",	282 },
++	{ "renameat2",	337 },
++	{ "request_key",	265 },
++	{ "restart_syscall",	0 },
++	{ "rmdir",	40 },
++	{ "rt_sigaction",	174 },
++	{ "rt_sigpending",	176 },
++	{ "rt_sigprocmask",	175 },
++	{ "rt_sigqueueinfo",	178 },
++	{ "rt_sigreturn",	173 },
++	{ "rt_sigsuspend",	179 },
++	{ "rt_sigtimedwait",	177 },
++	{ "rt_tgsigqueueinfo",	317 },
++	{ "rtas", __PNR_rtas },
++	{ "s390_pci_mmio_read", __PNR_s390_pci_mmio_read },
++	{ "s390_pci_mmio_write", __PNR_s390_pci_mmio_write },
++	{ "s390_runtime_instr", __PNR_s390_runtime_instr },
++	{ "sched_get_priority_max",	159 },
++	{ "sched_get_priority_min",	160 },
++	{ "sched_getaffinity",	212 },
++	{ "sched_getattr",	335 },
++	{ "sched_getparam",	155 },
++	{ "sched_getscheduler",	157 },
++	{ "sched_rr_get_interval",	161 },
++	{ "sched_setaffinity",	211 },
++	{ "sched_setattr",	334 },
++	{ "sched_setparam",	154 },
++	{ "sched_setscheduler",	156 },
++	{ "sched_yield",	158 },
++	{ "seccomp",	338 },
++	{ "security",	__PNR_security },
++	{ "select",	__PNR_select },
++	{ "semctl",	187 },
++	{ "semget",	186 },
++	{ "semop",	185 },
++	{ "semtimedop",	228 },
++	{ "send",	58 },
++	{ "sendfile",	122 },
++	{ "sendfile64",	209 },
++	{ "sendmmsg",	329 },
++	{ "sendmsg",	183 },
++	{ "sendto",	82 },
++	{ "set_mempolicy",	262 },
++	{ "set_robust_list",	289 },
++	{ "set_thread_area",	213 },
++	{ "set_tid_address",	237 },
++	{ "set_tls", __PNR_set_tls },
++	{ "setdomainname",	121 },
++	{ "setfsgid",	139 },
++	{ "setfsgid32",	__PNR_setfsgid32 },
++	{ "setfsuid",	138 },
++	{ "setfsuid32",	__PNR_setfsuid32 },
++	{ "setgid",	46 },
++	{ "setgid32",	__PNR_setgid32 },
++	{ "setgroups",	81 },
++	{ "setgroups32", __PNR_setgroups32},
++	{ "sethostname",	74 },
++	{ "setitimer",	104 },
++	{ "setns",	328 },
++	{ "setpgid",	57 },
++	{ "setpriority",	97 },
++	{ "setregid",	71 },
++	{ "setregid32", __PNR_setregid32 },
++	{ "setresgid",	170 },
++	{ "setresgid32", __PNR_setresgid32 },
++	{ "setresuid",	164 },
++	{ "setresuid32", __PNR_setresuid32 },
++	{ "setreuid",	70 },
++	{ "setreuid32",	__PNR_setreuid32 },
++	{ "setrlimit",	75 },
++	{ "setsid",	66 },
++	{ "setsockopt",	181 },
++	{ "settimeofday",	79 },
++	{ "setuid",	23 },
++	{ "setuid32",	__PNR_setuid32 },
++	{ "setxattr",	238 },
++	{ "sgetmask",	68 },
++	{ "shmat",	192 },
++	{ "shmctl",	195 },
++	{ "shmdt",	193 },
++	{ "shmget",	194 },
++	{ "shutdown",	117 },
++	{ "sigaction",	__PNR_sigaction },
++	{ "sigaltstack", 166 },
++	{ "signal",	48 },
++	{ "signalfd",	302 },
++	{ "signalfd4",	309 },
++	{ "sigpending",	73 },
++	{ "sigprocmask",	126 },
++	{ "sigreturn",	__PNR_sigreturn },
++	{ "sigsuspend",	__PNR_sigsuspend },
++	{ "socket",	17 },
++	{ "socketcall",	__PNR_socketcall },
++	{ "socketpair",	56 },
++	{ "splice",	291 },
++	{ "spu_create", __PNR_spu_create },
++	{ "spu_run", __PNR_spu_run },
++	{ "ssetmask",	69 },
++	{ "stat",	18 },
++	{ "stat64",	101 },
++	{ "statfs",	99 },
++	{ "statfs64",	298 },
++	{ "stime",	25 },
++	{ "stty",	__PNR_stty },
++	{ "subpage_prot", __PNR_subpage_prot },
++	{ "swapcontext", __PNR_swapcontext },
++	{ "swapoff",	115 },
++	{ "swapon",	87 },
++	{ "switch_endian", __PNR_switch_endian },
++	{ "symlink",	83 },
++	{ "symlinkat",	284 },
++	{ "sync",	36 },
++	{ "sync_file_range",	292 },
++	{ "sync_file_range2", __PNR_sync_file_range2 },
++	{ "syncfs",	327 },
++	{ "syscall", __PNR_syscall },
++	{ "sys_debug_setcontext", __PNR_sys_debug_setcontext },
++	{ "sysfs",	135 },
++	{ "sysinfo",	116 },
++	{ "syslog",	103 },
++	{ "sysmips",	__PNR_sysmips },
++	{ "tee",	293 },
++	{ "tgkill",	259 },
++	{ "time",	13 },
++	{ "timer_create",	250 },
++	{ "timer_delete",	254 },
++	{ "timer_getoverrun",	253 },
++	{ "timer_gettime",	252 },
++	{ "timer_settime",	251 },
++	{ "timerfd",	303 },
++	{ "timerfd_create",	306 },
++	{ "timerfd_gettime",	308 },
++	{ "timerfd_settime",	307 },
++	{ "times",	43 },
++	{ "tkill",	208 },
++	{ "truncate",	92 },
++	{ "truncate64",	199 },
++	{ "tuxcall",	__PNR_tuxcall },
++	{ "ugetrlimit", __PNR_ugetrlimit },
++	{ "ulimit",	__PNR_ulimit },
++	{ "umask",	60 },
++	{ "umount",	__PNR_umount },
++	{ "umount2",	52 },
++	{ "uname",	59 },
++	{ "unlink",	10 },
++	{ "unlinkat",	281 },
++	{ "unshare",	288 },
++	{ "uselib",	86 },
++	{ "userfaultfd", 344 },
++	{ "usr26",	__PNR_usr26 },
++	{ "usr32",	__PNR_usr32 },
++	{ "ustat",	62 },
++	{ "utime",	30 },
++	{ "utimensat",	301 },
++	{ "utimes",	336 },
++	{ "vfork",	113 },
++	{ "vhangup",	111 },
++	{ "vm86",	__PNR_vm86 },
++	{ "vm86old",	__PNR_vm86old },
++	{ "vmsplice",	294 },
++	{ "vserver",	263 },
++	{ "wait4",	114 },
++	{ "waitid",	235 },
++	{ "waitpid",	7 },
++	{ "write",	4 },
++	{ "writev",	146 },
++	{ NULL, __NR_SCMP_ERROR },
++};
++
++/**
++ * Resolve a syscall name to a number
++ * @param name the syscall name
++ *
++ * Resolve the given syscall name to the syscall number using the syscall table.
++ * Returns the syscall number on success, including negative pseudo syscall
++ * numbers; returns __NR_SCMP_ERROR on failure.
++ *
++ */
++int parisc_syscall_resolve_name(const char *name)
++{
++	unsigned int iter;
++	const struct arch_syscall_def *table = parisc_syscall_table;
++
++	/* XXX - plenty of room for future improvement here */
++	for (iter = 0; table[iter].name != NULL; iter++) {
++		if (strcmp(name, table[iter].name) == 0)
++			return table[iter].num;
++	}
++
++	return __NR_SCMP_ERROR;
++}
++
++/**
++ * Resolve a syscall number to a name
++ * @param num the syscall number
++ *
++ * Resolve the given syscall number to the syscall name using the syscall table.
++ * Returns a pointer to the syscall name string on success, including pseudo
++ * syscall names; returns NULL on failure.
++ *
++ */
++const char *parisc_syscall_resolve_num(int num)
++{
++	unsigned int iter;
++	const struct arch_syscall_def *table = parisc_syscall_table;
++
++	/* XXX - plenty of room for future improvement here */
++	for (iter = 0; table[iter].num != __NR_SCMP_ERROR; iter++) {
++		if (num == table[iter].num)
++			return table[iter].name;
++	}
++
++	return NULL;
++}
++
++/**
++ * Iterate through the syscall table and return the syscall name
++ * @param spot the offset into the syscall table
++ *
++ * Return the syscall name at position @spot or NULL on failure.  This function
++ * should only ever be used internally by libseccomp.
++ *
++ */
++const char *parisc_syscall_iterate_name(unsigned int spot)
++{
++	/* XXX - no safety checks here */
++	return parisc_syscall_table[spot].name;
++}
+Index: libseccomp/src/arch-parisc.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libseccomp/src/arch-parisc.c	2016-05-28 19:57:02.042592678 +0200
+@@ -0,0 +1,22 @@
++/*
++ * Copyright (c) 2016 Helge Deller <deller@gmx.de>
++ * Author: Helge Deller <deller@gmx.de>
++ */
++
++#include <stdlib.h>
++#include <errno.h>
++#include <linux/audit.h>
++
++#include "arch.h"
++#include "arch-parisc.h"
++
++const struct arch_def arch_def_parisc = {
++	.token = SCMP_ARCH_PARISC,
++	.token_bpf = AUDIT_ARCH_PARISC,
++	.size = ARCH_SIZE_32,
++	.endian = ARCH_ENDIAN_BIG,
++	.syscall_resolve_name = parisc_syscall_resolve_name,
++	.syscall_resolve_num = parisc_syscall_resolve_num,
++	.syscall_rewrite = NULL,
++	.rule_add = NULL,
++};
+Index: libseccomp/src/arch-parisc.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libseccomp/src/arch-parisc.h	2016-05-28 19:57:02.042592678 +0200
+@@ -0,0 +1,38 @@
++/**
++ * Enhanced Seccomp PARISC Specific Code
++ *
++ * Copyright (c) 2016 Helge Deller <deller@gmx.de>
++ *
++ */
++
++/*
++ * This library is free software; you can redistribute it and/or modify it
++ * under the terms of version 2.1 of the GNU Lesser General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This library is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
++ * for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with this library; if not, see <http://www.gnu.org/licenses>.
++ */
++
++#ifndef _ARCH_PARISC_H
++#define _ARCH_PARISC_H
++
++#include <inttypes.h>
++
++#include "arch.h"
++#include "system.h"
++
++extern const struct arch_def arch_def_parisc;
++extern const struct arch_def arch_def_parisc64;
++
++int parisc_syscall_resolve_name(const char *name);
++const char *parisc_syscall_resolve_num(int num);
++
++const char *parisc_syscall_iterate_name(unsigned int spot);
++
++#endif
+Index: libseccomp/src/arch-parisc64.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libseccomp/src/arch-parisc64.c	2016-05-28 19:57:02.042592678 +0200
+@@ -0,0 +1,22 @@
++/*
++ * Copyright (c) 2016 Helge Deller <deller@gmx.de>
++ * Author: Helge Deller <deller@gmx.de>
++*/
++
++#include <stdlib.h>
++#include <errno.h>
++#include <linux/audit.h>
++
++#include "arch.h"
++#include "arch-parisc.h"
++
++const struct arch_def arch_def_parisc64 = {
++	.token = SCMP_ARCH_PARISC64,
++	.token_bpf = AUDIT_ARCH_PARISC64,
++	.size = ARCH_SIZE_64,
++	.endian = ARCH_ENDIAN_BIG,
++	.syscall_resolve_name = parisc_syscall_resolve_name,
++	.syscall_resolve_num = parisc_syscall_resolve_num,
++	.syscall_rewrite = NULL,
++	.rule_add = NULL,
++};
+Index: libseccomp/src/arch-syscall-check.c
+===================================================================
+--- libseccomp.orig/src/arch-syscall-check.c	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/src/arch-syscall-check.c	2016-05-28 19:57:02.042592678 +0200
+@@ -33,6 +33,7 @@
+ #include "arch-mips.h"
+ #include "arch-mips64.h"
+ #include "arch-mips64n32.h"
++#include "arch-parisc.h"
+ #include "arch-ppc.h"
+ #include "arch-ppc64.h"
+ #include "arch-s390.h"
+@@ -71,6 +72,7 @@
+ 	int i_mips = 0;
+ 	int i_mips64 = 0;
+ 	int i_mips64n32 = 0;
++	int i_parisc = 0;
+ 	int i_ppc = 0;
+ 	int i_ppc64 = 0;
+ 	int i_s390 = 0;
+@@ -101,6 +103,8 @@
+ 			      mips64_syscall_iterate_name(i_mips64));
+ 		syscall_check(str_miss, sys_name, "mips64n32",
+ 			      mips64n32_syscall_iterate_name(i_mips64n32));
++		syscall_check(str_miss, sys_name, "parisc",
++			      parisc_syscall_iterate_name(i_parisc));
+ 		syscall_check(str_miss, sys_name, "ppc",
+ 			      ppc_syscall_iterate_name(i_ppc));
+ 		syscall_check(str_miss, sys_name, "ppc64",
+@@ -135,6 +139,8 @@
+ 			i_mips64 = -1;
+ 		if (!mips64n32_syscall_iterate_name(++i_mips64n32))
+ 			i_mips64n32 = -1;
++		if (!parisc_syscall_iterate_name(++i_parisc))
++			i_parisc = -1;
+ 		if (!ppc_syscall_iterate_name(++i_ppc))
+ 			i_ppc = -1;
+ 		if (!ppc64_syscall_iterate_name(++i_ppc64))
+@@ -146,6 +152,7 @@
+ 	} while (i_x86_64 >= 0 && i_x32 >= 0 &&
+ 		 i_arm >= 0 && i_aarch64 >= 0 &&
+ 		 i_mips >= 0 && i_mips64 >= 0 && i_mips64n32 >= 0 &&
++		 i_parisc >= 0 &&
+ 		 i_ppc >= 0 && i_ppc64 >= 0 &&
+ 		 i_s390 >= 0 && i_s390x >= 0);
+ 
+@@ -190,6 +197,10 @@
+ 		       mips64n32_syscall_iterate_name(i_mips64n32));
+ 		return 1;
+ 	}
++	if (i_parisc >= 0) {
++		printf("%s: ERROR, parisc has additional syscalls\n",
++		       parisc_syscall_iterate_name(i_parisc));
++	}
+ 	if (i_ppc >= 0) {
+ 		printf("%s: ERROR, ppc has additional syscalls\n",
+ 		       ppc_syscall_iterate_name(i_ppc));
+Index: libseccomp/src/arch-syscall-dump.c
+===================================================================
+--- libseccomp.orig/src/arch-syscall-dump.c	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/src/arch-syscall-dump.c	2016-05-28 19:57:02.042592678 +0200
+@@ -38,6 +38,7 @@
+ #include "arch-mips64.h"
+ #include "arch-mips64n32.h"
+ #include "arch-aarch64.h"
++#include "arch-parisc.h"
+ #include "arch-ppc.h"
+ #include "arch-ppc64.h"
+ #include "arch-s390.h"
+@@ -116,6 +117,10 @@
+ 		case SCMP_ARCH_MIPSEL64N32:
+ 			sys_name = mips64n32_syscall_iterate_name(iter);
+ 			break;
++		case SCMP_ARCH_PARISC:
++		case SCMP_ARCH_PARISC64:
++			sys_name = parisc_syscall_iterate_name(iter);
++			break;
+ 		case SCMP_ARCH_PPC:
+ 			sys_name = ppc_syscall_iterate_name(iter);
+ 			break;
+Index: libseccomp/src/arch.c
+===================================================================
+--- libseccomp.orig/src/arch.c	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/src/arch.c	2016-05-28 19:57:02.042592678 +0200
+@@ -38,6 +38,7 @@
+ #include "arch-mips.h"
+ #include "arch-mips64.h"
+ #include "arch-mips64n32.h"
++#include "arch-parisc.h"
+ #include "arch-ppc.h"
+ #include "arch-ppc64.h"
+ #include "arch-s390.h"
+@@ -79,6 +80,10 @@
+ #elif __MIPSEL__
+ const struct arch_def *arch_def_native = &arch_def_mipsel64n32;
+ #endif /* _MIPS_SIM_NABI32 */
++#elif __hppa64__ /* hppa64 must be checked before hppa */
++const struct arch_def *arch_def_native = &arch_def_parisc64;
++#elif __hppa__
++const struct arch_def *arch_def_native = &arch_def_parisc;
+ #elif __PPC64__
+ #ifdef __BIG_ENDIAN__
+ const struct arch_def *arch_def_native = &arch_def_ppc64;
+@@ -139,6 +144,10 @@
+ 		return &arch_def_mips64n32;
+ 	case SCMP_ARCH_MIPSEL64N32:
+ 		return &arch_def_mipsel64n32;
++	case SCMP_ARCH_PARISC:
++		return &arch_def_parisc;
++	case SCMP_ARCH_PARISC64:
++		return &arch_def_parisc64;
+ 	case SCMP_ARCH_PPC:
+ 		return &arch_def_ppc;
+ 	case SCMP_ARCH_PPC64:
+@@ -185,6 +194,10 @@
+ 		return &arch_def_mips64n32;
+ 	else if (strcmp(arch_name, "mipsel64n32") == 0)
+ 		return &arch_def_mipsel64n32;
++	else if (strcmp(arch_name, "parisc64") == 0)
++		return &arch_def_parisc64;
++	else if (strcmp(arch_name, "parisc") == 0)
++		return &arch_def_parisc;
+ 	else if (strcmp(arch_name, "ppc") == 0)
+ 		return &arch_def_ppc;
+ 	else if (strcmp(arch_name, "ppc64") == 0)
+Index: libseccomp/src/gen_pfc.c
+===================================================================
+--- libseccomp.orig/src/gen_pfc.c	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/src/gen_pfc.c	2016-05-28 19:57:02.042592678 +0200
+@@ -71,6 +71,10 @@
+ 		return "mips64n32";
+ 	case SCMP_ARCH_MIPSEL64N32:
+ 		return "mipsel64n32";
++	case SCMP_ARCH_PARISC:
++		return "parisc";
++	case SCMP_ARCH_PARISC64:
++		return "parisc64";
+ 	case SCMP_ARCH_PPC64:
+ 		return "ppc64";
+ 	case SCMP_ARCH_PPC64LE:
+Index: libseccomp/src/python/libseccomp.pxd
+===================================================================
+--- libseccomp.orig/src/python/libseccomp.pxd	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/src/python/libseccomp.pxd	2016-05-28 19:57:02.042592678 +0200
+@@ -43,6 +43,8 @@
+         SCMP_ARCH_MIPSEL
+         SCMP_ARCH_MIPSEL64
+         SCMP_ARCH_MIPSEL64N32
++        SCMP_ARCH_PARISC
++        SCMP_ARCH_PARISC64
+         SCMP_ARCH_PPC
+         SCMP_ARCH_PPC64
+         SCMP_ARCH_PPC64LE
+Index: libseccomp/src/python/seccomp.pyx
+===================================================================
+--- libseccomp.orig/src/python/seccomp.pyx	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/src/python/seccomp.pyx	2016-05-28 19:57:02.042592678 +0200
+@@ -147,6 +147,8 @@
+     MIPSEL - MIPS little endian O32 ABI
+     MIPSEL64 - MIPS little endian 64-bit ABI
+     MIPSEL64N32 - MIPS little endian N32 ABI
++    PARISC - 32-bit PA-RISC
++    PARISC64 - 64-bit PA-RISC
+     PPC64 - 64-bit PowerPC
+     PPC - 32-bit PowerPC
+     """
+@@ -165,6 +167,8 @@
+     MIPSEL = libseccomp.SCMP_ARCH_MIPSEL
+     MIPSEL64 = libseccomp.SCMP_ARCH_MIPSEL64
+     MIPSEL64N32 = libseccomp.SCMP_ARCH_MIPSEL64N32
++    PARISC = libseccomp.SCMP_ARCH_PARISC
++    PARISC64 = libseccomp.SCMP_ARCH_PARISC64
+     PPC = libseccomp.SCMP_ARCH_PPC
+     PPC64 = libseccomp.SCMP_ARCH_PPC64
+     PPC64LE = libseccomp.SCMP_ARCH_PPC64LE
+@@ -205,6 +209,10 @@
+                 self._token = libseccomp.SCMP_ARCH_MIPSEL64
+             elif arch == libseccomp.SCMP_ARCH_MIPSEL64N32:
+                 self._token = libseccomp.SCMP_ARCH_MIPSEL64N32
++            elif arch == libseccomp.SCMP_ARCH_PARISC:
++                self._token = libseccomp.SCMP_ARCH_PARISC
++            elif arch == libseccomp.SCMP_ARCH_PARISC64:
++                self._token = libseccomp.SCMP_ARCH_PARISC64
+             elif arch == libseccomp.SCMP_ARCH_PPC:
+                 self._token = libseccomp.SCMP_ARCH_PPC
+             elif arch == libseccomp.SCMP_ARCH_PPC64:
+Index: libseccomp/tests/26-sim-arch_all_be_basic.c
+===================================================================
+--- libseccomp.orig/tests/26-sim-arch_all_be_basic.c	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/tests/26-sim-arch_all_be_basic.c	2016-05-28 19:57:02.042592678 +0200
+@@ -52,6 +52,12 @@
+ 	rc = seccomp_arch_add(ctx, seccomp_arch_resolve_name("mips64n32"));
+ 	if (rc != 0)
+ 		goto out;
++	rc = seccomp_arch_add(ctx, seccomp_arch_resolve_name("parisc"));
++	if (rc != 0)
++		goto out;
++	rc = seccomp_arch_add(ctx, seccomp_arch_resolve_name("parisc64"));
++	if (rc != 0)
++		goto out;
+ 	rc = seccomp_arch_add(ctx, seccomp_arch_resolve_name("ppc"));
+ 	if (rc != 0)
+ 		goto out;
+Index: libseccomp/tests/26-sim-arch_all_be_basic.py
+===================================================================
+--- libseccomp.orig/tests/26-sim-arch_all_be_basic.py	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/tests/26-sim-arch_all_be_basic.py	2016-05-28 19:57:02.046592702 +0200
+@@ -33,6 +33,8 @@
+     f.add_arch(Arch("mips"))
+     f.add_arch(Arch("mips64"))
+     f.add_arch(Arch("mips64n32"))
++    f.add_arch(Arch("parisc"))
++    f.add_arch(Arch("parisc64"))
+     f.add_arch(Arch("ppc"))
+     f.add_arch(Arch("ppc64"))
+     f.add_arch(Arch("s390"))
+Index: libseccomp/tests/regression
+===================================================================
+--- libseccomp.orig/tests/regression	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/tests/regression	2016-05-28 19:57:02.046592702 +0200
+@@ -28,6 +28,7 @@
+ 	ppc64le"
+ GLBL_ARCH_BE_SUPPORT=" \
+ 	mips mips64 mips64n32 \
++	parisc parisc64 \
+ 	ppc ppc64 \
+ 	s390 s390x"
+ 
+@@ -701,7 +702,7 @@
+ 
+ 	# setup the arch specific return values
+ 	case "$arch" in
+-	x86|x86_64|x32|arm|aarch64|ppc|ppc64|ppc64le|ppc|s390|s390x)
++	x86|x86_64|x32|arm|aarch64|parisc|parisc64|ppc|ppc64|ppc64le|ppc|s390|s390x)
+ 		rc_kill=159
+ 		rc_allow=160
+ 		rc_trap=161
+Index: libseccomp/tools/scmp_arch_detect.c
+===================================================================
+--- libseccomp.orig/tools/scmp_arch_detect.c	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/tools/scmp_arch_detect.c	2016-05-28 19:57:02.046592702 +0200
+@@ -99,6 +99,12 @@
+ 		case SCMP_ARCH_MIPSEL64N32:
+ 			printf("mipsel64n32\n");
+ 			break;
++		case SCMP_ARCH_PARISC:
++			printf("parisc\n");
++			break;
++		case SCMP_ARCH_PARISC64:
++			printf("parisc64\n");
++			break;
+ 		case SCMP_ARCH_PPC:
+ 			printf("ppc\n");
+ 			break;
+Index: libseccomp/tools/scmp_bpf_sim.c
+===================================================================
+--- libseccomp.orig/tools/scmp_bpf_sim.c	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/tools/scmp_bpf_sim.c	2016-05-28 19:57:02.046592702 +0200
+@@ -265,6 +265,10 @@
+ 				arch = AUDIT_ARCH_MIPS64N32;
+ 			else if (strcmp(optarg, "mipsel64n32") == 0)
+ 				arch = AUDIT_ARCH_MIPSEL64N32;
++			else if (strcmp(optarg, "parisc") == 0)
++				arch = AUDIT_ARCH_PARISC;
++			else if (strcmp(optarg, "parisc64") == 0)
++				arch = AUDIT_ARCH_PARISC64;
+ 			else if (strcmp(optarg, "ppc") == 0)
+ 				arch = AUDIT_ARCH_PPC;
+ 			else if (strcmp(optarg, "ppc64") == 0)
+Index: libseccomp/tools/util.c
+===================================================================
+--- libseccomp.orig/tools/util.c	2016-05-28 19:57:02.050592727 +0200
++++ libseccomp/tools/util.c	2016-05-28 19:57:02.046592702 +0200
+@@ -62,6 +62,10 @@
+ #elif __MIPSEL__
+ #define ARCH_NATIVE		AUDIT_ARCH_MIPSEL64N32
+ #endif /* _MIPS_SIM_NABI32 */
++#elif __hppa64__
++#define ARCH_NATIVE		AUDIT_ARCH_PARISC64
++#elif __hppa__
++#define ARCH_NATIVE		AUDIT_ARCH_PARISC
+ #elif __PPC64__
+ #ifdef __BIG_ENDIAN__
+ #define ARCH_NATIVE		AUDIT_ARCH_PPC64
