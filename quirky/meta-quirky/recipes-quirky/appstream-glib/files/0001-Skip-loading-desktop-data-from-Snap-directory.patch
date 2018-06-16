@@ -1,0 +1,28 @@
+From 5a67a13e49881ab3affdc7448b126caaacddad85 Mon Sep 17 00:00:00 2001
+From: Robert Ancell <robert.ancell@canonical.com>
+Date: Wed, 28 Jun 2017 15:18:45 +0100
+Subject: [PATCH] Skip loading desktop data from Snap directory.
+
+Don't load data from the snap directory, this information is provided by snapd.
+---
+ libappstream-glib/as-store.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/libappstream-glib/as-store.c b/libappstream-glib/as-store.c
+index 781e8c3..b340f24 100644
+--- a/libappstream-glib/as-store.c
++++ b/libappstream-glib/as-store.c
+@@ -2948,6 +2948,10 @@ as_store_search_per_system (AsStore *store,
+ 			g_debug ("skipping %s as invalid", data_dirs[i]);
+ 			continue;
+ 		}
++		if (g_strstr_len (data_dirs[i], -1, "snapd/desktop") != NULL) {
++			g_debug ("skippping %s as invalid", data_dirs[i]);
++			continue;
++		}
+ 		if ((flags & AS_STORE_LOAD_FLAG_APP_INFO_SYSTEM) > 0) {
+ 			g_autofree gchar *dest = NULL;
+ 			dest = g_build_filename (data_dirs[i], "app-info", NULL);
+-- 
+2.11.0
+

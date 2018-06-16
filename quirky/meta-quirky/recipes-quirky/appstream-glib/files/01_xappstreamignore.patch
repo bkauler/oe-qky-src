@@ -1,0 +1,30 @@
+From a2f5a2c88b16763be986389be85862ba851bd18e Mon Sep 17 00:00:00 2001
+From: Richard Hughes <richard@hughsie.com>
+Date: Mon, 4 Apr 2016 18:54:05 +0100
+Subject: [PATCH] Ignore desktop files with X-AppStream-Ignore
+
+---
+ libappstream-glib/as-app-desktop.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/libappstream-glib/as-app-desktop.c b/libappstream-glib/as-app-desktop.c
+index ad75a10..5527ba6 100644
+--- a/libappstream-glib/as-app-desktop.c
++++ b/libappstream-glib/as-app-desktop.c
+@@ -351,6 +351,16 @@ as_app_parse_file_key (AsApp *app,
+ 						    NULL);
+ 		if (tmp != NULL && tmp[0] != '\0')
+ 			as_app_set_name (app, locale, tmp);
++
++	/* for Ubuntu */
++	} else if (g_strcmp0 (key, "X-AppStream-Ignore") == 0) {
++		gboolean ret;
++		ret = g_key_file_get_boolean (kf,
++					      G_KEY_FILE_DESKTOP_GROUP,
++					      key,
++					      NULL);
++		if (ret)
++			as_app_add_veto (app, "X-AppStream-Ignore");
+ 	}
+ 
+ 	return TRUE;

@@ -1,0 +1,6 @@
+01_xappstreamignore.patch
+02_yaml-icon-spec-compliant.patch
+03_Return-proper-warnings-when-using-libyaml.patch
+04_app_kind_strings.patch
+05_all_component_types.patch
+0001-Skip-loading-desktop-data-from-Snap-directory.patch
