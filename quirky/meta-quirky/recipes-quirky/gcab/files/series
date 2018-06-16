@@ -1,0 +1,4 @@
+git-version-gen
+manpage-hyphens.patch
+zalloc_integer_overflow.patch
+CVE-2018-5345.patch
