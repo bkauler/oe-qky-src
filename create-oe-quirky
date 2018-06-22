@@ -6,6 +6,7 @@
 #170621 snapshots now tarballs.
 #170623 chmod 755 setterm
 #171018 added x86_64 x32
+#180621 backported 'sumo' recipes.
 
 if [ -d ../oe-quirky ];then
  echo "Error, 'oe-quirky' already exists."
@@ -43,6 +44,7 @@ tar -xf downloads-oe/meta-office.tar.gz --directory=../oe-quirky
 #cp -a downloads-oe/meta-raspberrypi ../oe-quirky/
 tar -xf downloads-oe/meta-raspberrypi.tar.gz --directory=../oe-quirky
 cp -a -f quirky/* ../oe-quirky/
+cp -a sumo ../oe-quirky/ #180621
 sync
 
 # copy the docs also...

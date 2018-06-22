@@ -1,0 +1,23 @@
+
+21 June 2018
+
+these are layers from the 'sumo' branch of OE, or part-thereof.
+
+conf/layer.conf
+this has the name given to the layer, ex:
+
+BBFILE_COLLECTIONS += "core-sumo"
+
+which can be used in other layer.conf to specify layer-deps, ex:
+
+LAYERDEPENDS_core-sumo = "core openembedded-layer"
+
+Here are some layer names:
+
+Layer           Name
+-----           ----
+meta            core
+meta-oe         openembedded-layer
+sumo/.../meta     core-sumo
+sumo/.../meta-oe  oe-sume
+

@@ -13,15 +13,15 @@ DEPENDS = "glib-2.0 cairo fontconfig freetype graphite2"
 
 SRC_URI = "http://www.freedesktop.org/software/harfbuzz/release/${BP}.tar.bz2"
 
-SRC_URI[md5sum] = "7b3f445d0a58485a31c18c03ce9b4e3c"
-SRC_URI[sha256sum] = "85a27fab639a1d651737dcb6b69e4101e3fd09522fdfdcb793df810b5cb315bd"
+SRC_URI[md5sum] = "1466ab51fc5aaa6af4065936939cec62"
+SRC_URI[sha256sum] = "84574e1b1f65ca694cb8fb6905309665c0368af18a312357f8ff886ee2f29563"
 
 inherit autotools pkgconfig lib_package gtk-doc
 
 PACKAGECONFIG ??= "icu"
 PACKAGECONFIG[icu] = "--with-icu,--without-icu,icu"
 
-# BK change --without-graphite2
+# BK remove --without-graphite2
 EXTRA_OECONF = " \
     --with-cairo \
     --with-fontconfig \

@@ -8,6 +8,9 @@ SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/picscale-${
 SRC_URI[md5sum] = "5ebc49f67c5bfcbbb5c0a7f723da17c0"
 SRC_URI[sha256sum] = "e30e6e5025c41ef433d30095907e3cd90122d4d19fd5ecdcd4d7d01c829191dc"
 
+# this will prevent lack of checksum from throwing an error...
+BB_STRICT_CHECKSUM = "0"
+
 # NOTE: no Makefile found.
 DEPENDS = "bacon gtk+ gdk-pixbuf"
 
