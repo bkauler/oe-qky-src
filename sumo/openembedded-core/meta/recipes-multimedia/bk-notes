@@ -1,0 +1,9 @@
+
+20180622
+--------
+new meta/recipes-multimedia backporting from suma release.
+
+took these out, as failed to compile:
+
+libid3tag
+x264
