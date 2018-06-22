@@ -2,7 +2,7 @@
 # ERROR: libbluray not found using pkg-config
 # ...very odd, it is there!!!! have removed libbluray
 # ...now it is telling me cannot find schroedinger-1.0.pc ...what is going on!!!
-# ...trying --pkg-config=, see .bb YES, FIXED IT.
+# ...trying --pkg-config=, see below YES, FIXED IT.
 # note, have libsdl as dep, however ffmpeg wants sdl v2.x, only have 1.2.x
 
 PR = "r1"
@@ -29,3 +29,6 @@ PACKAGECONFIG[v4l] = "--enable-libv4l2,,v4l-utils"
 PACKAGECONFIG[libdc1394] = "--enable-libdc1394,--disable-libdc1394,libdc1394"
 PACKAGECONFIG[libbluray] = "--enable-libbluray,,libbluray"
 PACKAGECONFIG[libwebp] = "--enable-libwebp,,libwebp"
+
+EXTRA_OECONF += " \
+  --pkg-config=${WORKDIR}/recipe-sysroot-native/usr/bin/pkg-config"
