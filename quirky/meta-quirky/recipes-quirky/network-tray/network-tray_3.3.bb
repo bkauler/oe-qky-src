@@ -1,12 +1,11 @@
 # Recipe created by recipetool
-# recipetool create -o network-tray_3.2.1.bb http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/n/network_tray-3.2.1.tar.gz
 
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 
-SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/n/network_tray-${PV}.tar.gz"
-SRC_URI[md5sum] = "5bd8ed617026997b7eac429e7f1db0e3"
-SRC_URI[sha256sum] = "a17c17590328ee2ead6c1fd437a98a116b3a33fd41993af538f167a0f0229baf"
+SRC_URI = "http://distro.ibiblio.org/easyos/source/oe/pyro/network_tray-${PV}.tar.gz"
+SRC_URI[md5sum] = "209f7b448eb657f8f63c3cb8a49cbb77"
+SRC_URI[sha256sum] = "1182539180d9ecc9773e0ba2c182c81bc2ecaa39961e4c45947aea81ece3b759"
 
 S = "${WORKDIR}/network_tray-${PV}"
 
