@@ -7,11 +7,14 @@ LIC_FILES_CHKSUM = "file://License;md5=3f84fd6f29d453a56514cb7e4ead25f1"
 
 DEPENDS = "hostperl-runtime-native gperf-native"
 
-SRC_URI = "${KERNELORG_MIRROR}/linux/libs/security/linux-privs/${BPN}2/${BPN}-${PV}.tar.xz \
+SRC_URI = "http://distro.ibiblio.org/easyos/source/oe/pyro/libcap-2.25-git20160207-patched_bk2.tar.gz \
            file://0001-ensure-the-XATTR_NAME_CAPS-is-defined-when-it-is-use.patch \
-           file://libcap-cap_sys_mount.patch"
-SRC_URI[md5sum] = "6666b839e5d46c2ad33fc8aa2ceb5f77"
-SRC_URI[sha256sum] = "693c8ac51e983ee678205571ef272439d83afe62dd8e424ea14ad9790bc35162"
+"
+SRC_URI[md5sum] = "0ef017b0a4e9564bda5a412734c4dced"
+SRC_URI[sha256sum] = "32c6fd3b8c37b54101031a4daccb81aa540fb4d66462168b57171ad66a3b23b8"
+
+PV = "2.25-git20160207-patched-bk2"
+S = "${WORKDIR}/${BPN}-2.25-git20160207-patched_bk2"
 
 inherit lib_package
 
