@@ -26,10 +26,12 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/${VERSIO
            file://disable-Wvarargs-with-clang.patch \
            file://pqg.c-ULL_addend.patch \
            file://Fix-compilation-for-X32.patch \
+           file://nss-build-hacl-poly1305-aarch64.patch \
+           file://0001-Bug-1437734-Use-snprintf-in-sign.c-r-ttaubert.patch \
            "
 
-SRC_URI[md5sum] = "ebb44f1394250d2cf6ec3c2e3d71fa20"
-SRC_URI[sha256sum] = "933439214dc03ee60e86d1419c19e1568998b0776dde987f41fa70ced6cd08dc"
+SRC_URI[md5sum] = "9467ec9e65c5aeb3254a50250490f5f7"
+SRC_URI[sha256sum] = "f4127de09bede39f5fd0f789d33c3504c5d261e69ea03022d46b319b3e32f6fa"
 
 UPSTREAM_CHECK_URI = "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_Releases"
 UPSTREAM_CHECK_REGEX = "NSS_(?P<pver>.+)_release_notes"
@@ -104,7 +106,12 @@ do_compile() {
     # We can modify CC in the environment, but if we set it via an
     # argument to make, nsinstall, a host program, will also build with it!
     #
-    export CC="${CC} -g"
+    # nss pretty much does its own thing with CFLAGS, so we put them into CC.
+    # Optimization will get clobbered, but most of the stuff will survive.
+    # The motivation for this is to point to the correct place for debug
+    # source files and CFLAGS does that.  Nothing uses CCC.
+    #
+    export CC="${CC} ${CFLAGS}"
     make -C ./nss CCC="${CXX} -g" \
         OS_TEST=${OS_TEST} \
         RPATH="${RPATH}"
