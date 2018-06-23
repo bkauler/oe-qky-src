@@ -3,6 +3,7 @@ DESCRIPTION = "mpv is a fork of mplayer2 and MPlayer. It shares some features wi
 SECTION = "multimedia"
 HOMEPAGE = "http://www.mpv.io/"
 
+# BK 20180623 added: mpg123 xvidcore
 # added deps as used in xine-lib + more... removed xsp
 DEPENDS = "zlib ffmpeg jpeg virtual/libx11 libxv \
            libxscrnsaver libv4l libxinerama \
@@ -12,7 +13,8 @@ DEPENDS = "zlib ffmpeg jpeg virtual/libx11 libxv \
            libsdl-mixer libsdl-ttf speex libmodplug vcdimager wavpack x264 libxcb \
            libxvmc lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec \
            schroedinger taglib openssl libsamplerate0 libbluray mesa libdvdread \
-           libdvdcss libcddb libcdio-paranoia libarchive libdrm libwebp"
+           libdvdcss libcddb libcdio-paranoia libarchive libdrm libwebp \
+           mpg123 xvidcore"
 
 REQUIRED_DISTRO_FEATURES = "x11"
 

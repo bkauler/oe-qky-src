@@ -9,13 +9,15 @@ SRC_URI = "http://sourceforge.net/projects/xine/files/xine-lib/${PV}/xine-lib-${
 SRC_URI[md5sum] = "cd42d2ba92f943d17736d9bca712b3d1"
 SRC_URI[sha256sum] = "32b34e8049feb762d75a551d5d2cdb56c396fdd83e35b9b7de5fd08e498e948d"
 
+# BK 20180623 added: mpg123 xvidcore
 # just added in case: lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec schroedinger taglib openssl libsamplerate0
 DEPENDS = "zlib libxext fontconfig freetype libx11 librsvg libpng ffmpeg alsa-lib \
            libdvdnav faac faad2 flac gdk-pixbuf mesa libglu liba52 libmad libmng \
            libtheora libva libvdpau libvorbis libogg libvpx libsdl libsdl-image \
            libsdl-mixer libsdl-ttf speex libmodplug vcdimager wavpack x264 libxcb \
            libxvmc lame lcms libcdio libraw1394 libavc1394 libdc1394 mpeg2dec \
-           schroedinger taglib openssl libsamplerate0 libbluray libv4l libwebp"
+           schroedinger taglib openssl libsamplerate0 libbluray libv4l libwebp \
+           mpg123 xvidcore"
 
 inherit pkgconfig gettext perlnative autotools
 
