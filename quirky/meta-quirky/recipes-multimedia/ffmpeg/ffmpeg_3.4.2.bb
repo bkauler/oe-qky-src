@@ -1,3 +1,5 @@
+# BK 20180623 changes.
+
 SUMMARY = "A complete, cross-platform solution to record, convert and stream audio and video."
 DESCRIPTION = "FFmpeg is the leading multimedia framework, able to decode, encode, transcode, \
                mux, demux, stream, filter and play pretty much anything that humans and machines \
@@ -36,13 +38,26 @@ ARM_INSTRUCTION_SET = "arm"
 # libpostproc was previously packaged from a separate recipe
 PROVIDES = "libav libpostproc"
 
-DEPENDS = "alsa-lib zlib libogg yasm-native"
+#DEPENDS = "alsa-lib zlib libogg yasm-native"
+# BK
+DEPENDS = " alsa-lib zlib libogg yasm-native \
+            libcdio libcdio-paranoia openssl libva wavpack libvpx libvorbis \
+            speex schroedinger openjpeg opencore-amr orc lame libvdpau libsdl \
+            libsdl-image libsdl-mixer mesa libdrm xz bzip2 zip unzip libxcb \
+            v4l-utils libdc1394 freetype fontconfig libbluray libwebp libxv\
+            liba52 faac faad2 libmng mpeg2dec taglib libcdr libmad libsndfile1 \
+            libmodplug xvidcore"
 
 inherit autotools pkgconfig
 
 PACKAGECONFIG ??= "avdevice avfilter avcodec avformat swresample swscale postproc \
                    bzlib gpl lzma theora x264 \
                    ${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'xv', '', d)}"
+
+# BK moved from .bbappend
+PACKAGECONFIG_append = " cdio openssl vaapi wavpack vpx libvorbis speex xvidcore \
+                        opencore v4l libdc1394 lzma libwebp vdpau theora libbluray \
+                        mp3lame"
 
 # libraries to build in addition to avutil
 PACKAGECONFIG[avdevice] = "--enable-avdevice,--disable-avdevice"
@@ -72,6 +87,17 @@ PACKAGECONFIG[vpx] = "--enable-libvpx,--disable-libvpx,libvpx"
 PACKAGECONFIG[x264] = "--enable-libx264,--disable-libx264,x264"
 PACKAGECONFIG[xv] = "--enable-outdev=xv,--disable-outdev=xv,libxv"
 
+# BK
+PACKAGECONFIG[cdio] = "--enable-libcdio,--disable-libcdio,libcdio"
+PACKAGECONFIG[wavpack] = "--enable-libwavpack,--disable-libwavpack,wavpack"
+PACKAGECONFIG[opencore] = "--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-version3,,opencore-amr"
+# PACKAGECONFIG[mp3lame] = "--enable-libmp3lame,,lame"
+PACKAGECONFIG[v4l] = "--enable-libv4l2,,v4l-utils"
+PACKAGECONFIG[libdc1394] = "--enable-libdc1394,--disable-libdc1394,libdc1394"
+PACKAGECONFIG[libbluray] = "--enable-libbluray,,libbluray"
+PACKAGECONFIG[libwebp] = "--enable-libwebp,,libwebp"
+PACKAGECONFIG[xvidcore] = "--enable-libxvid,,xvidcore"
+
 # Check codecs that require --enable-nonfree
 USE_NONFREE = "${@bb.utils.contains_any('PACKAGECONFIG', [ 'openssl' ], 'yes', '', d)}"
 
@@ -81,15 +107,19 @@ def cpu(d):
             return arg[6:]
     return 'generic'
 
+# BK 20180623 removed:
+#    --disable-libxcb 
+#    --disable-libxcb-shm 
+#    --disable-libxcb-xfixes 
+#    --disable-libxcb-shape 
+#    --pkg-config=pkg-config 
+# replaced with:   --pkg-config=${WORKDIR}/recipe-sysroot-native/usr/bin/pkg-config
+
 EXTRA_OECONF = " \
     --disable-stripping \
     --enable-pic \
     --enable-shared \
     --enable-pthreads \
-    --disable-libxcb \
-    --disable-libxcb-shm \
-    --disable-libxcb-xfixes \
-    --disable-libxcb-shape \
     ${@bb.utils.contains('USE_NONFREE', 'yes', '--enable-nonfree', '', d)} \
     \
     --cross-prefix=${TARGET_PREFIX} \
@@ -110,7 +140,7 @@ EXTRA_OECONF = " \
     --datadir=${datadir}/ffmpeg \
     ${@bb.utils.contains('AVAILTUNES', 'mips32r2', '', '--disable-mipsdsp --disable-mipsdspr2', d)} \
     --cpu=${@cpu(d)} \
-    --pkg-config=pkg-config \
+    --pkg-config=${WORKDIR}/recipe-sysroot-native/usr/bin/pkg-config \
 "
 
 EXTRA_OECONF_append_linux-gnux32 = " --disable-asm"
