@@ -25,8 +25,7 @@ GLIBC_ADDONS = "nptl"
 
 SERIAL_CONSOLES_CHECK = "ttyS0"
 
-# 20180622 BK change from 4.10, add line...
-#PREFERRED_VERSION_linux-yocto ?= "4.14%"
-PREFERRED_VERSION_linux-quirky ?= "4.14%"
+#
+PREFERRED_VERSION_linux-yocto ?= "4.10%"
 
 IMAGE_FSTYPES += "tar.gz"
