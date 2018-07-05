@@ -1,0 +1,32 @@
+# Recipe created by recipetool
+# recipetool create -o fbpanel_7.0.bb https://github.com/aanatoly/fbpanel/archive/7.0.tar.gz
+
+LICENSE = "OSL-1.0"
+LIC_FILES_CHKSUM = "file://COPYING;md5=2cc18f185519acee58a1217e8496e64b"
+
+SRC_URI = "https://github.com/aanatoly/fbpanel/archive/${PV}.tar.gz"
+SRC_URI[md5sum] = "8a15ac4e0f23a72b9d6be5151df712e5"
+SRC_URI[sha256sum] = "711570954f8f99235d6afb7ec3226dede20b832eb712a5bd00e4f793b75ac5bb"
+
+DEPENDS = "libx11 gtk+ pango gdk-pixbuf fontconfig freetype libxrender libxi \
+           libxrandr libxcursor libxext libxcomposite libxdamage libxfixes harfbuzz \
+           pixman libpng libxcb libffi libpcre util-linux expat graphite2 libxau \
+           libxdmcp glib-2.0 glib-2.0-native libxft libxpm libxmu"
+
+inherit autotools-brokensep gettext pkgconfig
+
+do_configure () {
+ # this is a python script, keep the fingers crossed...
+ ./configure --prefix=${prefix}
+}
+
+do_compile () {
+ oe_runmake
+}
+
+do_install () {
+ oe_runmake install DESTDIR=${D}
+}
+
+SUMMARY = "Lightweight X11 desktop panel"
+HOMEPAGE = "https://github.com/aanatoly/fbpanel"
