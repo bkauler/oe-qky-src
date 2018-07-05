@@ -1,0 +1,448 @@
+diff -Naur lxpanel-0.2.9.0BAK2/src/plugins/ptk-app-menu.c lxpanel-0.2.9.0/src/plugins/ptk-app-menu.c
+--- lxpanel-0.2.9.0BAK2/src/plugins/ptk-app-menu.c	2008-03-30 21:33:57.000000000 +0800
++++ lxpanel-0.2.9.0/src/plugins/ptk-app-menu.c	2018-07-05 22:02:28.300251945 +0800
+@@ -45,7 +45,6 @@
+ typedef struct _CatInfo
+ {
+     char* title;
+-    char* directory_file;
+     char* icon;
+     const char** sub_cats;
+ }CatInfo;
+@@ -57,105 +56,290 @@
+     char* exec;
+ }PtkAppMenuItem;
+ 
+-const char* development_cats[]={
++const char* desktop_cats[]={
++   "X-Desktop",
++   "X-Desktop-appearance",
++   "DesktopSettings",
++   "X-Desktop-settings",
++   "X-DesktopCountry",
++   "Accessibility",
++   "X-Desktop-windows",
++   "X-Desktop-sleep",
++   "Screensaver",
++   "X-Desktop-applet",
++   "X-DesktopApplets",
++   "Clock",
++   NULL
++};
++
++const char* system_cats[]={
++   "X-System",
++   "System",
++   "HardwareSettings",
++   "Core",
++   "X-System-process",
++   "Monitor",
++   "X-SystemSchedule",
++   "X-System-memory",
++   "X-SystemMemory",
++   "X-System-print",
++   "X-System-storage",
++   "X-System-security",
++   "Security",
++   NULL
++};
++
++const char* setup_cats[]={
++   "X-Setup",
++   "X-Setup-puppy",
++   "X-SetupEntry",
++   "PackageManager",
++   "X-Setup-wizard",
++   "X-SetupWizard",
++   "X-Setup-installation",
++   "X-SetupUtility",
++   NULL
++};
++
++const char* utility_cats[]={
++   "X-Utility",
++   "Utility",
++   "Electronics",
++   "Emulator",
++   "Engineering",
++   "X-Utility-development",
+    "Development",
+-   "Translation",
+-   "Building","Debugger",
++   "Building",
++   "Debugger",
+    "IDE",
+-   "GUIDesigner",
+    "Profiling",
++   "ProjectManagement",
+    "RevisionControl",
+-   "WebDevelopment",
++   "Translation",
++   "GUIDesigner",
++   "X-Utility-package",
++   "Archiving",
++   "Compression",
++   "X-Utility-shell",
++   "TerminalEmulator",
++   "Shell",
++   "X-Utility-help",
++   "Documentation",
+    NULL
+ };
+-const char* office_cats[] = {
+-   "Office",
+-   "Dictionary",
+-   "Chart",
+-   "Calendar",
+-   "ContactManagement",
+-   "Database",
++
++const char* filesystem_cats[]={
++   "X-Filesystem",
++   "FileSystem",
++   "FileTools",
++   "X-Filesystem-filemanager",
++   "FileManager",
++   "X-Filesystem-mount",
++   "X-FilesystemMount",
++   "X-Filesystem-find",
++   "X-FilesystemFind",
++   "X-Filesystem-storage",
++   "X-FilesystemUtility",
++   "X-Filesystem-audit",
+    NULL
+ };
+-const char* graphics_cats[] = {
+-   "Graphics",
++
++const char* graphic_cats[]={
++   "X-Graphic",
+    "2DGraphics",
+    "3DGraphics",
+-   "VectorGraphics",
++   "X-Graphic-paint",
+    "RasterGraphics",
++   "X-Graphic-draw",
++   "VectorGraphics",
++   "X-Graphic-flow",
++   "Chart",
++   "FlowChart",
++   "Presentation",
++   "X-Graphic-viewer",
++   "Viewer",
++   "X-Graphic-viewer",
++   "X-Graphic-camera",
++   "Photography",
++   "X-Graphic-scanner",
++   "Scanning",
++   "OCR",
++   "X-Graphic-print",
++   "X-Graphic-utility",
++   "X-GraphicUtility",
++   NULL
++};
++
++const char* document_cats[]={
++   "X-Document",
++   "X-Document-layout",
++   "Publishing",
++   "WordProcessor",
++   "WebDevelopment",
++   "X-Document-catalog",
++   "Dictionary",
++   "X-Document-edit",
++   "TextEditor",
++   "X-Document-viewer",
+    "Viewer",
++   "X-Document-utility",
++   "X-DocumentUtility",
+    NULL
+ };
+-const char* network_cats[] = {
++
++const char* business_cats[]={
++   "X-Business",
++   "X-Calculate",
++   "X-Business-spreadsheet",
++   "Spreadsheet",
++   "X-Business-planner",
++   "ProjectManagement",
++   "X-Business-finance",
++   "Finance",
++   "X-Business-calc",
++   "Calculator",
++   "X-CalculateUtility",
++   NULL
++};
++
++const char* personal_cats[]={
++   "X-Personal",
++   "X-Personal-database",
++   "ContactManagement",
++   "X-Personal-date",
++   "Calendar",
++   "X-Personal-organizer",
++   "PDA",
++   "X-Personal-security",
++   "X-Personal-timing",
++   "X-PersonalUtility",
++   "X-Personal-education",
++   "Languages",
++   "Science",
++   "ArtificialIntelligence",
++   "Astronomy",
++   "Biology",
++   "Chemistry",
++   "ComputerScience",
++   "DataVisualization",
++   "Economy",
++   "Electricity",
++   "Geography",
++   "Geology",
++   "Geoscience",
++   "History",
++   "ImageProcessing",
++   "Literature",
++   "Math",
++   "NumericalAnalysis",
++   "MedicalSoftware",
++   "Physics",
++   "Robotics",
++   "Sports",
++   "ParallelComputing",
++   NULL
++};
++
++const char* network_cats[]={
++   "X-Network",
+    "Network",
++   "X-Network-firewall",
++   "X-Network-phone",
+    "Dialup",
+-   "Email",
++   "X-Network-connect",
++   "HamRadio",
++   "RemoteAccess",
++   "X-Network-transfer",
++   "X-Network-utility",
++   NULL
++};
++
++const char* internet_cats[]={
++   "X-Internet",
++   "X-Internet-browser",
+    "WebBrowser",
++   "X-Internet-chat",
++   "Chat",
+    "InstantMessaging",
++   "VideoConference",
++   "X-Internet-mailnews",
++   "Email",
++   "News",
++   "X-Internet-transfer",
++   "Telephony",
+    "IRCClient",
+    "FileTransfer",
+-   "News",
+    "P2P",
+-   "RemoteAccess",
+-   "Telephony",
+-   NULL
+-};
+-const char* settings_cats[] = {
+-   "Settings",
+-   "DesktopSettings",
+-   "HardwareSettings",
+-   "Accessibility",
++   "X-Internet-login",
++   "X-Internet-block",
++   "X-Internet-utility",
+    NULL
+ };
+-const char* system_cats[] = {
+-   "System",
+-   "Core",
+-   "Security",
+-   "PackageManager",
+-   NULL
+-};
+-const char* audiovideo_cats[] ={
++
++const char* multimedia_cats[] ={
++   "X-Multimedia",
++   "Recorder",
++   "X-Multimedia-mediaplayer",
++   "Player",
++   "X-Multimedia-audiovideo",
+    "AudioVideo",
++   "AudioVideoEditing",
++   "Tuner",
++   "X-Multimedia-sound",
++   "Music",
+    "Audio",
+-   "Video",
++   "Midi",
+    "Mixer",
+    "Sequencer",
+-   "Tuner",
++   "X-Multimedia-video",
++   "Video",
+    "TV",
+-   "AudioVideoEditing",
+-   "Player",
+-   "Recorder",
+-   "DiscBurning",
+-   "Music",
++   "X-Multimedia-optical",
++   "DiskBurning",
++   "X-Multimedia-utility",
+    NULL
+ };
+-const char* game_cats[] = {
++
++const char* fun_cats[] = {
++   "X-Fun",
+    "Game",
+    "Amusement",
+-   NULL
+-};
+-const char* education_cats[] = {
+-   "Education",
+-   NULL
+-};
+-const char* utility_cats[] = {
+-   "Utility",
++   "BlocksGame",
++   "KidsGame",
++   "Simulation",
++   "SportsGame",
++   "X-Fun-adventure",
++   "ActionGame",
++   "AdventureGame",
++   "RolePlaying",
++   "X-Fun-boardgame",
++   "BoardGame",
++   "X-Fun-cardgame",
++   "CardGame",
++   "X-Fun-puzzle",
++   "StrategyGame",
++   "LogicGame",
++   "X-Fun-shooter",
++   "X-Fun-arcade",
++   "ArcadeGame",
+    NULL
+ };
+ 
+-const CatInfo known_cats[]=
+-{
+-    {N_("Other"), "Other", "gnome-other", NULL},
+-    {N_("Game"), "Games", "gnome-joystick", game_cats},
+-    {N_("Education"), "Education", "gnome-amusements", education_cats},
+-    {N_("Development"), "Development", "gnome-devel", development_cats},
+-    {N_("Audio & Video"), "Multimedia", "gnome-multimedia", audiovideo_cats},
+-    {N_("Graphics"), "Graphics", "gnome-graphics", graphics_cats},
+-    {N_("Settings"), "Settings", "gnome-settings", settings_cats},
+-    {N_("System Tools"), "System-Tools", "gnome-system", system_cats},
+-    {N_("Network"), "Internet", "gnome-globe", network_cats},
+-    {N_("Office"), "Office", "gnome-applications", office_cats},
+-    {N_("Accessories"), "Accessories", "gnome-util", utility_cats}
++const CatInfo known_cats[]={
++    {N_("Other"), "gnome-other", NULL},
++    {N_("Desktop"), "gnome-util", desktop_cats},
++    {N_("System"), "gnome-system", system_cats},
++    {N_("Setup"), "gnome-settings", setup_cats},
++    {N_("Utility"), "gnome-devel", utility_cats},
++    {N_("Filesystem"), "folder24", filesystem_cats},
++    {N_("Graphic"), "gnome-graphics", graphic_cats},
++    {N_("Document"), "gnome-applications", document_cats},
++     {N_("Business"), "mini-calc", business_cats},
++     {N_("Personal"), "mini.stick", personal_cats},
++     {N_("Network"), "pc-2x", network_cats},
++     {N_("Internet"), "gnome-globe", internet_cats},
++     {N_("Multimedia"), "gnome-multimedia", multimedia_cats},
++     {N_("Fun"), "gnome-joystick", fun_cats},    
+ };
+ 
+ int find_cat( char** cats )
+@@ -170,8 +354,8 @@
+             const char** sub_cats = known_cats[i].sub_cats;
+             while( *sub_cats )
+             {
+-                if( 0 == strncmp(*cat, "X-", 2) ) /*  Desktop specific*/
+-                    return -1;
++ //               if( 0 == strncmp(*cat, "X-", 2) ) /*  Desktop specific*/
++ //                   return -1;
+                 if( 0 == strcmp( *sub_cats, *cat ) )
+                     return i;
+                 ++sub_cats;
+@@ -242,16 +426,6 @@
+ }
+ #endif
+ 
+-char* load_cat_title( GKeyFile* kf, CatInfo* inf )
+-{
+-    char* ret = NULL;
+-    char* fn = g_strconcat( "desktop-directories/", inf->directory_file, ".directory", NULL );
+-    if( g_key_file_load_from_data_dirs( kf, fn, NULL, 0, NULL ) )
+-        ret = g_key_file_get_locale_string( kf, desktop_ent, "Name", NULL, NULL );
+-    g_free( fn );
+-    return ret;
+-}
+-
+ void  unload_old_icons( GtkWidget* menu )
+ {
+     GList* items = gtk_container_get_children( GTK_CONTAINER(menu) );
+@@ -517,22 +691,17 @@
+    int i;
+    GList *sub_items, *l;
+    guint change_handler;
+-  GKeyFile* kf;
+ 
+     if( G_UNLIKELY( PTK_APP_MENU_ITEM_ID == 0 ) )
+         PTK_APP_MENU_ITEM_ID = g_quark_from_static_string( "PtkAppMenuItem" );
+ 
+    app_dirs_foreach( (GFunc) load_dir, sub_menus );
+ 
+-    kf = g_key_file_new();
+-
+    for( i = 0; i < G_N_ELEMENTS(known_cats); ++i )
+    {
+       GtkMenu* sub_menu;
+       GtkWidget* menu_item;
+       PtkAppMenuItem* data;
+-      char* title;
+-
+       if( ! (sub_items = sub_menus[i]) )
+          continue;
+       sub_menu = GTK_MENU(gtk_menu_new());
+@@ -540,11 +709,7 @@
+       for( l = sub_items; l; l = l->next )
+          gtk_menu_shell_append( GTK_MENU_SHELL(sub_menu), GTK_WIDGET(l->data) );
+       g_list_free( sub_items );
+-
+-      title = load_cat_title( kf, &known_cats[i] );
+-      menu_item = gtk_image_menu_item_new_with_label( title ? title : _(known_cats[i].title) );
+-      g_free( title );
+-
++      menu_item = gtk_image_menu_item_new_with_label( _(known_cats[i].title) );
+       data = g_slice_new0( PtkAppMenuItem );
+       data->icon = g_strdup(known_cats[i].icon);
+       g_object_set_qdata_full( G_OBJECT(menu_item), PTK_APP_MENU_ITEM_ID, data, (GDestroyNotify) ptk_app_menu_item_free );
+@@ -552,7 +717,6 @@
+       g_signal_connect( menu_item, "size-request", G_CALLBACK(on_menu_item_size_request), data );
+       on_menu_item_expose( menu_item, NULL, data );
+       gtk_menu_item_set_submenu( GTK_MENU_ITEM(menu_item), GTK_WIDGET(sub_menu) );
+-
+       if( position == -1 )
+          gtk_menu_shell_append( GTK_MENU_SHELL(menu), menu_item );
+       else
+@@ -561,9 +725,6 @@
+          ++position;
+       }
+    }
+-
+-   g_key_file_free( kf );
+-
+    gtk_widget_show_all(GTK_WIDGET(menu));
+    change_handler = g_signal_connect_swapped( gtk_icon_theme_get_default(), "changed", G_CALLBACK(unload_old_icons), menu );
+    g_object_weak_ref( G_OBJECT(menu), on_app_menu_destroy, GINT_TO_POINTER(change_handler) );

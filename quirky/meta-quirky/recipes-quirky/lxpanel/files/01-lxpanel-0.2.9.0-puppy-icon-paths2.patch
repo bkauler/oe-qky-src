@@ -1,0 +1,18 @@
+diff -Naur lxpanel-0.2.9.0ORIG/src/panel.c lxpanel-0.2.9.0/src/panel.c
+--- lxpanel-0.2.9.0ORIG/src/panel.c	2008-03-30 21:32:58.000000000 +0800
++++ lxpanel-0.2.9.0/src/panel.c	2018-07-05 21:23:50.393504145 +0800
+@@ -998,6 +998,14 @@
+     gtk_icon_theme_append_search_path( gtk_icon_theme_get_default(),
+                                        PACKAGE_DATA_DIR "/lxpanel/images" );
+ 
++    /*BK puppy icon paths*/
++    gtk_icon_theme_append_search_path( gtk_icon_theme_get_default(),
++                                       "/usr/local/lib/X11/mini-icons" );
++    gtk_icon_theme_append_search_path( gtk_icon_theme_get_default(),
++                                       "/usr/local/lib/X11/pixmaps" );
++    gtk_icon_theme_append_search_path( gtk_icon_theme_get_default(),
++                                       "/usr/share/pixmaps" );
++
+ restart:
+     is_restarting = FALSE;
+ 
