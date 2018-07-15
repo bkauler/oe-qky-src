@@ -25,6 +25,10 @@ Another reply as to "why?" is that this is a very cool thing to do. Anyone with 
 
 You must be running a x86_64 host Linux system, and have expanded the oe-qky-src folder in a partition with Linux filesystem (preferably ext4) and at least 150GB free space. The PC must have at least 2GB RAM and there must be a swap partition.  
 
+Barry has used both Quirky and Easy x86_64 as the host system. Describing each:  
+
+### Quirky Linux x86_64  
+
 The host Linux system used by the developer Barry Kauler is Quirky x86_64, version 8.1.6 (or later). This is built from Ubuntu 16.04 Xenial Xerus DEB packages, and as-is requires just a few tweaks to work with OpenEmbedded.  
 
 For Quirky 8.1.6, it is required to install _python3_ and _ca-certificates_ from the Puppy Package Manager (PPM).  
@@ -35,6 +39,14 @@ Not to forget the full development environment, gcc, headers and the rest, which
 
 Itemizing, install these, as well as their dependencies:  
 _devx, ca-certificates_, _python3_, _python3-django_, _python3-pip_, _python-beautifulsoup_  
+
+### Easy OS x86_64  
+
+At the time of writing, Easy is at version 0.9.4\. This is ready-to-go for OE. Nothing to do, it has all the dependencies.  
+
+You do of course have to install the 'devx' SFS file, which provides everything needed for compiling (click the "sfsget" icon at top of screen.  
+
+### Other distros
 
 Puppy Linux x86_64 distributions should be OK also, in particular those based on Debian/Ubuntu DEBs (for example XenialPup).  
 
@@ -74,7 +86,9 @@ Up-one level, you will see newly-created folders "downloads" and "oe-quirky". Fo
 <pre># cd ../oe-quirky  
 # source oe-init-build-env buildPC</pre>
 
-Folder "buildPC" is building for a PC, x86_64 CPU. Alternatives are "buildPC32" for a PC with i686 32-bit CPU, and "buildPi" is for a Raspberry Pi2 and Pi3.  
+Folder "buildPC" is building for a PC, x86_64 CPU. Alternatives are "buildPC32" for a PC with i686 32-bit CPU, and "buildarm64" for a generic aarch64 build.  
+
+Target "buildPi" is for a Raspberry Pi2 and Pi3, however that is commented-out in the 'create-oe-qky' script. To use it, you might want to update the 'meta-raspberrypi' layer.  
 
 A quick sanity test is to check that the layers are found:  
 
@@ -87,6 +101,9 @@ Note that the Internet connection must be maintained throughout the build, as so
 In otherwords, you cannot download all source packages prior to commencing the build.  
 
 An annoyance is that libreoffice does not preserve the downloads globally for other builds. So, everytime that libreoffice gets compiled, it has to download lots of extra packages.  
+
+> **Notice**  
+> LibreOffice is currently not in the package list in 'conf/local.conf' for buildPC and buildarm64, as it is an old version, plus the time it takes. Instead, Barry compiles LibreOffice in a running system (a distro built from the packages compiled in oe-qky-src!).
 
 Off we go, for the next few hours (or days, depending on your PC):  
 
@@ -110,22 +127,24 @@ Also, if for any reason the final step, 'do_rootfs', fails in OE, that does not 
 
 coming soon  
 
-## About Quirky Linux
+## About Quirky and Easy  
 
 Quirky and Easy, originally forks of Puppy Linux, inherit the very small size yet with just about every package that you will need, as well as simplicity and power-to-the-user.  
 
-To achieve the small size, careful choices are made of which packages and dependencies to use. It is useful to note what is _not_ in Quirky:  
+To achieve the small size, careful choices are made of which packages and dependencies to use. It is useful to note what is _not_ in Quirky/Easy:  
 
-> <font color="#ff0000">avahi esound gtk+3</font> <font color="#ff0000"><font color="#ff0000">jack</font> multilib</font> <font color="#ff0000"><font color="#ff0000">pulseaudio</font> qt systemd</font>
+> <font color="#ff0000">avahi esound</font> <font color="#ff0000"><font color="#ff0000">jack</font> multilib</font> <font color="#ff0000"><font color="#ff0000">pulseaudio</font> systemd</font>
 
-...at least, these exclusions are for the build in OE. Some puppies have gtk+3 and qt. They may also inherit multilib and dependencies of whatever distribution is used as the source of binary packages. But _none_ of them have pulseaudio or systemd! (Puppy manages to castrate these if binary packages depend on them).  
-
-Future builds in OE may include gtk+3 or qt apps, however for now all gui apps in Quirky are gtk+2 or x11 based. Note, there are various reasons for not using gtk+3.  
+Almost all GUI apps in Quirky/Easy are gtk+2 or x11 based.  
 
 Many major applications, such as Firefox, SeaMonkey and LibreOffice, build with gtk+2\. In some cases, for example Evince, where gtk+2 has been abandoned, an older version is used, with patches to keep it "up to date".  
 
 Another important factor is that there is a very prolific Puppy developer community, and there are hundreds of GUI applications specifically created for Puppy, most of them using gtk+2.  
 Thus, we have no difficulty with populating a distro with an extensive suite of GUI utilities and applications with only gtk+2 and x11 available.  
+
+However, gtk+3 is now provided in the build, and at the time of writing there is one gtk+3-based app in the build, Gnome-MPV multimedia player.  
+
+Also, Qt5 is now in the build, and at the time of writing Scribus desktop publishing app is in the build.  
 
 About Quirky itself, what is it?  
 Quirky Linux was forked from Puppy Linux when Barry retired from maintaining the latter. Quirky is Barry's plaything, to experiment with new ideas. Consequently, there have been major architectural changes with different releases of Quirky. The recent offshoot Easy Linux, is another experimental architecture.  
