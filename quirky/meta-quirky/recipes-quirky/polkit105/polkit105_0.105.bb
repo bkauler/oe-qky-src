@@ -31,10 +31,11 @@ EXTRA_OECONF = "--with-authfw=shadow --disable-gtk-doc-html --disable-static \
            --disable-verbose-mode --disable-man-pages --with-os-type=unknown \
            --disable-introspection"
 
-do_configure() {
- #just having "oe_runconf" in here avoids the rebuilding of 'configure' script
- oe_runconf
-}
+# 20180712 have removed this, need to rebuild configure script for arm64 target...
+#do_configure() {
+# #just having "oe_runconf" in here avoids the rebuilding of 'configure' script
+# oe_runconf
+#}
 
 SROOT = "${WORKDIR}/recipe-sysroot"
 SRNATIVE = "${WORKDIR}/recipe-sysroot-native"
