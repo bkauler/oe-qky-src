@@ -154,7 +154,29 @@ build in OE, you will see many warning messages about incorrect
 packaging. These do not matter, as the export to woofQ does not use the 
 OE packaging stage -- instead, the 'image' folder in each package build 
 (which has the result of 'do_install') is read by woofQ and woofQ does 
-its own packaging.<br><br>Also, if for any reason the final step, 'do_rootfs', fails in OE, that does not matter, as woofQ builds its own rootfs.<br><br><h2>Deploy</h2>coming soon<br><br><h2>About Quirky and Easy<br>
+its own packaging.<br><br>Also, if for any reason the final step, 'do_rootfs', fails in OE, that does not matter, as woofQ builds its own rootfs.<br><br><h2>Deploy</h2>While still in the OE build environment, that is, a terminal in which you previously ran source <tt>oe-init-build-env buildPC</tt> (or <tt>source oe-init-build-env buildarm64</tt>, etc.), make sure that you run this:<br>
+<pre># bitbake -g core-image-quirky</pre>
+...this generates files "pn-buildlist", "recipe-depends.dot" and 
+"task-depends.dot" in folder "buildPC". These are read when importing 
+the binary packages into woofQ.<br>
+<br>
+Download the latest woofQ from here:<br>
+<br>
+<a href="http://distro.ibiblio.org/easyos/project/woofq/">http://distro.ibiblio.org/easyos/project/woofq/</a><br>
+<br>
+It will expand to folder "woof-project", and you will find 
+"woof-project/quirky/README-FIRST" -- read that. Also look at 
+"woof-project/quirky/woof-code/README.txt".<br>
+<br>
+Essentially, you will need to execute "./merge2out", which will create folder "woof-project/builds/&lt;output-folder&gt;".<br>
+<br>
+Open a terminal in "&lt;output-folder&gt;" and run "./0pre-oe". This 
+will ask where the OE build is, and import the binary packages into 
+woofQ.<br>
+<br>
+You will then be ready to do a build of Quirky or Easy, by running 
+"./1setup", "./1download", "./2createpackages" and "./3buildeasydistro" 
+in sequence.<br><h2>About Quirky and Easy<br>
 </h2>Quirky and Easy, originally forks of Puppy Linux, inherit the very 
 small size yet with just about every package that you will need, as well
  as simplicity and power-to-the-user.<br><br>To achieve the small size, careful choices are made of which packages and dependencies to use. It is useful to note what is <i>not</i> in Quirky/Easy:<br><blockquote><font color="#ff0000">avahi esound </font><font color="#ff0000"><font color="#ff0000">jack </font>multilib </font><font color="#ff0000"><font color="#ff0000">pulseaudio </font>systemd</font> <br></blockquote>Almost all GUI apps in Quirky/Easy are gtk+2 or x11 based.<br><br>Many

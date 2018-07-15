@@ -100,10 +100,10 @@ Also, a fast PC with plenty of RAM is required. Although OE state a minimum of 2
 Note that the Internet connection must be maintained throughout the build, as some packages, such as libreoffice, download extra source packages during compile.  
 In otherwords, you cannot download all source packages prior to commencing the build.  
 
-An annoyance is that libreoffice does not preserve the downloads globally for other builds. So, everytime that libreoffice gets compiled, it has to download lots of extra packages.  
+An annoyance is that libreoffice does not preserve the downloads globally for other builds. So, every time that libreoffice gets compiled, it has to download lots of extra packages.  
 
 > **Notice**  
-> LibreOffice is currently not in the package list in 'conf/local.conf' for buildPC and buildarm64, as it is an old version, plus the time it takes. Instead, Barry compiles LibreOffice in a running system (a distro built from the packages compiled in oe-qky-src!).
+> LibreOffice is currently not in the package list in 'conf/local.conf' for buildPC, as it is an old version (5.0.6.3), plus the time it takes. Instead, Barry compiles LibreOffice in a running system (a distro built from the packages compiled in oe-qky-src!).
 
 Off we go, for the next few hours (or days, depending on your PC):  
 
@@ -125,7 +125,23 @@ Also, if for any reason the final step, 'do_rootfs', fails in OE, that does not 
 
 ## Deploy
 
-coming soon  
+While still in the OE build environment, that is, a terminal in which you previously ran source <tt>oe-init-build-env buildPC</tt> (or <tt>source oe-init-build-env buildarm64</tt>, etc.), make sure that you run this:  
+
+<pre># bitbake -g core-image-quirky</pre>
+
+...this generates files "pn-buildlist", "recipe-depends.dot" and "task-depends.dot" in folder "buildPC". These are read when importing the binary packages into woofQ.  
+
+Download the latest woofQ from here:  
+
+[http://distro.ibiblio.org/easyos/project/woofq/](http://distro.ibiblio.org/easyos/project/woofq/)  
+
+It will expand to folder "woof-project", and you will find "woof-project/quirky/README-FIRST" -- read that. Also look at "woof-project/quirky/woof-code/README.txt".  
+
+Essentially, you will need to execute "./merge2out", which will create folder "woof-project/builds/<output-folder>".  
+
+Open a terminal in "<output-folder>" and run "./0pre-oe". This will ask where the OE build is, and import the binary packages into woofQ.  
+
+You will then be ready to do a build of Quirky or Easy, by running "./1setup", "./1download", "./2createpackages" and "./3buildeasydistro" in sequence.  
 
 ## About Quirky and Easy  
 
