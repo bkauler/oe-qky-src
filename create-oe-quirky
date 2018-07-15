@@ -6,7 +6,7 @@
 #170621 snapshots now tarballs.
 #170623 chmod 755 setterm
 #171018 added x86_64 x32
-#180621 backported 'sumo' recipes.
+#180621 backported 'sumo' recipes. 180715 downloads link fix.
 
 if [ -d ../oe-quirky ];then
  echo "Error, 'oe-quirky' already exists."
@@ -72,6 +72,7 @@ ln -s ../../downloads ../oe-quirky/buildPC/downloads
 ln -s ../../downloads ../oe-quirky/buildPi/downloads
 ln -s ../../downloads ../oe-quirky/buildPC32/downloads
 ln -s ../../downloads ../oe-quirky/buildPC64x32/downloads
+ln -s ../../downloads ../oe-quirky/buildarm64/downloads
 
 #fix absolute paths in bblayers.conf...
 PWD1="`pwd`"
@@ -81,6 +82,7 @@ sed -i -e "$PTN1" ../oe-quirky/buildPC/conf/bblayers.conf
 sed -i -e "$PTN1" ../oe-quirky/buildPi/conf/bblayers.conf
 sed -i -e "$PTN1" ../oe-quirky/buildPC32/conf/bblayers.conf
 sed -i -e "$PTN1" ../oe-quirky/buildPC64x32/conf/bblayers.conf
+sed -i -e "$PTN1" ../oe-quirky/buildarm64/conf/bblayers.conf
 
 echo "Folder '../oe-quirky' populated.
 Now what you have to do, is open a terminal in 'oe-quirky'
