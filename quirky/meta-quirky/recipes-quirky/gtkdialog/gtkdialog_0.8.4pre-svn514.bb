@@ -1,10 +1,12 @@
 # Recipe created by recipetool
 # recipetool create -o gtkdialog_0.8.4pre-svn514.bb http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/gtkdialog-0.8.4pre-svn514.tar.bz2
 
+PR = "r1"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=94d55d512a9ba36caa9b7df079bae19f"
 
-SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/gtkdialog-${PV}.tar.bz2"
+SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/gtkdialog-${PV}.tar.bz2 \
+           file://gtkdialog-fix-aarch64-widget-order.patch"
 SRC_URI[md5sum] = "2d4f4d783f867513887252b3b418026f"
 SRC_URI[sha256sum] = "ef64020da838a44841dcad2c4e9dbcb128aca87bdcc35a194e6844cc36b44425"
 
@@ -42,5 +44,5 @@ do_install() {
 # don't know why i am doing this, maybe needed for packaging...
 FILES_${PN} += "/usr/share/doc/gtkdialog/reference /usr/share/doc/gtkdialog/examples"
 
-HOMEPAGE = ""
+HOMEPAGE = "https://github.com/01micko/gtkdialog"
 SUMMARY = "A utility for creating X11 dialog boxes"

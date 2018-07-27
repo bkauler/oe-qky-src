@@ -1,0 +1,17 @@
+diff -Naur gtkdialog-0.8.4pre-svn514ORIG/src/automaton.c gtkdialog-0.8.4pre-svn514/src/automaton.c
+--- gtkdialog-0.8.4pre-svn514ORIG/src/automaton.c	2015-09-24 17:14:21.000000000 +0800
++++ gtkdialog-0.8.4pre-svn514/src/automaton.c	2018-07-25 16:13:24.655999441 +0800
+@@ -1299,8 +1299,13 @@
+ /* 120701 BK Puppy Linux forum member jamesbond fixed this for arm cpus...*/
+ stackelement _sum(stackelement b, stackelement a)
+ #else
++/* 180727 BK and jamesbond: this is required to detect 64-bit arm...*/
++#ifdef __aarch64__
++stackelement _sum(stackelement b, stackelement a)
++#else
+ stackelement _sum(stackelement a, stackelement b)
+ #endif
++#endif
+ {
+ 	int n;
+ 	/* Let's copy the widgets from b to a */
