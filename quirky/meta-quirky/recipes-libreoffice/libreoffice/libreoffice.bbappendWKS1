@@ -1,7 +1,6 @@
 
 # 170505 remove 'clucene-core', add 'unzip', remove 'gstreamer1.0-plugins-base'...
 # 171120 add 'libepoxy'
-# 180723 add boost, boost-native
 DEPENDS = " \
     python3-lxml-native \
     ccache-native \
@@ -61,12 +60,10 @@ DEPENDS = " \
     liblangtag \
     unzip \
     libepoxy \
-    boost \
 "
 
 # 170505 remove '--with-system-clucene', add '--disable-gtk3', '--disable-gstreamer-1-0'
 # 171120 add '--with-system-epoxy'
-# 180723 add '--with-system-boost'
 EXTRA_OECONF = " \
     --without-doxygen \
     --enable-release-build \
@@ -134,10 +131,6 @@ EXTRA_OECONF = " \
     --disable-gtk3 \
     --disable-gstreamer-1-0 \
     --with-system-epoxy \
-    --with-system-boost \
-    --with-boost-date-time=boost_date_time \
-    --with-boost-iostreams=boost_iostreams \
-    --with-boost-system=boost_system \
 "
 
 # this is a hack, coz still learning....
