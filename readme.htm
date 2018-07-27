@@ -86,7 +86,7 @@ everything needed for compiling (click the "sfsget" icon at top of
 screen.<br>
 <h3>Other distros</h3>
 Puppy Linux x86_64 distributions should be OK also, in particular
-            those based on Debian/Ubuntu DEBs (for example XenialPup).<br>
+            those based on Debian/Ubuntu DEBs (for example XenialPup). You must be running as 'root'.<br>
 <br>
 A couple more things to check in the host distro: <br>
 <br>
@@ -146,7 +146,15 @@ for buildPC, as it is an old version (5.0.6.3), plus the time it
 takes. Instead, Barry compiles LibreOffice in a running system (a distro
  built from the packages compiled in oe-qky-src!).<br>
 </blockquote>
-Off we go, for the next few hours (or days, depending on your PC):<br><pre># bitbake core-image-quirky</pre>Barry's main PC for doing OE builds has a i5-4200 3.10GHz CPU, 16GB RAM and 1TB hard drive, and a build takes about 9 hours.<br><br>Before or after the build, you can run this command to obtain lists of all chosen packages and their dependencies:<br><pre># bitbake -g core-image-quirky</pre>...you will then see files "pn-buildlist", "task-depends.dot" and "recipe-depends.dot" in the "buildPC" folder.<br><br>If
+Off we go, for the next few hours (or days, depending on your PC):<br><pre># bitbake core-image-quirky</pre>Barry's main PC for doing OE builds has a i5-4200 3.10GHz CPU, 16GB RAM and 1TB hard drive, and a build takes about 9 hours.<br>
+<blockquote><b>Building on an entry-level PC</b><br>
+For comparison, a target-aarch64 build was done, including building 
+LibreOffice, on an "entry level" x86_64 PC. This was a Mele PCG35 Apo 
+mini-PC, with fanless Apollo Lake CPU, 4GB RAM, and OE on an external 
+USB3 1TB hard drive. There was a 9GB swap partition on the external hard
+ drive. The build took 28 hours and 12 minutes!<br>
+</blockquote>
+Before or after the build, you can run this command to obtain lists of all chosen packages and their dependencies:<br><pre># bitbake -g core-image-quirky</pre>...you will then see files "pn-buildlist", "task-depends.dot" and "recipe-depends.dot" in the "buildPC" folder.<br><br>If
  you intend to export the packages to woofQ, the Quirky Linux build 
 system, the above command is essential, as the files it produces are 
 read by the packages-import script in woofQ.<br><br>At the end of the 
