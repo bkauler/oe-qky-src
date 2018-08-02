@@ -1,9 +1,12 @@
 HOMEPAGE = "http://software.schmorp.de/pkg/rxvt-unicode.html"
-PR = "r1"
+PR = "r2"
 
 # the official rxvt-unicode is crippled, doesn't build 'urxvt' binary.
 
-DEPENDS = "virtual/libx11 libxt libxft gdk-pixbuf libxmu \
+# official recipe left off pkgconfig, it is needed...
+inherit autotools update-alternatives pkgconfig
+
+DEPENDS = "libx11 libxt libxft gdk-pixbuf libxmu \
            freetype fontconfig libxrender expat zlib libxcb libxext \
            libsm libice libxau libxdmcp"
 
