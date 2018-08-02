@@ -1,8 +1,9 @@
 # Recipe created by recipetool
 # recipetool create -o pup-tools_20170607.bb http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/p/pup-tools-20170607.tar.gz
 # 20180417 proxy-setup.bac removed (it is now a shell script).
+# 20180729 forgot to compile 'getlocalip'.
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "bacon bacon-hug bacon-hug-imports gtk+"
 inherit gettext pkgconfig
@@ -92,7 +93,7 @@ do_compile () {
     cd ..
     
 	cd gcc
-	for aFILE in printcols truncate vercmp
+	for aFILE in printcols truncate vercmp getlocalip
 	do
 	 ${CC} -o ${aFILE} ${aFILE}.c ${CFLAGS} ${LDFLAGS}
 	done
@@ -108,6 +109,7 @@ do_install () {
     install -d ${D}/usr/sbin
     install -m755 gcc/getcurpos ${D}/usr/sbin
     install -m755 gcc/printcols ${D}/usr/sbin
+    install -m755 gcc/getlocalip ${D}/usr/sbin
     install -m755 bacon/temp1/pngoverlay ${D}/usr/sbin
     install -m755 bacon/temp1/popup ${D}/usr/sbin
     install -m755 bacon/temp1/welcome1stboot ${D}/usr/sbin
