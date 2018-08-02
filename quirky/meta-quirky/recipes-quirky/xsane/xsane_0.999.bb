@@ -54,3 +54,8 @@ XXXXdo_configure () {
 #do_configure_prepend() {
 # sed -i -e 's/png_ptr->jmpbuf/png_jmpbuf(png_ptr)/' ${S}/src/xsane-save.c
 #}
+
+# 180729 remove the run-as-root warning...
+do_configure_prepend() {
+ sed -i -e 's%^#ifndef HAVE_OS2_H%#ifdef XYZABCDEF123%' ${S}/src/xsane.c
+}
