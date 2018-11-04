@@ -1,0 +1,61 @@
+Remove all references to gethostbyname.
+Rox uses gethostbyname to find the FQDN of the hostname and the Xorg 
+display server hostname.
+
+It is used in 3 different places:
+a) DND - this can be disabled via config (not affected by patch)
+b) RPC - to form a unique UUID (support.c). Use hostname only seems 
+   harmless here.
+c) Resolve URI in the form of //myhost/path to /path if 'myhost' 
+   is localhost (support.c). Using hostname only also seem harmless here.
+d) To display hostname in title, is Rox isn't running on the 
+   same server as the Xorg server (filer.c). This seems harmless too.
+
+Removing this speeds up operation when we use a local DNS server that
+operates on 127.0.0.1 (e.g. dnscrypt-proxy).
+
+James 2016
+
+diff -ur old2/ROX-Filer/src/filer.c rox-git/ROX-Filer/src/filer.c
+--- old2/ROX-Filer/src/filer.c	2013-06-02 18:11:26.000000000 +1000
++++ rox-git/ROX-Filer/src/filer.c	2016-09-02 15:18:06.266942776 +1000
+@@ -216,9 +216,9 @@
+ 		/* Try the cannonical name for dpyhost (see our_host_name()
+ 		 * in support.c).
+ 		 */
+-	        struct hostent *ent;
++	        struct hostent *ent = NULL;
+ 		
+-		ent = gethostbyname(dpyhost);
++		//ent = gethostbyname(dpyhost);
+ 		if (!ent || strcmp(ohost, ent->h_name) != 0)
+ 		        not_local = TRUE;
+ 	}
+diff -ur old2/ROX-Filer/src/support.c rox-git/ROX-Filer/src/support.c
+--- old2/ROX-Filer/src/support.c	2013-06-02 18:11:26.000000000 +1000
++++ rox-git/ROX-Filer/src/support.c	2016-09-02 15:18:22.623609846 +1000
+@@ -172,10 +172,10 @@
+ 		if (gethostname(buffer, 4096) == 0)
+ 		{
+ 			/* gethostname doesn't always return the full name... */
+-			struct hostent *ent;
++			struct hostent *ent = NULL;
+ 
+ 			buffer[4095] = '\0';
+-			ent = gethostbyname(buffer);
++			//ent = gethostbyname(buffer);
+ 			name = g_strdup(ent ? ent->h_name : buffer);
+ 		}
+ 		else
+@@ -458,9 +458,9 @@
+ /* Gets the canonical name for address and compares to our_host_name() */
+ static gboolean is_local_address(char *address)
+ {
+-	struct hostent *ent;
++	struct hostent *ent = NULL;
+ 
+-	ent = gethostbyname(address);
++	//ent = gethostbyname(address);
+ 
+ 	return strcmp(our_host_name(), ent ? ent->h_name : address) == 0;
+ }

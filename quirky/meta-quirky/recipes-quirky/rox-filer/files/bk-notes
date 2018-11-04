@@ -24,3 +24,7 @@ hardcoded home /file for quirky, alternative to above 09-*
 009-rox-filer-home-easy-quirky.patch tests for home directory /mnt/wkg/home (easy),
 /file (quirky), or /root
 replaces 09-*
+
+181104
+------
+010-remove-gethostbyname.patch

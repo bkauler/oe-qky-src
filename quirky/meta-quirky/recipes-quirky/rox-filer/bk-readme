@@ -18,3 +18,9 @@ ref: input498/0-rox-filer
 starting with the 20111022 source, apply 20170805 patches.
 new 009-* patch to set home as /mnt/wkg/home (easy), /file (quirky), or /root
 
+20181104
+--------
+call to gethostbyname() can slow startup if internet slow. jamesbond has a patch
+to remove this call:
+http://www.murga-linux.com/puppy/viewtopic.php?t=50911&start=75
+Patch: remove-gethostbyname.patch
