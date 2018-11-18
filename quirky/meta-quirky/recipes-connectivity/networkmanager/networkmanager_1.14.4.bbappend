@@ -1,7 +1,10 @@
 #BK 181112
 #181113 add libnewt, so have nmtui gui. also add rp-pppoe, ppp
+#181115 inbuilt dhcp client, instead of dhcpcd.
+#181117 r1: add support for iwd, inbuilt replacement for wpa_supplicant
+#181118 r2: add dep modemmanager
 
-PR = "r0"
+PR = "r2"
 
 DEPENDS = " \
     intltool-native \
@@ -18,7 +21,7 @@ DEPENDS = " \
     dhcpcd gnutls readline libidn zlib libunistring \
     nettle gmp libffi libpcre ncurses glib-2.0 \
     libsoup-2.4 \
-    libnewt slang popt rp-pppoe ppp \
+    libnewt slang popt rp-pppoe ppp wpa-supplicant bluez5 \
 "
 
 EXTRA_OECONF = " \
@@ -32,11 +35,10 @@ EXTRA_OECONF = " \
     --enable-modify-system --disable-polkit-agent --enable-polkit=no \
     --enable-wifi --disable-ifupdown --disable-ifcfg-rh --enable-introspection=no \
     --disable-more-warnings \
-    --with-iptables=${sbindir}/iptables \
+    --with-iptables=${sbindir}/iptables --with-iwd=yes \
 "
 
-
-PACKAGECONFIG = "concheck gnutls dnsmasq ppp \
+PACKAGECONFIG = "concheck gnutls dnsmasq ppp modemmanager \
     ${@bb.utils.contains('DISTRO_FEATURES', 'bluetooth', '${BLUEZ}', '', d)} \
     ${@bb.utils.filter('DISTRO_FEATURES', 'wifi', d)} \
 "
