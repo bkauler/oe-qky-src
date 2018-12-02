@@ -3,8 +3,9 @@
 #181115 inbuilt dhcp client, instead of dhcpcd.
 #181117 r1: add support for iwd, inbuilt replacement for wpa_supplicant
 #181118 r2: add dep modemmanager
+#181119 r3: support ofono
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = " \
     intltool-native \
@@ -22,6 +23,7 @@ DEPENDS = " \
     nettle gmp libffi libpcre ncurses glib-2.0 \
     libsoup-2.4 \
     libnewt slang popt rp-pppoe ppp wpa-supplicant bluez5 \
+    ofono \
 "
 
 EXTRA_OECONF = " \
@@ -36,9 +38,10 @@ EXTRA_OECONF = " \
     --enable-wifi --disable-ifupdown --disable-ifcfg-rh --enable-introspection=no \
     --disable-more-warnings \
     --with-iptables=${sbindir}/iptables --with-iwd=yes \
+    --with-ofono \
 "
 
-PACKAGECONFIG = "concheck gnutls dnsmasq ppp modemmanager \
+PACKAGECONFIG = "gnutls dnsmasq ppp modemmanager \
     ${@bb.utils.contains('DISTRO_FEATURES', 'bluetooth', '${BLUEZ}', '', d)} \
     ${@bb.utils.filter('DISTRO_FEATURES', 'wifi', d)} \
 "
