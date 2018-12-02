@@ -84,6 +84,12 @@ sed -i -e "$PTN1" ../oe-quirky/buildPC32/conf/bblayers.conf
 sed -i -e "$PTN1" ../oe-quirky/buildPC64x32/conf/bblayers.conf
 sed -i -e "$PTN1" ../oe-quirky/buildarm64/conf/bblayers.conf
 
+#181202 to compile ghostscript with libgs, need this...
+#ref: https://patchwork.openembedded.org/patch/137913/
+echo '
+SECURITY_CFLAGS_pn-ghostscript = "${SECURITY_NO_PIE_CFLAGS}"' >> ../oe-quirky/meta/conf/distro/include/security_flags.inc
+#see also ../oe-quirky/meta-quirky/recipes-extended/ghostscript/ghostscript_9.20.bbappend
+
 echo "Folder '../oe-quirky' populated.
 Now what you have to do, is open a terminal in 'oe-quirky'
 and run this, for pc x86_64 build:
