@@ -1,6 +1,7 @@
 
-#181202 ghostscript recipe creates a big 'gs' binary, without libgs
-#however, there are some pkgs that want libgs as a dep.
+#181202 r1: ghostscript recipe creates a big 'gs' binary, without libgs
+#           however, there are some pkgs that want libgs as a dep.
+#181209 r2: /usr/bin/gsc, gsx installed, suspect cups-filters looks for 'gs'.
 
 #ref1: https://patchwork.openembedded.org/patch/137913/
 #ref2: https://patchwork.openembedded.org/patch/137914/
@@ -9,7 +10,7 @@
 #oe-qky-src/create-oe-quirky script now has this line in it (see ref1):
 # echo 'SECURITY_CFLAGS_pn-ghostscript = "${SECURITY_NO_PIE_CFLAGS}"' >> ../oe-quirky/meta/conf/distro/include/security_flags.inc
 
-PR = "r1"
+PR = "r2"
 
 do_configure_prepend () {
 	mkdir -p obj
@@ -40,6 +41,9 @@ do_install_class-target_append () {
     oe_runmake install-so DESTDIR=${D}
     #ref: http://www.linuxfromscratch.org/blfs/view/8.2/pst/gs.html
     install -m644 ${S}/base/*.h ${D}/usr/include/ghostscript
+    #181209 at runtime 'gstoraster' in 'cups-filters' pkg unable to find 'gs'...
+    # note, probably should use ${bindir} here...
+    ln -s gsc ${D}/usr/bin/gs
 }
 
 PACKAGES =+ "${PN}-lib"
