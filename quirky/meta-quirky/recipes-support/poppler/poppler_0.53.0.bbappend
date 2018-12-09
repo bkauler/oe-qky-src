@@ -1,7 +1,8 @@
 
-# 171128 fix printing. see also 'cups', 'cups-filters', 'gtk+'
+# 171128 r1: fix printing. see also 'cups', 'cups-filters', 'gtk+'
+# 181209 r2: recompile, as qpdf version bumped to 8.2.1
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "fontconfig zlib cairo lcms pango gtk+ cups curl zlib qpdf"
 
