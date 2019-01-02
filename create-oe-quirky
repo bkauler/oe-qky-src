@@ -7,9 +7,10 @@
 #170623 chmod 755 setterm
 #171018 added x86_64 x32
 #180621 backported 'sumo' recipes. 180715 downloads link fix.
+#181216 build folder 'oe-quirky' moved outside.
 
-if [ -d ../oe-quirky ];then
- echo "Error, 'oe-quirky' already exists."
+if [ -d ../../../../../builds/oe/pyro/oe-quirky ];then
+ echo "Error, '../../../../../builds/oe/pyro/oe-quirky' already exists."
  exit
 fi
 if [ ! -d downloads-oe ];then
@@ -26,9 +27,11 @@ else
  exit
 fi
 
-mkdir -p ../downloads
+#181216
+mkdir -p ../../../../../builds/oe/pyro/oe-quirky
+ln -snf ../../../../builds/oe/pyro/oe-quirky ../oe-quirky
+ln -snf ../../../bk/projects/oe/pyro/downloads ../../../../builds/oe/pyro/downloads
 
-mkdir ../oe-quirky
 echo 'Populating ../oe-quirky...'
 #cp -a downloads-oe/openembedded-core/* ../oe-quirky/
 #cp -a downloads-oe/openembedded-core/.templateconf ../oe-quirky/
