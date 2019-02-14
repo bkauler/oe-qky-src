@@ -8,6 +8,7 @@
 #171018 added x86_64 x32
 #180621 backported 'sumo' recipes. 180715 downloads link fix.
 #181216 build folder 'oe-quirky' moved outside.
+#190120 fix symlink, realpath.
 
 if [ -d ../../../../../builds/oe/pyro/oe-quirky ];then
  echo "Error, '../../../../../builds/oe/pyro/oe-quirky' already exists."
@@ -30,7 +31,10 @@ fi
 #181216
 mkdir -p ../../../../../builds/oe/pyro/oe-quirky
 ln -snf ../../../../builds/oe/pyro/oe-quirky ../oe-quirky
-ln -snf ../../../bk/projects/oe/pyro/downloads ../../../../builds/oe/pyro/downloads
+ln -snf ../../../bk/projects/oe/pyro/downloads ../../../../../builds/oe/pyro/downloads #190120 fix.
+
+#190120 REALPATH ex: /mnt/sdc1/builds/oe/pyro/oe-quirky
+REALPATH="$(realpath ../../../../../builds/oe/pyro/oe-quirky)"
 
 echo 'Populating ../oe-quirky...'
 #cp -a downloads-oe/openembedded-core/* ../oe-quirky/
@@ -78,9 +82,10 @@ ln -s ../../downloads ../oe-quirky/buildPC64x32/downloads
 ln -s ../../downloads ../oe-quirky/buildarm64/downloads
 
 #fix absolute paths in bblayers.conf...
-PWD1="`pwd`"
-ABSPATH="$(dirname $PWD1)" #ex: /mnt/sda2/oe
-PTN1="s%/mnt/sda2/oe%${ABSPATH}%"
+#PWD1="`pwd`"
+#ABSPATH="$(dirname $PWD1)" #ex: /mnt/sda2/oe
+#PTN1="s%/mnt/sda2/oe%${ABSPATH}%"
+PTN1="s%/mnt/sda2/oe/oe-quirky%${REALPATH}%" #190120
 sed -i -e "$PTN1" ../oe-quirky/buildPC/conf/bblayers.conf
 sed -i -e "$PTN1" ../oe-quirky/buildPi/conf/bblayers.conf
 sed -i -e "$PTN1" ../oe-quirky/buildPC32/conf/bblayers.conf
