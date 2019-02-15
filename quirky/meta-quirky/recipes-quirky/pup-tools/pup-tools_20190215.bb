@@ -4,7 +4,7 @@
 # 20180729 forgot to compile 'getlocalip'.
 # 20181024 vovchik fixed 'pngoverlay', now does not have to be in same folder as the input images.
 # 20181216 ...above was not fixed, now is (source v0.1c).
-# 20190213 pup_event_frontend_d now detects network changes.
+# 20190215 pup_event_frontend_d now detects network changes.
 
 PR = "r0"
 
@@ -16,8 +16,8 @@ LIC_FILES_CHKSUM = "file://readme.txt;md5=9add27eb01e81e0a682a99520030f7ce"
 
 #SRC_URI = "http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/p/pup-tools-${PV}.tar.gz"
 SRC_URI = "http://distro.ibiblio.org/easyos/source/oe/pyro/pup-tools-${PV}.tar.gz"
-SRC_URI[md5sum] = "f0462c7bcfd3f13532e452b497822af9"
-SRC_URI[sha256sum] = "7952cb61ac667995f00c935b00ac8394b42991f7deeaea88130c0ddd7937ea2d"
+SRC_URI[md5sum] = "9e7e1b122a01a021f1475909c4be51ff"
+SRC_URI[sha256sum] = "7b71db66eb4a0362550530df46b564db750ca187b3124a820197d33af52b6067"
 
 do_configure() {
     cp -f ${DL_DIR}/hug_imports.bac ${S}/bacon/
